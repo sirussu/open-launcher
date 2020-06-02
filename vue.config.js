@@ -1,3 +1,10 @@
 module.exports = {
-  lintOnSave: false
+  lintOnSave: false,
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        publish: ['github']
+      }
+    }
+  }
 }
