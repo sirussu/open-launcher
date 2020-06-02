@@ -27,6 +27,6 @@ jobs:
     - run: sudo apt-get install xvfb
     - uses: paambaati/codeclimate-action@v2.6.0
       env:
-       CC_TEST_REPORTER_ID: 9b88aa7045cf00556a0133f707c75074ce246177db1318dac3864969986c6cdb
+       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
        coverageCommand: xvfb-run --auto-servernum yarn test:unit
