@@ -24,7 +24,7 @@ jobs:
         node-version: '14'
     - run: npm install -g yarn
     - run: yarn install
-    - run: yarn test
+    - run: yarn test:unit
   coverage:
     needs: [ test ]
     name: coverage
