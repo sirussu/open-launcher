@@ -29,4 +29,4 @@ jobs:
       env:
        CC_TEST_REPORTER_ID: 9b88aa7045cf00556a0133f707c75074ce246177db1318dac3864969986c6cdb
       with:
-       coverageCommand: xvfb-run --auto-servernum npm run test:unit
+       coverageCommand: xvfb-run --auto-servernum yarn test:unit
