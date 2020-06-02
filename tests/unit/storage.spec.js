@@ -7,20 +7,20 @@ beforeEach(() => {
 })
 
 describe('Storage read/write', () => {
-  it('empty object if localStorage empty', () => {
+  it('should be empty', () => {
     const storage = new DataStorage()
     expect(storage.get('app')).toBeUndefined()
     expect(storage.__store).toStrictEqual({})
   })
 
-  it('correctly load data from localStorage', () => {
+  it('correct data restore', () => {
     const storage = new DataStorage()
     localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
     storage.load()
     expect(storage.get('app')).toStrictEqual({ test: 'value' })
   })
 
-  it('load data from localStorage only one time', () => {
+  it('data should not be reloaded', () => {
     const storage = new DataStorage()
     expect(storage.get('app')).toBeUndefined()
     localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
@@ -28,7 +28,7 @@ describe('Storage read/write', () => {
     expect(storage.get('app')).toBeUndefined()
   })
 
-  it('reload data', () => {
+  it('hard reload data', () => {
     const storage = new DataStorage()
     expect(storage.get('app')).toBeUndefined()
     localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
@@ -36,19 +36,19 @@ describe('Storage read/write', () => {
     expect(storage.get('app')).toStrictEqual({ test: 'value' })
   })
 
-  it('correctly load data from localStorage lazy load', () => {
+  it('lazy load', () => {
     const storage = new DataStorage()
     localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
     expect(storage.get('app')).toStrictEqual({ test: 'value' })
   })
 
-  it('correctly load save data to self', () => {
+  it('storing data inside object', () => {
     const storage = new DataStorage()
     storage.set('app', { test: 'value1' })
     expect(storage.get('app')).toStrictEqual({ test: 'value1' })
   })
 
-  it('correctly load save data to lc with debounce', async () => {
+  it('save should be called after debounce timeout', async () => {
     const storage = new DataStorage()
     storage.set('app', { test: 'value1' })
 
@@ -60,7 +60,7 @@ describe('Storage read/write', () => {
     expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(JSON.stringify({ app: { test: 'value1' } }))
   })
 
-  it('save calls localStorage only once', async () => {
+  it('flush to storage with debounce', async () => {
     const storage = new DataStorage()
 
     storage.set('app', { test: 'value' })
@@ -84,7 +84,7 @@ describe('Storage read/write', () => {
     expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(JSON.stringify({ app: { test: 'value1' } }))
   })
 
-  it('force save data to lc', async () => {
+  it('force save ignore debounce', async () => {
     const storage = new DataStorage()
     storage.set('app', { test: 'value1' })
 
