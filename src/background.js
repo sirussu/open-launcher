@@ -19,7 +19,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'opslauncher', privileges: { sec
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800,
+    width: 1024,
     height: 600,
     webPreferences: {
     // Use pluginOptions.nodeIntegration, leave this alone
