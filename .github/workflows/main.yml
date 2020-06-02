@@ -6,8 +6,8 @@ on:
     tags:
       - '!*' # Do not execute on tags
     paths:
-      - src/*
-      - tests/*
+      - src/**/*
+      - tests/**/*
       - '*.json'
       - yarn.lock
   pull_request:
