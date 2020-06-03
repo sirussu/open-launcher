@@ -4,5 +4,6 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.js'
   ],
-  collectCoverage: true
+  collectCoverage: true,
+  setupFilesAfterEnv: ['./jest.setup.js']
 }

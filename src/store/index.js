@@ -2,7 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
 import modules from './modules'
-import { storage } from '@/services/PersistentStore'
+import DataStorage from '@/services/DataStorage'
+
+const storage = new DataStorage()
+storage.load()
 
 const vuexPersist = new VuexPersist({
   storage: storage

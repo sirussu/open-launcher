@@ -10,6 +10,9 @@ const mutations = {
   },
   IGNORE_FILE_HASH_CHECK (state, ignore) {
     state.ignoreFileHashCheck = ignore
+  },
+  START_ON_SYSTEM_STARTUP (state, start) {
+    state.startOnSystemStartup = start
   }
 }
 
