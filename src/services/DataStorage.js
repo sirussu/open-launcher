@@ -14,7 +14,7 @@ export default class DataStorage {
    * @param {String} key - key
    * @param {Object} value - json object
    */
-  set (key, value) {
+  setItem (key, value) {
     this.load()
     this.__store[key] = value
     this.save()
@@ -26,9 +26,14 @@ export default class DataStorage {
    * @param {String} key
    * @return {Object}
    */
-  get (key) {
+  getItem (key) {
     this.load()
     return this.__store[key]
+  }
+
+  clear () {
+    this.__store = {}
+    this.forceSave()
   }
 
   /**
