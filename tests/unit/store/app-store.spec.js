@@ -61,10 +61,6 @@ describe('File list receive', () => {
     }]
   }
 
-  nock('http://51.15.228.31:8080')
-    .get('/api/client/patches')
-    .reply(200, RESPONSE)
-
   beforeEach(() => {
     localVue = createLocalVue()
     localVue.use(Vuex)
@@ -73,7 +69,28 @@ describe('File list receive', () => {
   })
 
   it('load file list from server', async () => {
+    nock('http://51.15.228.31:8080')
+      .get('/api/client/patches')
+      .reply(200, RESPONSE)
+
     await store.dispatch('loadFiles')
+    expect(store.state.App.files).toStrictEqual(RESPONSE.patches)
+    expect(store.state.App.filesToRemove).toStrictEqual(RESPONSE.delete)
+  })
+
+  it('list should not be changed if error occurred', async () => {
+    store.commit('SET_FILES', RESPONSE.patches)
+
+    nock('http://51.15.228.31:8080')
+      .get('/api/client/patches')
+      .reply(500, { error: 'Internal server error' })
+
+    try {
+      await store.dispatch('loadFiles')
+    } catch (e) {
+      expect(e.message).toBe('Request failed with status code 500')
+    }
+
     expect(store.state.App.files).toStrictEqual(RESPONSE.patches)
   })
 })
