@@ -18,7 +18,6 @@ export default class Files {
       await Promise.all(Files.FILES_TO_EXIST.map(f => Files.exists(path.resolve(directory, f))))
       return true
     } catch (e) {
-      console.warn(e)
       return false
     }
   }
@@ -35,7 +34,6 @@ export default class Files {
     const files = await fs.readdir(parent)
 
     const found = files.find(f => f.toLocaleLowerCase() === file)
-
     if (found) {
       return path.resolve(parent, found)
     }
@@ -44,16 +42,16 @@ export default class Files {
   }
 
   /**
-   * Check that is correct file (right size and modification date)
+   * Check that is correct file (right size and modification date if provided)
    * @param {String} path absolute path to file
    * @param {Number} size
-   * @param {Number} timestamp
+   * @param {Number|null} timestamp
    * @return {Promise<boolean>}
    */
   static async isCorrectFile (path, size, timestamp) {
     const stats = await fs.stat(await Files.exists(path))
 
-    return stats.mtime.getTime() === timestamp && stats.size === size
+    return (timestamp === null || stats.mtime.getTime() === timestamp) && stats.size === size
   }
 
   /**
@@ -62,6 +60,6 @@ export default class Files {
    * @return {Promise<void>}
    */
   static async remove (path) {
-    return fs.unlink(await Files.exists(path))
+    return await fs.unlink(await Files.exists(path))
   }
 }
