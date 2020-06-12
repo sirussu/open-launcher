@@ -1,3 +1,5 @@
+import Files from '@/services/Files'
+
 const state = {
   clientDirectory: null,
   startOnSystemStartup: false,
@@ -17,7 +19,14 @@ const mutations = {
 }
 
 const actions = {
+  async setClientDirectory ({ commit, state }, directory) {
+    if (await Files.isCorrectClientDirectory(directory)) {
+      commit('SET_CLIENT_DIRECTORY', directory)
+      return true
+    }
 
+    return false
+  }
 }
 
 export default {
