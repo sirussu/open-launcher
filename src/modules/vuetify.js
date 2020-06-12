@@ -9,5 +9,8 @@ export default new Vuetify({
   lang: {
     locales: { ru, en },
     current: 'ru'
+  },
+  theme: {
+    dark: true
   }
 })

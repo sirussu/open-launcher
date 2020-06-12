@@ -3,7 +3,8 @@ import Files from '@/services/Files'
 const state = {
   clientDirectory: null,
   startOnSystemStartup: false,
-  ignoreFileHashCheck: false
+  ignoreFileHashCheck: false,
+  locale: 'ru'
 }
 
 const mutations = {
@@ -15,6 +16,9 @@ const mutations = {
   },
   START_ON_SYSTEM_STARTUP (state, start) {
     state.startOnSystemStartup = start
+  },
+  SET_LOCALE (state, locale) {
+    state.locale = locale
   }
 }
 

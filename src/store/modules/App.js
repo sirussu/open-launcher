@@ -4,7 +4,11 @@ import DownloadAlreadyInProgressError from '@/exceptions/DownloadAlreadyInProgre
 const state = {
   files: [],
   filesToRemove: [],
-  launcherFiles: []
+  launcherFiles: [],
+  availableLocales: [
+    { key: 'en', lang: 'English' },
+    { key: 'ru', lang: 'Русский' }
+  ]
 }
 
 const mutations = {
