@@ -1,3 +1,13 @@
 {
-  "message": "hello i18n !!"
+  "sidebar": {
+    "news": "News",
+    "settings": "Settings"
+  },
+  "settings": {
+    "choose_lang": "Choose language",
+    "choose_client_directory": "Select game client directory",
+    "errors": {
+      "wrong_client_directory": "Please select correct directory"
+    }
+  }
 }
