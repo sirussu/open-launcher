@@ -1,4 +1,5 @@
 import VuexPersist from 'vuex-persist'
+
 import LauncherFile from '@/entities/LauncherFile'
 import DataStorage from '@/services/DataStorage'
 
@@ -7,16 +8,16 @@ function createPersistencePlugin () {
   storage.load()
 
   const vuexPersist = new VuexPersist({
-    storage: storage
+    storage: storage as any
   })
 
-  const restoreState = vuexPersist.restoreState
-  vuexPersist.restoreState = (key, storage) => {
-    const state = restoreState(key, storage)
-    state.App.launcherFiles = state.App.launcherFiles.map(LauncherFile.fromObject)
+  // const restoreState = vuexPersist.restoreState
+  // vuexPersist.restoreState = (key, storage) => {
+  //   const state = restoreState(key, storage) as any
+  //   state.App.launcherFiles = state.App.launcherFiles.map(LauncherFile.fromObject)
 
-    return state
-  }
+  //   return state
+  // }
 
   return vuexPersist
 }

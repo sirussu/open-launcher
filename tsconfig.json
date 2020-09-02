@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "lib": [
+      "esnext",
+      "esnext.asynciterable",
+      "dom"
+    ],
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "noEmitOnError": true,
+    "noErrorTruncation": true,
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "outDir": "dist_electron",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+    },
+    "typeRoots": [
+      "./types",
+      "./node_modules/vuetify/types"
+    ],
+    "types": [
+      "vuetify"
+    ],
+  },
+  "exclude": [
+    "node_modules",
+    "dist_electron"
+  ]
+}

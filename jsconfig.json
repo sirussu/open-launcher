@@ -1,0 +1,15 @@
+{
+   "compilerOptions": {
+      "baseUrl": ".",
+      "allowSyntheticDefaultImports": true,
+      "paths": {
+         "@/*": [
+            "./src/*"
+         ]
+      }
+   },
+   "exclude": [
+      "node_modules",
+      "dist_electron"
+   ]
+}

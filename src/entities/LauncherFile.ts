@@ -21,7 +21,7 @@ export default class LauncherFile {
     this.downloadAttributes.isIncomplete = val
   }
 
-  static fromObject (obj) {
+  static fromObject(obj) {
     const launcherFile = new LauncherFile()
     launcherFile.fileAttributes = Object.assign(launcherFile.fileAttributes, obj.fileAttributes)
     launcherFile.downloadAttributes = Object.assign(launcherFile.downloadAttributes, obj.downloadAttributes)

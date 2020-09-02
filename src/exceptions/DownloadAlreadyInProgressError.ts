@@ -1,5 +1,5 @@
 export default class DownloadAlreadyInProgressError extends Error {
-  constructor (message) {
+  constructor (message: string) {
     super(message)
     this.name = 'DownloadAlreadyInProgressError'
   }

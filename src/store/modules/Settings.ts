@@ -23,7 +23,7 @@ const mutations = {
 }
 
 const actions = {
-  async setClientDirectory ({ commit, state }, directory) {
+  async setClientDirectory ({ commit, state }, directory: string) {
     if (await Files.isCorrectClientDirectory(directory)) {
       commit('SET_CLIENT_DIRECTORY', directory)
       return true

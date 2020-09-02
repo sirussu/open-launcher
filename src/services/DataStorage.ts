@@ -7,6 +7,7 @@ export default class DataStorage {
   __store = {}
   isLoaded = false
   STORAGE_KEY = 'user_data'
+  _debouncer = _.noop
 
   /**
    * Write user data
@@ -72,7 +73,7 @@ export default class DataStorage {
   }
 
   forceSave () {
-    this._debouncer = null
+    this._debouncer = _.noop
     return this._saveToStorage()
   }
 
