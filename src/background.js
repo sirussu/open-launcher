@@ -6,7 +6,7 @@ import {
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 import { autoUpdater } from 'electron-updater'
-
+import { register } from './background/DownloadFile'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -44,6 +44,8 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
+
+  register(win)
 }
 
 // Quit when all windows are closed.

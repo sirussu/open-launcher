@@ -18,6 +18,14 @@
             <v-list-item-title>{{ $t('sidebar.settings') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item to="/download">
+          <v-list-item-action>
+            <v-icon>mdi-download</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('sidebar.download') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-main>

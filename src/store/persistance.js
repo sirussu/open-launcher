@@ -13,7 +13,10 @@ function createPersistencePlugin () {
   const restoreState = vuexPersist.restoreState
   vuexPersist.restoreState = (key, storage) => {
     const state = restoreState(key, storage)
-    state.App.launcherFiles = state.App.launcherFiles.map(LauncherFile.fromObject)
+
+    if (state.App) {
+      state.App.launcherFiles = state.App.launcherFiles.map(LauncherFile.fromObject)
+    }
 
     return state
   }
