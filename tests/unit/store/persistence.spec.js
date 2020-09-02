@@ -4,7 +4,6 @@ import { cloneDeep } from 'lodash'
 
 import appStore from '@/store/modules/App'
 import createPersistencePlugin from '@/store/persistance'
-import LauncherFile from '@/entities/LauncherFile'
 
 describe('File list receive', () => {
   let store
@@ -52,8 +51,5 @@ describe('File list receive', () => {
     })
 
     expect(store.state.App.launcherFiles.length).toBe(FILES.length)
-    expect(
-      store.state.App.launcherFiles[0] instanceof LauncherFile
-    ).toBeTruthy()
   })
 })

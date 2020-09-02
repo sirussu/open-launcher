@@ -31,7 +31,7 @@ const actions = {
   async loadFiles({ commit, state }) {
     if (state.launcherFiles.find((f) => f.isDownloading)) {
       throw new DownloadAlreadyInProgressError(
-        'Can`t update list due downloading already in progress'
+        'Can`t update list due downloading already in progress' // TODO: rewrite to set error to store
       )
     }
 

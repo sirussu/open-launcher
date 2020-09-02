@@ -3,6 +3,7 @@ import _ from 'lodash'
 /**
  * Store user data to storage
  */
+// TODO: rewrite
 export default class DataStorage {
   __store = {}
   isLoaded = false
