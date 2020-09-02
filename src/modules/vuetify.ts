@@ -5,12 +5,13 @@ import en from 'vuetify/es5/locale/en'
 
 Vue.use(Vuetify)
 
-export default () => new Vuetify({
-  lang: {
-    locales: { ru, en },
-    current: 'ru'
-  },
-  theme: {
-    dark: true
-  }
-})
+export default () =>
+  new Vuetify({
+    lang: {
+      locales: { ru, en },
+      current: 'ru',
+    },
+    theme: {
+      dark: true,
+    },
+  })

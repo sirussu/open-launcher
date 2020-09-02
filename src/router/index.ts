@@ -9,19 +9,19 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/settings',
     name: 'Settings',
-    component: Settings
-  }
+    component: Settings,
+  },
 ]
 
 const router = new VueRouter({
   mode: process.env.IS_ELECTRON ? 'hash' : 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
 })
 
 export default router

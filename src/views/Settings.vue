@@ -31,44 +31,51 @@
 import { remote } from 'electron'
 
 export default {
-  data () {
+  data() {
     return {
       errors: {
-        clientDirectory: null
-      }
+        clientDirectory: null,
+      },
     }
   },
   methods: {
-    async choose () {
+    async choose() {
       this.errors.clientDirectory = null
 
       const selection = await remote.dialog.showOpenDialog({
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
       })
 
       if (!selection.canceled && selection.filePaths.length > 0) {
-        if (!(await this.$store.dispatch('setClientDirectory', selection.filePaths[0]))) {
-          this.errors.clientDirectory = this.$t('settings.errors.wrong_client_directory')
+        if (
+          !(await this.$store.dispatch(
+            'setClientDirectory',
+            selection.filePaths[0]
+          ))
+        ) {
+          this.errors.clientDirectory = this.$t(
+            'settings.errors.wrong_client_directory'
+          )
         }
       }
-    }
+    },
   },
   computed: {
-    locales () {
+    locales() {
       return this.$store.state.App.availableLocales
     },
-    clientDirectory () {
+    clientDirectory() {
       return this.$store.state.Settings.clientDirectory
     },
     locale: {
-      set (val) {
+      set(val) {
         this.$store.commit('SET_LOCALE', val)
         this.$i18n.locale = val
       },
-      get () {
+      get() {
         return this.$store.state.Settings.locale
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>

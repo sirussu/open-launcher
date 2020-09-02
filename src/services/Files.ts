@@ -1,11 +1,8 @@
-const fs = require('fs').promises
-const path = require('path')
+import { promises as fs } from 'fs'
+import path from 'path'
 
 export default class Files {
-  static FILES_TO_EXIST = [
-    'Data',
-    'Data/ruRU'
-  ]
+  static FILES_TO_EXIST = ['Data', 'Data/ruRU']
 
   /**
    * Check is correct directory for downloading client
@@ -13,9 +10,13 @@ export default class Files {
    * @param directory
    * @return {Promise<boolean>}
    */
-  static async isCorrectClientDirectory (directory) {
+  static async isCorrectClientDirectory(directory) {
     try {
-      await Promise.all(Files.FILES_TO_EXIST.map(f => Files.exists(path.resolve(directory, f))))
+      await Promise.all(
+        Files.FILES_TO_EXIST.map((f) =>
+          Files.exists(path.resolve(directory, f))
+        )
+      )
       return true
     } catch (e) {
       return false
@@ -28,12 +29,12 @@ export default class Files {
    * @param fileOrDirectory
    * @return {Promise<string>} real path to file
    */
-  static async exists (fileOrDirectory) {
+  static async exists(fileOrDirectory) {
     const parent = path.dirname(fileOrDirectory)
     const file = path.basename(fileOrDirectory).toLocaleLowerCase()
     const files = await fs.readdir(parent)
 
-    const found = files.find(f => f.toLocaleLowerCase() === file)
+    const found = files.find((f) => f.toLocaleLowerCase() === file)
     if (found) {
       return path.resolve(parent, found)
     }
@@ -48,10 +49,13 @@ export default class Files {
    * @param {Number|null} timestamp
    * @return {Promise<boolean>}
    */
-  static async isCorrectFile (path, size, timestamp) {
+  static async isCorrectFile(path, size, timestamp) {
     const stats = await fs.stat(await Files.exists(path))
 
-    return (timestamp === null || stats.mtime.getTime() === timestamp) && stats.size === size
+    return (
+      (timestamp === null || stats.mtime.getTime() === timestamp) &&
+      stats.size === size
+    )
   }
 
   /**
@@ -59,7 +63,7 @@ export default class Files {
    * @param {String} path - absolute path to file
    * @return {Promise<void>}
    */
-  static async remove (path) {
+  static async remove(path) {
     return await fs.unlink(await Files.exists(path))
   }
 }

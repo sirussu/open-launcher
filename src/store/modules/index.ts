@@ -3,5 +3,5 @@ import Settings from './Settings'
 
 export default {
   App,
-  Settings
+  Settings,
 }

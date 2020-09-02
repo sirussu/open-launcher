@@ -11,56 +11,64 @@ describe('File list receive', () => {
   let localVue
 
   const RESPONSE = {
-    patches: [{
-      filename: 'patch-d.zip',
-      path: '/Data/',
-      size: 174954589,
-      md5: '393ABCBA77B8E369DD83109CBA76A285',
-      host: 'http://51.15.228.31:8080/api/client/patches/',
-      storagePath: '/new-live/',
-      updatedAt: '2019-06-05'
-    }, {
-      filename: 'patch-ruRU-6.zip',
-      path: '/Data/ruRU/',
-      size: 25191304,
-      md5: '0522CA7960F8E3D7CB445D5CF109E682',
-      host: 'http://51.15.228.31:8080/api/client/patches/',
-      storagePath: '/new-live/',
-      updatedAt: '2020-04-16'
-    }, {
-      filename: 'run.exe',
-      path: '/',
-      size: 7704216,
-      md5: '45DF7FF8670ABBD6A8F2A590B4B0CCF4',
-      host: 'http://51.15.228.31:8080/api/client/patches/',
-      storagePath: '/new-live/',
-      updatedAt: '2019-05-14'
-    }],
-    delete: [{
-      id: 84,
-      path: '/Data/ruRU/patch-ruRU-h.zip',
-      status: 1,
-      isNew: true,
-      createdAt: '2017-02-11',
-      updatedAt: '2017-02-11',
-      new: true
-    }, {
-      id: 85,
-      path: '/Data/ruRU/patch-ruRU-k.zip',
-      status: 1,
-      isNew: true,
-      createdAt: '2017-02-11',
-      updatedAt: '2017-02-11',
-      new: true
-    }, {
-      id: 86,
-      path: '/Data/patch-k.zip',
-      status: 1,
-      isNew: true,
-      createdAt: '2017-02-11',
-      updatedAt: '2017-02-11',
-      new: true
-    }]
+    patches: [
+      {
+        filename: 'patch-d.zip',
+        path: '/Data/',
+        size: 174954589,
+        md5: '393ABCBA77B8E369DD83109CBA76A285',
+        host: 'http://51.15.228.31:8080/api/client/patches/',
+        storagePath: '/new-live/',
+        updatedAt: '2019-06-05',
+      },
+      {
+        filename: 'patch-ruRU-6.zip',
+        path: '/Data/ruRU/',
+        size: 25191304,
+        md5: '0522CA7960F8E3D7CB445D5CF109E682',
+        host: 'http://51.15.228.31:8080/api/client/patches/',
+        storagePath: '/new-live/',
+        updatedAt: '2020-04-16',
+      },
+      {
+        filename: 'run.exe',
+        path: '/',
+        size: 7704216,
+        md5: '45DF7FF8670ABBD6A8F2A590B4B0CCF4',
+        host: 'http://51.15.228.31:8080/api/client/patches/',
+        storagePath: '/new-live/',
+        updatedAt: '2019-05-14',
+      },
+    ],
+    delete: [
+      {
+        id: 84,
+        path: '/Data/ruRU/patch-ruRU-h.zip',
+        status: 1,
+        isNew: true,
+        createdAt: '2017-02-11',
+        updatedAt: '2017-02-11',
+        new: true,
+      },
+      {
+        id: 85,
+        path: '/Data/ruRU/patch-ruRU-k.zip',
+        status: 1,
+        isNew: true,
+        createdAt: '2017-02-11',
+        updatedAt: '2017-02-11',
+        new: true,
+      },
+      {
+        id: 86,
+        path: '/Data/patch-k.zip',
+        status: 1,
+        isNew: true,
+        createdAt: '2017-02-11',
+        updatedAt: '2017-02-11',
+        new: true,
+      },
+    ],
   }
 
   let incompleteFiles = []
@@ -94,12 +102,18 @@ describe('File list receive', () => {
   it('cleanup incomplete downloads after restart', async () => {
     store.commit('SET_LAUNCHER_FILES', incompleteFiles)
 
-    expect(store.state.App.launcherFiles.filter(f => f.isIncomplete).length).toBe(1)
+    expect(
+      store.state.App.launcherFiles.filter((f) => f.isIncomplete).length
+    ).toBe(1)
 
     store.dispatch('initialStart')
 
-    expect(store.state.App.launcherFiles.filter(f => f.isIncomplete).length).toBe(2)
-    expect(store.state.App.launcherFiles.filter(f => f.isDownloading).length).toBe(0)
+    expect(
+      store.state.App.launcherFiles.filter((f) => f.isIncomplete).length
+    ).toBe(2)
+    expect(
+      store.state.App.launcherFiles.filter((f) => f.isDownloading).length
+    ).toBe(0)
   })
 
   it('throw exception on update if download is in progress', async () => {

@@ -48,6 +48,7 @@
     "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.10.4",
     "@electron/typescript-definitions": "electron/typescript-definitions",
     "@intlify/vue-i18n-loader": "^1.0.0",
     "@types/jest": "^26.0.13",

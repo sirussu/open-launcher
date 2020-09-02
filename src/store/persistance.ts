@@ -1,14 +1,14 @@
-import VuexPersist from 'vuex-persist'
+import VuexPersist, { AsyncStorage } from 'vuex-persist'
 
-import LauncherFile from '@/entities/LauncherFile'
+// import LauncherFile from '@/entities/LauncherFile'
 import DataStorage from '@/services/DataStorage'
 
-function createPersistencePlugin () {
+function createPersistencePlugin() {
   const storage = new DataStorage()
   storage.load()
 
   const vuexPersist = new VuexPersist({
-    storage: storage as any
+    storage: (storage as unknown) as AsyncStorage,
   })
 
   // const restoreState = vuexPersist.restoreState

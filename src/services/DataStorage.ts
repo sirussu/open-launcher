@@ -15,7 +15,7 @@ export default class DataStorage {
    * @param {String} key - key
    * @param {Object} value - json object
    */
-  setItem (key, value) {
+  setItem(key, value) {
     this.load()
     this.__store[key] = value
     this.save()
@@ -27,12 +27,12 @@ export default class DataStorage {
    * @param {String} key
    * @return {Object}
    */
-  getItem (key) {
+  getItem(key) {
     this.load()
     return this.__store[key]
   }
 
-  clear () {
+  clear() {
     this.__store = {}
     this.forceSave()
   }
@@ -40,11 +40,15 @@ export default class DataStorage {
   /**
    * Save date to storage with debounce
    */
-  save () {
+  save() {
     if (!this._debouncer) {
-      this._debouncer = _.debounce(() => {
-        this._saveToStorage()
-      }, 500, { maxWait: 2500 })
+      this._debouncer = _.debounce(
+        () => {
+          this._saveToStorage()
+        },
+        500,
+        { maxWait: 2500 }
+      )
     }
 
     this._debouncer()
@@ -53,7 +57,7 @@ export default class DataStorage {
   /**
    * Load data from storage if not loaded
    */
-  load () {
+  load() {
     if (!this.isLoaded) {
       const data = localStorage.getItem(this.STORAGE_KEY)
       if (data) {
@@ -66,18 +70,18 @@ export default class DataStorage {
   /**
    * Clean store and reload data
    */
-  reload () {
+  reload() {
     this.isLoaded = false
     this.__store = {}
     this.load()
   }
 
-  forceSave () {
+  forceSave() {
     this._debouncer = _.noop
     return this._saveToStorage()
   }
 
-  _saveToStorage () {
+  _saveToStorage() {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.__store))
   }
 }

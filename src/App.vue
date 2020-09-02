@@ -1,6 +1,13 @@
 <template>
   <v-app>
-    <v-navigation-drawer app clipped mobile-breakpoint="0" :value="true" width="220" floating>
+    <v-navigation-drawer
+      app
+      clipped
+      mobile-breakpoint="0"
+      :value="true"
+      width="220"
+      floating
+    >
       <v-list dense>
         <v-list-item to="/">
           <v-list-item-action>
@@ -22,11 +29,9 @@
     </v-navigation-drawer>
     <v-main>
       <v-container fluid>
-        <router-view/>
+        <router-view />
       </v-container>
     </v-main>
   </v-app>
 </template>
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

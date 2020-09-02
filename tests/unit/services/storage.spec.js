@@ -16,27 +16,39 @@ describe('Storage read/write', () => {
   })
 
   it('correct data restore', () => {
-    localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
+    localStorage.setItem(
+      storage.STORAGE_KEY,
+      JSON.stringify({ app: { test: 'value' } })
+    )
     storage.load()
     expect(storage.getItem('app')).toStrictEqual({ test: 'value' })
   })
 
   it('data should not be reloaded', () => {
     expect(storage.getItem('app')).toBeUndefined()
-    localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
+    localStorage.setItem(
+      storage.STORAGE_KEY,
+      JSON.stringify({ app: { test: 'value' } })
+    )
     storage.load()
     expect(storage.getItem('app')).toBeUndefined()
   })
 
   it('hard reload data', () => {
     expect(storage.getItem('app')).toBeUndefined()
-    localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
+    localStorage.setItem(
+      storage.STORAGE_KEY,
+      JSON.stringify({ app: { test: 'value' } })
+    )
     storage.reload()
     expect(storage.getItem('app')).toStrictEqual({ test: 'value' })
   })
 
   it('lazy load', () => {
-    localStorage.setItem(storage.STORAGE_KEY, JSON.stringify({ app: { test: 'value' } }))
+    localStorage.setItem(
+      storage.STORAGE_KEY,
+      JSON.stringify({ app: { test: 'value' } })
+    )
     expect(storage.getItem('app')).toStrictEqual({ test: 'value' })
   })
 
@@ -60,7 +72,9 @@ describe('Storage read/write', () => {
     // eslint-disable-next-line promise/param-names
     await new Promise((r) => setTimeout(r, 600))
 
-    expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(JSON.stringify({ app: { test: 'value1' } }))
+    expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(
+      JSON.stringify({ app: { test: 'value1' } })
+    )
   })
 
   it('flush to storage with debounce', async () => {
@@ -82,7 +96,9 @@ describe('Storage read/write', () => {
 
     expect(localStorage.setItem).toHaveBeenCalledTimes(2)
 
-    expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(JSON.stringify({ app: { test: 'value1' } }))
+    expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(
+      JSON.stringify({ app: { test: 'value1' } })
+    )
   })
 
   it('force save ignore debounce', async () => {
@@ -90,6 +106,8 @@ describe('Storage read/write', () => {
 
     storage.forceSave()
 
-    expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(JSON.stringify({ app: { test: 'value1' } }))
+    expect(localStorage.__STORE__[storage.STORAGE_KEY]).toStrictEqual(
+      JSON.stringify({ app: { test: 'value1' } })
+    )
   })
 })

@@ -4,19 +4,15 @@ module.exports = {
     electronBuilder: {
       nodeIntegration: true,
       builderOptions: {
-        publish: [
-          'github'
-        ]
-      }
+        publish: ['github'],
+      },
     },
     i18n: {
       locale: 'ru',
       fallbackLocale: 'en',
       localeDir: 'locales',
-      enableInSFC: false
-    }
+      enableInSFC: false,
+    },
   },
-  transpileDependencies: [
-    'vuetify'
-  ]
+  transpileDependencies: ['vuetify'],
 }
