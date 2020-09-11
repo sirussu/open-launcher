@@ -14,8 +14,8 @@ on:
     paths:
       - '!*.MD'
 jobs:
-  unit-test:
-    name: Unit tests
+  test:
+    name: electron test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -29,20 +29,4 @@ jobs:
       env:
        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
-       coverageCommand: xvfb-run --auto-servernum yarn test:unit
-  e2e-test:
-    name: e2e tests
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@master
-      with:
-        node-version: '14'
-    - run: npm install -g yarn
-    - run: yarn install
-    - run: sudo apt-get install xvfb
-    - uses: paambaati/codeclimate-action@v2.6.0
-      env:
-       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      with:
-       coverageCommand: xvfb-run --auto-servernum yarn test:uni
+       coverageCommand: xvfb-run --auto-servernum yarn test:ci

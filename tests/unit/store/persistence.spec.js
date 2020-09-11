@@ -2,8 +2,8 @@ import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import { cloneDeep } from 'lodash'
 
-import appStore from '@/store/modules/App'
-import createPersistencePlugin from '@/store/persistance'
+import { appModule } from '@/store/modules/app'
+import { vuexPersist } from '@/store/persistance'
 
 describe('File list receive', () => {
   let store
@@ -29,25 +29,26 @@ describe('File list receive', () => {
   beforeEach(() => {
     localVue = createLocalVue()
     localVue.use(Vuex)
+
+    localStorage.clear()
+    localStorage.setItem.mockClear()
   })
 
-  it('check persistence with class', async () => {
+  it('check persistence with class', () => {
     localStorage.setItem(
-      'user_data',
+      'vuex',
       JSON.stringify({
-        vuex: {
-          App: {
-            launcherFiles: FILES,
-          },
+        app: {
+          launcherFiles: FILES,
         },
       })
     )
 
     store = new Vuex.Store({
       modules: {
-        App: cloneDeep(appStore),
+        app: cloneDeep(appModule),
       },
-      plugins: [createPersistencePlugin().plugin],
+      plugins: [vuexPersist.plugin],
     })
 
     expect(store.state.app.launcherFiles.length).toBe(FILES.length)

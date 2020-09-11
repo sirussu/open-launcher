@@ -4,6 +4,9 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{t|j}s'],
   collectCoverage: true,
   setupFilesAfterEnv: ['./jest.setup.js'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   transform: {
     '^.*\\.js$': 'babel-jest',

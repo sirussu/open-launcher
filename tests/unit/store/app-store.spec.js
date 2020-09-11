@@ -1,6 +1,6 @@
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import appStore from '@/store/modules/App'
+import { appModule } from '@/store/modules/app'
 import { cloneDeep } from 'lodash'
 import nock from 'nock'
 import LauncherFile from '@/entities/LauncherFile'
@@ -83,7 +83,7 @@ describe('File list receive', () => {
 
     incompleteFiles = [INCOMPLETE_FILE, INCOMPLETE_FILE_2]
 
-    store = new Vuex.Store({ modules: { App: cloneDeep(appStore) } })
+    store = new Vuex.Store({ modules: { app: cloneDeep(appModule) } })
 
     nock.cleanAll()
   })
