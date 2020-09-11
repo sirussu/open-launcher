@@ -6,7 +6,7 @@ import { testWithSpectron } from 'vue-cli-plugin-electron-builder'
 
 describe('Application launch', () => {
   jest.setTimeout(50000)
-  it.skip('starts with correct window properties', async () => {
+  it('starts with correct window properties', async () => {
     const { app, stopServe } = await testWithSpectron(spectron)
     const win = app.browserWindow
     const client = app.client

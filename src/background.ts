@@ -6,6 +6,7 @@ import {
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 import { autoUpdater } from 'electron-updater'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -69,6 +70,14 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  if (isDevelopment) {
+    try {
+      await installExtension(VUEJS_DEVTOOLS)
+    } catch (error) {
+      console.error('Vue Devtools failed to install:', error.toString())
+    }
+  }
+
   createWindow()
 })
 
