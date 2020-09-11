@@ -1,7 +1,18 @@
+import { MutationTree, ActionTree, GetterTree, Module } from 'vuex'
+
+import { RootState } from '../types'
+
 import axios from '@/modules/axios'
 import DownloadAlreadyInProgressError from '@/exceptions/DownloadAlreadyInProgressError'
 
-const state = {
+export interface AppState {
+  files?: Array<{ isDownloading: boolean }> // TODO: make normal type
+  filesToRemove: Array<{ isDownloading: boolean }>
+  launcherFiles: Array<{ isDownloading: boolean }>
+  availableLocales: Array<{ key: 'ru' | 'en'; lang: string }>
+}
+
+const state: AppState = {
   files: [],
   filesToRemove: [],
   launcherFiles: [],
@@ -11,7 +22,7 @@ const state = {
   ],
 }
 
-const mutations = {
+const mutations: MutationTree<AppState> = {
   SET_FILES(state, files) {
     state.files = files
   },
@@ -27,7 +38,7 @@ const mutations = {
   },
 }
 
-const actions = {
+const actions: ActionTree<AppState, RootState> = {
   async loadFiles({ commit, state }) {
     if (state.launcherFiles.find((f) => f.isDownloading)) {
       throw new DownloadAlreadyInProgressError(
@@ -50,9 +61,9 @@ const actions = {
   },
 }
 
-const getters = {}
+const getters: GetterTree<AppState, RootState> = {}
 
-export default {
+export const appModule: Module<AppState, RootState> = {
   state,
   mutations,
   actions,

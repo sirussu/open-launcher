@@ -1,7 +1,7 @@
-import App from './App'
-import Settings from './Settings'
+import { appModule as app } from './app'
+import { settingsModule as settings } from './settings'
 
-export default {
-  App,
-  Settings,
+export const modules = {
+  app,
+  settings,
 }

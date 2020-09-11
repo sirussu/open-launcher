@@ -94,24 +94,24 @@ describe('File list receive', () => {
       .reply(200, RESPONSE)
 
     await store.dispatch('loadFiles')
-    expect(store.state.App.files).toStrictEqual(RESPONSE.patches)
-    expect(store.state.App.filesToRemove).toStrictEqual(RESPONSE.delete)
+    expect(store.state.app.files).toStrictEqual(RESPONSE.patches)
+    expect(store.state.app.filesToRemove).toStrictEqual(RESPONSE.delete)
   })
 
   it('cleanup incomplete downloads after restart', async () => {
     store.commit('SET_LAUNCHER_FILES', incompleteFiles)
 
     expect(
-      store.state.App.launcherFiles.filter((f) => f.isIncomplete).length
+      store.state.app.launcherFiles.filter((f) => f.isIncomplete).length
     ).toBe(1)
 
     store.dispatch('initialStart')
 
     expect(
-      store.state.App.launcherFiles.filter((f) => f.isIncomplete).length
+      store.state.app.launcherFiles.filter((f) => f.isIncomplete).length
     ).toBe(2)
     expect(
-      store.state.App.launcherFiles.filter((f) => f.isDownloading).length
+      store.state.app.launcherFiles.filter((f) => f.isDownloading).length
     ).toBe(0)
   })
 
@@ -144,6 +144,6 @@ describe('File list receive', () => {
       expect(e.message).toBe('Request failed with status code 500')
     }
 
-    expect(store.state.App.files).toStrictEqual(RESPONSE.patches)
+    expect(store.state.app.files).toStrictEqual(RESPONSE.patches)
   })
 })

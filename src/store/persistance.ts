@@ -1,23 +1,26 @@
-import VuexPersist, { AsyncStorage } from 'vuex-persist'
+import VuexPersist from 'vuex-persist'
 
-// import LauncherFile from '@/entities/LauncherFile'
-import DataStorage from '@/services/DataStorage'
+import LauncherFile from '@/entities/LauncherFile'
+
+import type { RootState } from './types'
 
 function createPersistencePlugin() {
-  const storage = new DataStorage()
-  storage.load()
-
-  const vuexPersist = new VuexPersist({
-    storage: (storage as unknown) as AsyncStorage,
+  const vuexPersist = new VuexPersist<RootState>({
+    storage: window.localStorage,
   })
 
-  // const restoreState = vuexPersist.restoreState
-  // vuexPersist.restoreState = (key, storage) => {
-  //   const state = restoreState(key, storage) as any
-  //   state.App.launcherFiles = state.App.launcherFiles.map(LauncherFile.fromObject)
+  const restoreState = vuexPersist.restoreState
+  vuexPersist.restoreState = async (key, storage) => {
+    const state = await restoreState(key, storage)
 
-  //   return state
-  // }
+    if (state.app) {
+      state.app.launcherFiles = state?.app.launcherFiles.map(
+        LauncherFile.fromObject
+      )
+    }
+
+    return state
+  }
 
   return vuexPersist
 }

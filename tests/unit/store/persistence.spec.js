@@ -50,6 +50,6 @@ describe('File list receive', () => {
       plugins: [createPersistencePlugin().plugin],
     })
 
-    expect(store.state.App.launcherFiles.length).toBe(FILES.length)
+    expect(store.state.app.launcherFiles.length).toBe(FILES.length)
   })
 })
