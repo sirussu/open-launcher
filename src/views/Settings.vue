@@ -62,10 +62,10 @@ export default {
   },
   computed: {
     locales() {
-      return this.$store.state.App.availableLocales
+      return this.$store.state.app.availableLocales
     },
     clientDirectory() {
-      return this.$store.state.Settings.clientDirectory
+      return this.$store.state.settings.clientDirectory
     },
     locale: {
       set(val) {
@@ -73,7 +73,7 @@ export default {
         this.$i18n.locale = val
       },
       get() {
-        return this.$store.state.Settings.locale
+        return this.$store.state.settings.locale
       },
     },
   },
