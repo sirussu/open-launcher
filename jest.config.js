@@ -7,6 +7,7 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  reporters: ['default', 'jest-github-actions-reporter'],
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   transform: {
     '^.*\\.js$': 'babel-jest',
