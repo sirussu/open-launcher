@@ -40,6 +40,17 @@ module.exports = {
         ],
         '@typescript-eslint/ban-ts-ignore': OFF,
         '@typescript-eslint/explicit-module-boundary-types': OFF,
+        '@typescript-eslint/naming-convention': [
+          ERROR,
+          {
+            selector: 'interface',
+            format: ['PascalCase'],
+            custom: {
+              regex: '^I[A-Z]',
+              match: true,
+            },
+          },
+        ],
       },
     },
     {

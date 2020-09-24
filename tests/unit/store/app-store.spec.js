@@ -89,7 +89,7 @@ describe('File list receive', () => {
   })
 
   it('load file list from server', async () => {
-    nock('http://51.15.228.31:8080')
+    nock('https://api.sirus.su/')
       .get('/api/client/patches')
       .reply(200, RESPONSE)
 
@@ -115,25 +115,10 @@ describe('File list receive', () => {
     ).toBe(0)
   })
 
-  // it('throw exception on update if download is in progress', async () => { // TODO: rewrite test to check error in store
-  //   store.commit('SET_LAUNCHER_FILES', incompleteFiles)
-
-  //   nock('http://51.15.228.31:8080')
-  //     .get('/api/client/patches')
-  //     .reply(200, RESPONSE)
-
-  //   try {
-  //     await store.dispatch('loadFiles')
-  //     expect(false).toBe(true)
-  //   } catch (e) {
-  //     expect(e).toBeInstanceOf(DownloadAlreadyInProgressError)
-  //   }
-  // })
-
   it('list should not be changed if error occurred', async () => {
     store.commit('SET_FILES', RESPONSE.patches)
 
-    nock('http://51.15.228.31:8080')
+    nock('https://api.sirus.su/')
       .get('/api/client/patches')
       .reply(500, { error: 'Internal server error' })
 

@@ -2,9 +2,9 @@ import VuexPersist from 'vuex-persist'
 
 import LauncherFile from '@/entities/LauncherFile'
 
-import type { RootState } from './types'
+import type { IRootState } from './types'
 
-export const vuexPersist = new VuexPersist<RootState>({
+export const vuexPersist = new VuexPersist<IRootState>({
   storage: window.localStorage,
   restoreState: (key, storage) => {
     const data = storage?.getItem(key)

@@ -4,11 +4,11 @@ import Vuex from 'vuex'
 import { modules } from './modules'
 import { vuexPersist } from './persistance'
 
-import type { RootState } from './types'
+import type { IRootState } from './types'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store<RootState>({
+export default new Vuex.Store<IRootState>({
   modules,
   strict: true,
   plugins: [vuexPersist.plugin],

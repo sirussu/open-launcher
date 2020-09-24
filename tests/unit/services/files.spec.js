@@ -48,7 +48,6 @@ describe('File helper', () => {
   })
 
   it('remove file', async () => {
-    expect.assertions(2)
     await Files.remove('/home/user/Name Of Directory/Data/ruRU/patch-9.zip')
     try {
       await Files.exists('/home/user/Name Of Directory/Data/ruRU/patch-9.zip')

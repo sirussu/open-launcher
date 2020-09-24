@@ -1,4 +1,8 @@
-import axios from 'axios'
-axios.defaults.adapter = global.require('axios/lib/adapters/http')
+import Axios from 'axios'
+Axios.defaults.adapter = global.require('axios/lib/adapters/http')
 
-export default axios.create()
+const config = {
+  baseURL: 'https://api.sirus.su/api',
+}
+
+export const axios = Axios.create(config)

@@ -1,7 +1,7 @@
-import type { AppState } from './modules/App'
-import type { SettingsState } from './modules/Settings'
+import type { IAppState } from './modules/App'
+import type { ISettingsState } from './modules/Settings'
 
-export interface RootState {
-  app: AppState
-  settings: SettingsState
+export interface IRootState {
+  app: IAppState
+  settings: ISettingsState
 }

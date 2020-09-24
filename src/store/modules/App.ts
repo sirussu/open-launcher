@@ -1,18 +1,22 @@
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex'
 
-import { RootState } from '../types'
+import { IRootState } from '../types'
 
-import axios from '@/modules/axios'
-import DownloadAlreadyInProgressError from '@/exceptions/DownloadAlreadyInProgressError'
+import { axios } from '@/modules/axios'
 
-export interface AppState {
+enum DownloadErrors {
+  ALREADY_IN_PROGRESS = 'ALREADY_IN_PROGRESS',
+}
+
+export interface IAppState {
   files?: Array<{ isDownloading: boolean }> // TODO: make normal type
   filesToRemove: Array<{ isDownloading: boolean }>
   launcherFiles: Array<{ isDownloading: boolean }>
   availableLocales: Array<{ key: 'ru' | 'en'; lang: string }>
+  errors: DownloadErrors | null
 }
 
-const state: AppState = {
+const state: IAppState = {
   files: [],
   filesToRemove: [],
   launcherFiles: [],
@@ -20,9 +24,10 @@ const state: AppState = {
     { key: 'en', lang: 'English' },
     { key: 'ru', lang: 'Русский' },
   ],
+  errors: null,
 }
 
-const mutations: MutationTree<AppState> = {
+const mutations: MutationTree<IAppState> = {
   SET_FILES(state, files) {
     state.files = files
   },
@@ -36,19 +41,19 @@ const mutations: MutationTree<AppState> = {
     file.isDownloading = false
     file.isIncomplete = true
   },
+  SET_ERROR(state, error) {
+    state.errors = error
+  },
 }
 
-const actions: ActionTree<AppState, RootState> = {
+const actions: ActionTree<IAppState, IRootState> = {
   async loadFiles({ commit, state }) {
     if (state.launcherFiles.find((f) => f.isDownloading)) {
-      throw new DownloadAlreadyInProgressError(
-        'Can`t update list due downloading already in progress' // TODO: rewrite to set error to store
-      )
+      commit('SET_ERROR', DownloadErrors.ALREADY_IN_PROGRESS)
+      return
     }
 
-    const { data } = await axios.get(
-      'http://51.15.228.31:8080/api/client/patches'
-    )
+    const { data } = await axios.get('client/patches')
     commit('SET_FILES', data.patches)
     commit('SET_FILES_TO_REMOVE', data.delete)
   },
@@ -61,9 +66,9 @@ const actions: ActionTree<AppState, RootState> = {
   },
 }
 
-const getters: GetterTree<AppState, RootState> = {}
+const getters: GetterTree<IAppState, IRootState> = {}
 
-export const appModule: Module<AppState, RootState> = {
+export const appModule: Module<IAppState, IRootState> = {
   state,
   mutations,
   actions,

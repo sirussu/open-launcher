@@ -2,23 +2,23 @@ import { MutationTree, ActionTree, Module } from 'vuex'
 
 import Files from '@/services/Files'
 
-import { RootState } from '../types'
+import { IRootState } from '../types'
 
-export interface SettingsState {
+export interface ISettingsState {
   clientDirectory: string | null
   startOnSystemStartup: boolean
   ignoreFileHashCheck: boolean
   locale: 'ru' | 'en'
 }
 
-const state: SettingsState = {
+const state: ISettingsState = {
   clientDirectory: null,
   startOnSystemStartup: false,
   ignoreFileHashCheck: false,
   locale: 'ru',
 }
 
-const mutations: MutationTree<SettingsState> = {
+const mutations: MutationTree<ISettingsState> = {
   SET_CLIENT_DIRECTORY(state, directory) {
     state.clientDirectory = directory
   },
@@ -33,7 +33,7 @@ const mutations: MutationTree<SettingsState> = {
   },
 }
 
-const actions: ActionTree<SettingsState, RootState> = {
+const actions: ActionTree<ISettingsState, IRootState> = {
   async setClientDirectory({ commit }, directory: string) {
     if (await Files.isCorrectClientDirectory(directory)) {
       commit('SET_CLIENT_DIRECTORY', directory)
@@ -44,7 +44,7 @@ const actions: ActionTree<SettingsState, RootState> = {
   },
 }
 
-export const settingsModule: Module<SettingsState, RootState> = {
+export const settingsModule: Module<ISettingsState, IRootState> = {
   state,
   mutations,
   actions,
