@@ -38,6 +38,8 @@
     "@vue/composition-api": "^1.0.0-beta.14",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "humps": "^2.0.1",
+    "is-array-buffer": "^1.0.1",
     "lodash": "^4.17.20",
     "roboto-fontface": "*",
     "vue": "^2.6.12",
@@ -45,6 +47,7 @@
     "vue-router": "^3.4.4",
     "vuetify": "^2.3.10",
     "vuex": "^3.5.1",
+    "vuex-composition-helpers": "^1.0.21",
     "vuex-persist": "^3.1.0"
   },
   "devDependencies": {
@@ -73,6 +76,7 @@
     "electron-updater": "^4.3.5",
     "eslint": "7.9.0",
     "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-lodash": "^7.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",

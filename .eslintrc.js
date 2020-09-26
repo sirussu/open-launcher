@@ -16,10 +16,11 @@ module.exports = {
     'import/core-modules': ['electron'],
   },
   extends: ['plugin:vue/essential', '@vue/standard', '@vue/prettier'],
-  plugins: ['eslint-plugin-import'],
+  plugins: ['eslint-plugin-import', 'lodash'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? WARN : OFF,
     'no-debugger': process.env.NODE_ENV === 'production' ? WARN : OFF,
+    'lodash/import-scope': [ERROR, 'method'],
     'import/order': [
       ERROR,
       {
@@ -32,8 +33,23 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
+    'max-len': [
+      ERROR,
+      120,
+      4,
+      {
+        ignoreComments: true,
+        ignoreUrls: true,
+      },
+    ],
   },
   overrides: [
+    {
+      files: ['*.vue'],
+      rules: {
+        'max-len': OFF,
+      },
+    },
     {
       files: ['*.ts', '*.vue'],
       extends: [

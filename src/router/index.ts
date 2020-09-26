@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '@/views/Home.vue'
-import Settings from '@/views/Settings.vue'
+import Feeds from '@/views/pages/Feeds.vue'
+import Settings from '@/views/pages/Settings.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Feeds',
+    component: Feeds,
   },
   {
     path: '/settings',
