@@ -1,9 +1,9 @@
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex'
 
-import { IRootState } from '../types'
-
 import { axios } from '@/modules/axios'
 import { RequestStatus } from '@/types/nerwork'
+
+import { IRootState } from '../types'
 
 interface INews {
   id: string

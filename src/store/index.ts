@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 
 import { modules } from './modules'
 import { vuexPersist } from './persistance'
-
 import type { IRootState } from './types'
 
 Vue.use(Vuex)

@@ -12,10 +12,26 @@ module.exports = {
     parser: 'babel-eslint',
     ecmaVersion: 2017,
   },
+  settings: {
+    'import/core-modules': ['electron'],
+  },
   extends: ['plugin:vue/essential', '@vue/standard', '@vue/prettier'],
+  plugins: ['eslint-plugin-import'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? WARN : OFF,
     'no-debugger': process.env.NODE_ENV === 'production' ? WARN : OFF,
+    'import/order': [
+      ERROR,
+      {
+        groups: [
+          ['builtin', 'external'],
+          ['internal'],
+          ['parent', 'sibling', 'index'],
+          ['object'],
+        ],
+        'newlines-between': 'always',
+      },
+    ],
   },
   overrides: [
     {

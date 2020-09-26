@@ -1,8 +1,9 @@
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import { appModule } from '@/store/modules/app'
 import { cloneDeep } from 'lodash'
 import nock from 'nock'
+
+import { appModule } from '@/store/modules/app'
 import LauncherFile from '@/entities/LauncherFile'
 
 describe('File list receive', () => {

@@ -1,8 +1,8 @@
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex'
 
-import { IRootState } from '../types'
-
 import { axios } from '@/modules/axios'
+
+import { IRootState } from '../types'
 
 enum DownloadErrors {
   ALREADY_IN_PROGRESS = 'ALREADY_IN_PROGRESS',
