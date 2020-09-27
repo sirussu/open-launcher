@@ -1,4 +1,4 @@
-import { RequestStatus } from './nerwork'
+import { RequestStatus } from './network'
 
 export type NormalizedAdditional = {
   status: RequestStatus

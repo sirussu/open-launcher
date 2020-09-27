@@ -5,11 +5,11 @@ import {
   Module,
   ActionContext,
 } from 'vuex'
+import { RequestStatus } from '@/types/network'
 
 import { axios } from '@/modules/axios'
 import { normalizeData } from '@/utils/normalizeData'
 import { denormalizeData } from '@/utils/denormalizeData'
-import { RequestStatus } from '@/types/nerwork'
 import { NormalizedSchema, NormalizedAdditional } from '@/types/normalze'
 
 import { IRootState } from '../types'
