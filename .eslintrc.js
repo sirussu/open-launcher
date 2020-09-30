@@ -72,6 +72,7 @@ module.exports = {
         ],
         '@typescript-eslint/ban-ts-ignore': OFF,
         '@typescript-eslint/explicit-module-boundary-types': OFF,
+        '@typescript-eslint/ban-ts-comment': OFF,
         '@typescript-eslint/naming-convention': [
           ERROR,
           {

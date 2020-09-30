@@ -3,9 +3,10 @@ install:
 lint:
 	npx eslint .
 test:
-	yarn test
+	yarn test:unit
+	yarn test:e2e
 test-coverage:
-	npm test -- --coverage
+	npm test:unit -- --coverage
 build:
 	rm -rf dist_electron
 	yarn run electron:build

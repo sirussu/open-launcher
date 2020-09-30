@@ -8,7 +8,7 @@ import VueCompositionAPI from '@vue/composition-api'
 
 import i18n from './modules/i18n'
 import vuetifyConfig from './modules/vuetify'
-import App from './App.vue'
+import App from './views/App.vue'
 import router from './router'
 import store from './store'
 

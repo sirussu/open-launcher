@@ -5,8 +5,8 @@ import {
   Module,
   ActionContext,
 } from 'vuex'
-import { RequestStatus } from '@/types/network'
 
+import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
 import { normalizeData } from '@/utils/normalizeData'
 import { denormalizeData } from '@/utils/denormalizeData'
@@ -14,9 +14,8 @@ import { NormalizedSchema, NormalizedAdditional } from '@/types/normalze'
 
 import { IRootState } from '../types'
 
-interface IFeed {
+export interface IFeed {
   id: number
-  slug: string
   title: string
   description: string
   coverColor: string
