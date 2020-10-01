@@ -6,6 +6,9 @@ Axios.defaults.adapter = global.require('axios/lib/adapters/http')
 
 const config = {
   baseURL: 'https://api.sirus.su/api',
+  headers: {
+    'User-Agent': `sirus-launcher`, // TODO: add version
+  },
 }
 
 const axios = Axios.create(config)

@@ -5,6 +5,7 @@ import {
   Module,
   ActionContext,
 } from 'vuex'
+import difference from 'lodash/difference'
 
 import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
@@ -25,7 +26,7 @@ export interface IFeed {
 
 export interface IFeedState {
   feeds: NormalizedSchema<IFeed>
-  additional: NormalizedAdditional
+  additional: { page: number; isLastPage: boolean } & NormalizedAdditional
 }
 
 const state: IFeedState = {
@@ -37,29 +38,58 @@ const state: IFeedState = {
   },
   additional: {
     status: RequestStatus.INITIAL,
+    page: 0,
+    isLastPage: false,
   },
+}
+
+interface ISetFeedsMutationCtx {
+  feeds: Array<IFeed>
+  currentPage: number
+  isLastPage: boolean
 }
 
 const mutations: MutationTree<IFeedState> = {
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
-  SET_NEWS(state, feeds: Array<IFeed>) {
-    state.feeds.data = normalizeData(feeds)
+  SET_FEEDS(state, { feeds, currentPage, isLastPage }: ISetFeedsMutationCtx) {
+    const normalizedFeeds = normalizeData(feeds)
+
+    state.feeds.data.allIds.push(
+      ...difference(normalizedFeeds.allIds, state.feeds.data.allIds) // For persisted data
+    )
+    state.feeds.data.byId = {
+      ...state.feeds.data.byId,
+      ...normalizedFeeds.byId,
+    }
+    state.additional.page = currentPage
+    state.additional.isLastPage = isLastPage
   },
 }
 
 export interface IFeedsActions extends ActionTree<IFeedState, IRootState> {
-  getFeeds: (ctx: ActionContext<IFeedState, IRootState>) => Promise<void>
+  getFeeds: (
+    ctx: ActionContext<IFeedState, IRootState>,
+    page?: number
+  ) => Promise<void>
 }
 
 const actions: IFeedsActions = {
-  async getFeeds({ commit }) {
+  async getFeeds({ commit }, page) {
     commit('SET_STATUS', RequestStatus.PENDING)
     try {
-      const { data: news } = await axios.get('/news')
+      const { data: feeds, currentPage, nextPageUrl } = (await axios.get(
+        '/news',
+        {
+          params: { page },
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      )) as any
 
-      commit('SET_NEWS', news)
+      const isLastPage = !nextPageUrl
+
+      commit('SET_FEEDS', { feeds, currentPage, isLastPage })
       commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {
       console.error(error)

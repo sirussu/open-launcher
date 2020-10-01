@@ -9,5 +9,8 @@
     "errors": {
       "wrong_client_directory": "Please select correct directory"
     }
+  },
+  "feeds": {
+    "to_forum": "Learn More"
   }
 }

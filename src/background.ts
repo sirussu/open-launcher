@@ -24,11 +24,17 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1024,
     height: 680,
+    minWidth: 1024,
+    minHeight: 680,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: Boolean(process.env.ELECTRON_NODE_INTEGRATION),
+      contextIsolation: false,
+      webviewTag: true,
     },
+    useContentSize: true,
+    // frame: false, // TODO: uncomment afeter add top panel
   })
 
   win.removeMenu()

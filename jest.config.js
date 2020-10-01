@@ -16,4 +16,9 @@ module.exports = {
   },
   transformIgnorePatterns: ['node_modules/(?!vue-router|@babel|vuetify)'],
   testMatch: ['**/*.spec.{js,ts,vue}'],
+  globals: {
+    'ts-jest': {
+      diagnostics: false,
+    },
+  },
 }

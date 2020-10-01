@@ -1,17 +1,20 @@
 <template>
-  <v-carousel-item>
-    <v-card>
-      <v-img height="250" :src="image" />
-      <v-card-title>{{ feed.title }}</v-card-title>
-      <v-card-text>
-        {{ shortDescription }}
-      </v-card-text>
-    </v-card>
-  </v-carousel-item>
+  <v-card>
+    <v-img :src="image" />
+    <v-card-title class="text-break">{{ feed.title }}</v-card-title>
+    <v-divider />
+    <v-card-actions>
+      <v-btn text @click.prevent.stop="openLink(forumLink)">
+        {{ $t('feeds.to_forum') }}
+      </v-btn>
+    </v-card-actions>
+    <v-spacer />
+  </v-card>
 </template>
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 
+import { openLink } from '@/utils/openLink'
 import { IFeed } from '@/store/modules/feeds'
 
 interface IFeedCardProps {
@@ -29,9 +32,9 @@ export default defineComponent<IFeedCardProps>({
     forumLink() {
       return `https://forum.sirus.su/threads/${this.feed.forumTopicId}`
     },
-    shortDescription() {
-      return this.feed.description
-    },
+  },
+  methods: {
+    openLink,
   },
 })
 </script>

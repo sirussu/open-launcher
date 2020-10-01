@@ -9,5 +9,8 @@
     "errors": {
       "wrong_client_directory": "Пожалуйста выберите папку с клиентом"
     }
+  },
+  "feeds": {
+    "to_forum": "Подробнее"
   }
 }
