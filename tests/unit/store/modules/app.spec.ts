@@ -71,7 +71,7 @@ describe('File list receive', () => {
     ],
   }
 
-  let incompleteFiles = []
+  let incompleteFiles: [LauncherFile, LauncherFile] | [] = []
 
   beforeEach(() => {
     localVue = createLocalVue()
