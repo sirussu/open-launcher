@@ -1,21 +1,29 @@
 <template>
-  <v-container align="center">
-    <v-carousel
-      v-model="currentSlideIndex"
-      :next-icon="nextIcon"
-      :prev-icon="pervIcon"
-      hide-delimiters
-      height="400px"
-    >
-      <v-carousel-item v-for="(feeds, index) in chunckedFeeds" :key="index">
-        <v-row align-content="center">
-          <v-col v-for="(feed, _index) in feeds" :key="_index" sm="6" cols="12">
-            <feed-card :feed="feed" />
-          </v-col>
-        </v-row>
-      </v-carousel-item>
-    </v-carousel>
-  </v-container>
+  <div class="feed-block">
+    <v-container align="center">
+      <v-carousel
+        v-model="currentSlideIndex"
+        :next-icon="nextIcon"
+        :prev-icon="pervIcon"
+        height="100%"
+        hide-delimiters
+      >
+        <v-carousel-item v-for="(feeds, index) in chunckedFeeds" :key="index">
+          <v-row align-content="center">
+            <v-col
+              v-for="(feed, _index) in feeds"
+              :key="_index"
+              sm="6"
+              mb="8"
+              cols="12"
+            >
+              <feed-card :feed="feed" />
+            </v-col>
+          </v-row>
+        </v-carousel-item>
+      </v-carousel>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -68,3 +76,10 @@ export default defineComponent({
   },
 })
 </script>
+
+<style>
+.feed-block .v-window__next,
+.feed-block .v-window__prev {
+  top: 180px !important;
+}
+</style>

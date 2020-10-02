@@ -5,7 +5,6 @@ import {
   Module,
   ActionContext,
 } from 'vuex'
-import difference from 'lodash/difference'
 
 import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
@@ -26,7 +25,7 @@ export interface IFeed {
 
 export interface IFeedState {
   feeds: NormalizedSchema<IFeed>
-  additional: { page: number; isLastPage: boolean } & NormalizedAdditional
+  additional: NormalizedAdditional
 }
 
 const state: IFeedState = {
@@ -38,8 +37,6 @@ const state: IFeedState = {
   },
   additional: {
     status: RequestStatus.INITIAL,
-    page: 0,
-    isLastPage: false,
   },
 }
 
@@ -53,43 +50,25 @@ const mutations: MutationTree<IFeedState> = {
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
-  SET_FEEDS(state, { feeds, currentPage, isLastPage }: ISetFeedsMutationCtx) {
+  SET_FEEDS(state, { feeds }: ISetFeedsMutationCtx) {
     const normalizedFeeds = normalizeData(feeds)
 
-    state.feeds.data.allIds.push(
-      ...difference(normalizedFeeds.allIds, state.feeds.data.allIds) // For persisted data
-    )
-    state.feeds.data.byId = {
-      ...state.feeds.data.byId,
-      ...normalizedFeeds.byId,
-    }
-    state.additional.page = currentPage
-    state.additional.isLastPage = isLastPage
+    state.feeds.data.allIds = normalizedFeeds.allIds
+    state.feeds.data.byId = normalizedFeeds.byId
   },
 }
 
 export interface IFeedsActions extends ActionTree<IFeedState, IRootState> {
-  getFeeds: (
-    ctx: ActionContext<IFeedState, IRootState>,
-    page?: number
-  ) => Promise<void>
+  getFeeds: (ctx: ActionContext<IFeedState, IRootState>) => Promise<void>
 }
 
 const actions: IFeedsActions = {
-  async getFeeds({ commit }, page) {
+  async getFeeds({ commit }) {
     commit('SET_STATUS', RequestStatus.PENDING)
     try {
-      const { data: feeds, currentPage, nextPageUrl } = (await axios.get(
-        '/news',
-        {
-          params: { page },
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      )) as any
+      const { data: feeds } = await axios.get('/news')
 
-      const isLastPage = !nextPageUrl
-
-      commit('SET_FEEDS', { feeds, currentPage, isLastPage })
+      commit('SET_FEEDS', { feeds })
       commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {
       console.error(error)

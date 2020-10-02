@@ -1,6 +1,6 @@
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import nock from 'nock'
 
 import { appModule } from '@/store/modules/app'
@@ -92,7 +92,7 @@ describe('File list receive', () => {
   it('load file list from server', async () => {
     nock('https://api.sirus.su/')
       .get('/api/client/patches')
-      .reply(200, RESPONSE)
+      .reply(200, { data: RESPONSE })
 
     await store.dispatch('loadFiles')
     expect(store.state.app.files).toStrictEqual(RESPONSE.patches)

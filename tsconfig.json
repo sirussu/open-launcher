@@ -28,12 +28,21 @@
     },
     "typeRoots": [
       "./types",
-      "./node_modules/@types",
-      "./node_modules/vuetify/types"
+      "node_modules/@types",
+      "node_modules/vuetify/types"
     ]
   },
   "exclude": [
     "node_modules",
-    "dist_electron"
+    "dist_electron",
+    "node_modules/vuetify",
+    "tests/e2e"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ]
 }
