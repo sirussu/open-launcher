@@ -1,39 +1,23 @@
 {
   "name": "open-launcher",
   "version": "0.1.0",
-  "description": "Sirus open launcher",
   "private": true,
-  "main": "background.js",
-  "keywords": [
-    "Electron",
-    "launcher",
-    "typescript"
-  ],
+  "description": "Sirus open launcher",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit ./tests/unit",
     "test:e2e": "vue-cli-service test:e2e --mode e2e",
-    "test:ci": "vue-cli-service test:unit",
-    "test:e2e-ci": "nyc vue-cli-service test:e2e --mode e2e --headless",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(ts|js|vue)' --locales './src/locales/**/*.json'",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "test:ci": "vue-cli-service test:unit",
+    "test:e2e-ci": "nyc vue-cli-service test:e2e --mode e2e --headless"
   },
-  "lint-staged": {
-    "*.{js,jsx,vue}": [
-      "vue-cli-service lint",
-      "git add"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
+  "main": "background.js",
   "dependencies": {
     "@mdi/font": "^5.6.55",
     "@vue/composition-api": "^1.0.0-beta.14",
@@ -64,7 +48,7 @@
     "@vue/cli-plugin-e2e-cypress": "^4.5.6",
     "@vue/cli-plugin-eslint": "~4.5.6",
     "@vue/cli-plugin-router": "~4.5.6",
-    "@vue/cli-plugin-typescript": "^4.5.6",
+    "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-jest": "~4.5.6",
     "@vue/cli-plugin-vuex": "~4.5.6",
     "@vue/cli-service": "~4.5.6",
@@ -73,6 +57,7 @@
     "@vue/eslint-config-typescript": "5.1.0",
     "@vue/test-utils": "^1.1.0",
     "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
     "electron": "^10.1.2",
     "electron-devtools-installer": "^3.1.1",
     "electron-updater": "^4.3.5",
@@ -105,5 +90,21 @@
     "vue-property-decorator": "^9.0.0",
     "vue-template-compiler": "^2.6.12",
     "vuetify-loader": "^1.6.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "keywords": [
+    "Electron",
+    "launcher",
+    "typescript"
+  ],
+  "lint-staged": {
+    "*.{js,jsx,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
   }
 }

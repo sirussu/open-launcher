@@ -1,5 +1,4 @@
 import { MutationTree, ActionTree, Module } from 'vuex'
-
 import Files from '@/services/Files'
 
 import { IRootState } from '../types'

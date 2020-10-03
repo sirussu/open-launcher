@@ -1,7 +1,9 @@
 <template>
   <div class="feed-block">
     <v-container align="center">
+      <feeds-skeleton v-if="feeds.length === 0" />
       <v-carousel
+        v-else
         v-model="currentSlideIndex"
         :next-icon="nextIcon"
         :prev-icon="pervIcon"
@@ -31,6 +33,7 @@ import chunk from 'lodash/chunk'
 import { defineComponent, ref } from '@vue/composition-api'
 import { createNamespacedHelpers } from 'vuex-composition-helpers'
 
+import FeedsSkeleton from '@/views/feeds/FeedsSkeleton.vue'
 import FeedCard from '@/views/feeds/FeedCard.vue'
 import {
   IFeedState,
@@ -48,6 +51,7 @@ const { useActions, useGetters } = createNamespacedHelpers<
 export default defineComponent({
   components: {
     FeedCard,
+    FeedsSkeleton,
   },
   name: 'FeedsBlock',
   setup() {

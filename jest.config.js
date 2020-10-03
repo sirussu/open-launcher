@@ -1,5 +1,5 @@
 module.exports = {
-  preset: '@vue/cli-plugin-unit-jest',
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   setupFiles: ['jest-localstorage-mock'],
   collectCoverageFrom: ['src/**/*.{t|j}s'],
   collectCoverage: true,

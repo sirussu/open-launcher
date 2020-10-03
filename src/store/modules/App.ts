@@ -1,5 +1,4 @@
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex'
-
 import { axios } from '@/modules/axios'
 
 import { IRootState } from '../types'

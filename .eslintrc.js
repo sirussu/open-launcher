@@ -4,20 +4,31 @@ const WARN = 'warn'
 
 module.exports = {
   root: true,
+
   env: {
     browser: true,
     node: true,
     jest: true,
   },
+
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: '@typescript-eslint/parser',
     ecmaVersion: 2017,
   },
+
   settings: {
     'import/core-modules': ['electron'],
   },
-  extends: ['plugin:vue/essential', '@vue/standard', '@vue/prettier'],
+
+  extends: [
+    'plugin:vue/essential',
+    '@vue/standard',
+    '@vue/prettier',
+    'plugin:vue/essential',
+    '@vue/typescript',
+  ],
   plugins: ['eslint-plugin-import', 'lodash'],
+
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? WARN : OFF,
     'no-debugger': process.env.NODE_ENV === 'production' ? WARN : OFF,
@@ -44,6 +55,7 @@ module.exports = {
       },
     ],
   },
+
   overrides: [
     {
       files: ['*.vue'],

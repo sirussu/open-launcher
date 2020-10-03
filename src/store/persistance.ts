@@ -1,5 +1,4 @@
 import VuexPersist from 'vuex-persist'
-
 import LauncherFile from '@/entities/LauncherFile'
 
 import type { IRootState } from './types'
