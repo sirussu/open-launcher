@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FeedsBlock from '@/views/blocks/FeedsBlock'
+import FeedsBlock from '@/views/blocks/FeedsBlock.vue'
 
 export default {
   name: 'Feeds',

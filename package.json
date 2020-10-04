@@ -15,9 +15,11 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "test:ci": "vue-cli-service test:unit",
-    "test:e2e-ci": "nyc vue-cli-service test:e2e --mode e2e --headless"
+    "test:e2e-ci": "nyc vue-cli-service test:e2e --mode e2e --headless",
+    "storybook": "start-storybook -p 6006 -c .storybook",
+    "build-storybook": "build-storybook -c .storybook -o .out"
   },
-  "main": "background.js",
+  "main": "./src/background.js",
   "dependencies": {
     "@mdi/font": "^5.6.55",
     "@vue/composition-api": "^1.0.0-beta.14",
@@ -36,10 +38,16 @@
     "vuex-persist": "^3.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
     "@babel/preset-typescript": "^7.10.4",
     "@cypress/code-coverage": "^3.8.1",
     "@cypress/webpack-preprocessor": "^5.4.6",
     "@intlify/vue-i18n-loader": "^2.0.0-beta.1",
+    "@storybook/addon-actions": "^6.0.25",
+    "@storybook/addon-essentials": "^6.0.25",
+    "@storybook/addon-knobs": "^6.0.25",
+    "@storybook/addon-links": "^6.0.25",
+    "@storybook/vue": "^6.0.25",
     "@types/jest": "^26.0.14",
     "@types/lodash": "^4.14.161",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
@@ -58,6 +66,7 @@
     "@vue/test-utils": "^1.1.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
+    "babel-preset-vue": "^2.0.2",
     "electron": "^10.1.2",
     "electron-devtools-installer": "^3.1.1",
     "electron-updater": "^4.3.5",
@@ -69,6 +78,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
+    "fibers": "^5.0.0",
     "husky": "^4.3.0",
     "jest": "^26.4.2",
     "jest-github-actions-reporter": "^1.0.2",
@@ -87,6 +97,7 @@
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.4",
     "vue-cli-plugin-i18n": "~1.0.1",
     "vue-cli-plugin-vuetify": "~2.0.7",
+    "vue-docgen-loader": "^1.5.0",
     "vue-property-decorator": "^9.0.0",
     "vue-template-compiler": "^2.6.12",
     "vuetify-loader": "^1.6.0"

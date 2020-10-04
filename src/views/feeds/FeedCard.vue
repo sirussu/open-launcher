@@ -14,7 +14,6 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 
-import { openLink } from '@/utils/openLink'
 import { IFeed } from '@/store/modules/feeds'
 
 interface IFeedCardProps {
@@ -34,7 +33,9 @@ export default defineComponent<IFeedCardProps>({
     },
   },
   methods: {
-    openLink,
+    openLink(url: string) {
+      this.$interop.openUrl(url)
+    },
   },
 })
 </script>

@@ -12,3 +12,5 @@ build:
 	yarn run electron:build
 start:
 	yarn electron:serve
+story:
+	yarn storybook
