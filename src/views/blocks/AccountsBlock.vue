@@ -7,7 +7,6 @@
             <v-list-item
               v-for="account in accounts"
               :key="account.id"
-              dense
               @click="setDefaultAccount(account.id)"
             >
               <v-row align="center">
@@ -50,8 +49,8 @@
 <script lang="ts">
 import { createNamespacedHelpers } from 'vuex-composition-helpers'
 import { computed, defineComponent, reactive } from '@vue/composition-api'
-import { IErrorsActions, IErrorsGetters } from '@/store/modules/errors/types'
 
+import { IErrorActions, IErrorGetters } from '@/store/modules/error/types'
 import {
   IAccountsActions,
   IAccountsGetters,
@@ -70,7 +69,7 @@ const {
 const {
   useGetters: useErrorsGetters,
   useActions: useErrorsActions,
-} = createNamespacedHelpers<IErrorsGetters, IErrorsActions>('errors')
+} = createNamespacedHelpers<IErrorGetters, IErrorActions>('error')
 
 export default defineComponent({
   name: 'AccountsBlock',
@@ -89,16 +88,15 @@ export default defineComponent({
     // mapErrorActions
     const { setError } = useErrorsActions(['setError'])
     // mapAccountGetters
-    const { defaultAccount, accounts, status } = useAccountsGetters([
+    const { defaultAccount, accounts } = useAccountsGetters([
       'defaultAccount',
       'accounts',
-      'status',
     ])
     // mapErrorGetters
     const { error } = useErrorsGetters(['error'])
     // mapAccountsState
     const { defaultId } = useAccountsState(['defaultId'])
-    // localState
+    // SFC state
     const localState = reactive({
       showModal: false,
       username: '',
@@ -106,15 +104,13 @@ export default defineComponent({
     })
     // computed
     const hasTfa = computed(() => {
-      if (error.value !== null) {
+      if (error.value) {
         return error.value.status === 401
       }
     })
     // methods
     const setNullError = async () => {
-      if (error.value !== null) {
-        await setError(null)
-      }
+      await setError(null)
     }
     const sendRequest = async ({ username, password, token }) => {
       localState.username = username

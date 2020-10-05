@@ -4,6 +4,7 @@
       max-width="600px"
       v-model="localState.showModal"
       @click:outside="resetForm"
+      @keydown.enter="sendRequest"
     >
       <template #activator="{ on }">
         <v-btn v-text="$t('accounts.add_account')" v-on="on" />
@@ -58,7 +59,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog max-width="300px" persistent v-model="localState.showTfaModal">
+    <v-dialog
+      max-width="300px"
+      persistent
+      v-model="localState.showTfaModal"
+      @keydown.enter="sendRequest"
+    >
       <v-card>
         <v-card-title>
           <span class="headline">{{
@@ -121,6 +127,7 @@ export default defineComponent({
     },
   },
   setup(props, ctx) {
+    // SFC state
     const localState = reactive({
       login: '',
       pass: '',
