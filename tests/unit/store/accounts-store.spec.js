@@ -1,8 +1,8 @@
 import Vuex from 'vuex'
 import { createLocalVue } from '@vue/test-utils'
 import cloneDeep from 'lodash/cloneDeep'
-import { accountsModule } from '@/store/modules/Accounts'
 
+import { accountsModule } from '@/store/modules/accounts'
 import { errorModule } from '@/store/modules/error'
 
 let store, state, localVue
@@ -101,14 +101,14 @@ describe("Vuex accounts module sync fn's", () => {
     state.accounts.push(...ACCOUNTS)
     state.defaultId = ACCOUNTS[0].id
 
-    store.dispatch('accounts/removeAccount', ACCOUNTS[0])
+    store.dispatch('accounts/removeAccount', ACCOUNTS[0].id)
     expect(state.defaultId).toBe(ACCOUNTS[1].id)
   })
 
   test('setDefaultAccount should set default account', () => {
     state.accounts.push(...ACCOUNTS)
 
-    store.dispatch('accounts/setDefaultAccount', ACCOUNTS[2])
+    store.dispatch('accounts/setDefaultAccount', ACCOUNTS[2].id)
     expect(state.defaultId).toBe(ACCOUNTS[2].id)
   })
 })
