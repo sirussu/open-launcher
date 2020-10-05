@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import nock from 'nock'
 
-import { appModule } from '@/store/modules/app'
+import { appModule } from '@/store/modules/app.ts'
 import LauncherFile from '@/entities/LauncherFile'
 
 describe('File list receive', () => {

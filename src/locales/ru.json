@@ -1,13 +1,26 @@
 {
   "sidebar": {
     "news": "Новости",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "accounts": "Аккаунты"
   },
   "settings": {
     "choose_lang": "Выберите язык",
     "choose_client_directory": "Выберите папку с игрой",
     "errors": {
       "wrong_client_directory": "Пожалуйста выберите папку с клиентом"
+    }
+  },
+  "accounts": {
+    "add_account": "Добавить",
+    "remove_account": "Удалить",
+    "modal": {
+      "title": "Добавить аккаунт",
+      "enter_login": "Введите логин",
+      "enter_pass": "Введите пароль",
+      "enter_tfa_code": "Введите 2FA код",
+      "close_modal": "Закрыть",
+      "req_fields": "* - обязательные поля"
     }
   },
   "feeds": {

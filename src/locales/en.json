@@ -1,13 +1,26 @@
 {
   "sidebar": {
     "news": "News",
-    "settings": "Settings"
+    "settings": "Settings",
+    "accounts": "Accounts"
   },
   "settings": {
     "choose_lang": "Choose language",
     "choose_client_directory": "Select game client directory",
     "errors": {
       "wrong_client_directory": "Please select correct directory"
+    }
+  },
+  "accounts": {
+    "add_account": "Add account",
+    "remove_account": "Remove account",
+    "modal": {
+      "title": "Add account",
+      "enter_login": "Enter login",
+      "enter_pass": "Enter password",
+      "enter_tfa_code": "Enter 2FA code",
+      "close_modal": "Close modal",
+      "req_fields": "* - indicates required field"
     }
   },
   "feeds": {
