@@ -13,11 +13,17 @@ export interface IAuthResponse {
   accessToken: string
 }
 
+export interface IAccountError {
+  status: number
+  statusText: string
+}
+
 export interface IAccountsState {
   accounts: Array<IAccount>
   defaultId: number
   additional: {
-    status: RequestStatus,
+    status: RequestStatus
+    error: IAccountError
   },
 }
 
@@ -27,6 +33,7 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
   addAccount: (ctx: ActionCtx, payload: IAccount) => void
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: number) => void
+  setError: (ctx: ActionCtx, payload: IAccountError) => void
   loadAccInfo: (ctx: ActionCtx, payload: IAuthResponse) => Promise<void>
   sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string}) => Promise<void>
 }
@@ -34,4 +41,5 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
 export interface IAccountsGetters extends GetterTree<IAccountsState, IRootState>{
   accounts: (state: IAccountsState) => Array<IAccount>
   defaultAccount: (state: IAccountsState) => IAccount | undefined
+  error: (state: IAccountsState) => IAccountError | undefined
 }

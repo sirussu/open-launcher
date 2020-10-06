@@ -2,12 +2,16 @@
   <v-row justify="center">
     <v-dialog
       max-width="600px"
-      v-model="localState.showModal"
+      v-model="showModal"
       @click:outside="resetForm"
       @keydown.enter="sendRequest"
     >
       <template #activator="{ on }">
-        <v-btn v-text="$t('accounts.add_account')" v-on="on" />
+        <v-btn v-on="on">
+          <template #default>
+            {{ $t('accounts.add_account') }}
+          </template>
+        </v-btn>
       </template>
       <v-card>
         <v-card-title>
@@ -18,9 +22,9 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  v-model="localState.login"
+                  v-model="login"
                   required
-                  :rules="localState.rules"
+                  :rules="rules"
                   hide-details="auto"
                 >
                   <template #label>
@@ -30,9 +34,9 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  v-model="localState.pass"
+                  v-model="pass"
                   required
-                  :rules="localState.rules"
+                  :rules="rules"
                   hide-details="auto"
                 >
                   <template #label>
@@ -45,24 +49,24 @@
           <small>{{ $t('accounts.modal.req_fields') }}</small>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            v-text="$t('accounts.add_account')"
-            @click="sendRequest"
-          />
-          <v-btn
-            text
-            v-text="$t('accounts.modal.close_modal')"
-            @click="resetForm"
-          />
+          <v-spacer />
+          <v-btn text @click="sendRequest">
+            <template #default>
+              {{ $t('accounts.add_account') }}
+            </template>
+          </v-btn>
+          <v-btn text @click="resetForm">
+            <template #default>
+              {{ $t('accounts.modal.close_modal') }}
+            </template>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog
       max-width="300px"
       persistent
-      v-model="localState.showTfaModal"
+      v-model="showTfaModal"
       @keydown.enter="sendRequest"
     >
       <v-card>
@@ -76,9 +80,9 @@
             <v-row>
               <v-col cols="12" v-if="hasTfa">
                 <v-text-field
-                  v-model="localState.tfaToken"
+                  v-model="tfaToken"
                   required
-                  :rules="localState.rules"
+                  :rules="rules"
                   hide-details="auto"
                 >
                   <template #label>
@@ -90,17 +94,17 @@
           </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            v-text="$t('accounts.add_account')"
-            @click="sendRequest"
-          />
-          <v-btn
-            text
-            v-text="$t('accounts.modal.close_modal')"
-            @click="resetForm"
-          />
+          <v-spacer />
+          <v-btn text @click="sendRequest">
+            <template #default>
+              {{ $t('accounts.add_account') }}
+            </template>
+          </v-btn>
+          <v-btn text @click="resetForm">
+            <template #default>
+              {{ $t('accounts.modal.close_modal') }}
+            </template>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -108,7 +112,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, watch } from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
   name: 'AccountsModal',
@@ -117,7 +121,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    username: {
+    userName: {
       type: String,
       required: true,
     },
@@ -126,60 +130,53 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, ctx) {
-    // SFC state
-    const localState = reactive({
+  data() {
+    return {
       login: '',
       pass: '',
       tfaToken: '',
       showModal: false,
       showTfaModal: false,
       rules: [(value) => !!value || ''],
-    })
-    // methods
-    const clearErrorAndForm = () => {
-      ctx.emit('clear-error')
-      ctx.emit('clear-form')
     }
-    const resetForm = () => {
-      localState.showModal = false
-      localState.login = ''
-      localState.pass = ''
-      localState.tfaToken = ''
-      clearErrorAndForm()
-    }
-    const sendRequest = () => {
-      ctx.emit('auth-requested', {
-        username: localState.login,
-        password: localState.pass,
-        token: localState.tfaToken,
+  },
+  methods: {
+    clearErrorAndForm() {
+      this.$emit('clear-error')
+      this.$emit('clear-form')
+    },
+    resetForm() {
+      this.showModal = false
+      this.login = ''
+      this.pass = ''
+      this.tfaToken = ''
+      this.clearErrorAndForm()
+    },
+    sendRequest() {
+      this.$emit('auth-requested', {
+        username: this.login,
+        password: this.pass,
+        token: this.tfaToken,
       })
-      localState.showModal = false
-      localState.login = ''
-      localState.pass = ''
-      localState.tfaToken = ''
-    }
-    // watchers
-    watch(
-      () => props.hasTfa,
-      (tfa) => {
-        if (tfa) {
-          localState.showTfaModal = true
-          localState.pass = props.passwd
-          localState.login = props.username
-        } else {
-          localState.showTfaModal = false
-          localState.pass = ''
-          localState.login = ''
-          localState.tfaToken = ''
-        }
+      this.showModal = false
+      this.login = ''
+      this.pass = ''
+      this.tfaToken = ''
+    },
+  },
+  watch: {
+    hasTfa(tfa) {
+      if (tfa) {
+        this.showTfaModal = true
+        this.pass = this.passwd
+        this.login = this.userName
+      } else {
+        this.showTfaModal = false
+        this.pass = ''
+        this.login = ''
+        this.tfaToken = ''
       }
-    )
-    return {
-      localState,
-      resetForm,
-      sendRequest,
-    }
+    },
   },
 })
 </script>

@@ -2,21 +2,25 @@ import { Module, MutationTree } from 'vuex'
 import { RequestStatus } from '@/types/network'
 
 import { IRootState } from '../../types'
-import { IAccount, IAccountsActions, IAccountsGetters, IAccountsState } from '@/store/modules/accounts/types'
+import { IAccount, IAccountsActions, IAccountsGetters, IAccountsState, IAccountError } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
-import { IError } from '@/store/modules/error/types'
 
 const state: IAccountsState = {
   accounts: [],
   defaultId: 0,
   additional: {
-    status: RequestStatus.INITIAL
+    status: RequestStatus.INITIAL,
+    error: {
+      status: 0,
+      statusText: ''
+    }
   }
 }
 
 const getters: IAccountsGetters = {
   accounts: state => state.accounts,
-  defaultAccount: state => state.accounts.find(acc => acc.id === state.defaultId)
+  defaultAccount: state => state.accounts.find(acc => acc.id === state.defaultId),
+  error: state => state.additional.error
 }
 
 const mutations: MutationTree<IAccountsState> = {
@@ -31,6 +35,10 @@ const mutations: MutationTree<IAccountsState> = {
   },
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
+  },
+  SET_ERROR(state, error: IAccountError) {
+    state.additional.error.status = error.status
+    state.additional.error.statusText = error.statusText
   }
 }
 
@@ -57,6 +65,13 @@ const actions: IAccountsActions = {
   setDefaultAccount({ commit }, accountId) {
     commit('SET_DEFAULT_ID', accountId)
   },
+  setError({ commit }, error) {
+    if (error === null) {
+      commit('SET_ERROR', { status: 0, statusText: '' })
+    } else {
+      commit('SET_ERROR', error)
+    }
+  },
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
@@ -70,7 +85,7 @@ const actions: IAccountsActions = {
       scope: '*'
     }
     try {
-      await dispatch('error/setError', null, { root: true })
+      await dispatch('setError', null)
       const response = await axios.post('https://api.sirus.su/oauth/token', params)
       await dispatch('loadAccInfo', response)
 
@@ -79,11 +94,11 @@ const actions: IAccountsActions = {
       commit('SET_STATUS', RequestStatus.FAILED)
 
       if (err.isAxiosError) {
-        const error: IError = {
+        const error: IAccountError = {
           status: err.response.status,
           statusText: err.response.statusText
         }
-        await dispatch('error/setError', error, { root: true })
+        await dispatch('setError', error)
       }
     }
   },
@@ -109,11 +124,11 @@ const actions: IAccountsActions = {
       commit('SET_STATUS', RequestStatus.FAILED)
 
       if (err.isAxiosError) {
-        const error: IError = {
+        const error: IAccountError = {
           status: err.response.status,
           statusText: err.response.statusText
         }
-        await dispatch('error/setError', error, { root: true })
+        await dispatch('setError', error)
       }
     }
   }
