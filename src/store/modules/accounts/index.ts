@@ -58,6 +58,8 @@ const actions: IAccountsActions = {
     commit('SET_DEFAULT_ID', accountId)
   },
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
+    commit('SET_STATUS', RequestStatus.PENDING)
+
     const params = {
       grant_type: 'password',
       client_id: 3,
@@ -82,12 +84,12 @@ const actions: IAccountsActions = {
           statusText: err.response.statusText
         }
         await dispatch('error/setError', error, { root: true })
-      } else {
-        throw err
       }
     }
   },
   async loadAccInfo({ dispatch, commit }, authResponse) {
+    commit('SET_STATUS', RequestStatus.PENDING)
+
     const params = {
       headers: { 'Authorization': `${authResponse.tokenType} ${authResponse.accessToken}` }
     }
@@ -112,8 +114,6 @@ const actions: IAccountsActions = {
           statusText: err.response.statusText
         }
         await dispatch('error/setError', error, { root: true })
-      } else {
-        throw err
       }
     }
   }
