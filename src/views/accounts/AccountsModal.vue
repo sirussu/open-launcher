@@ -24,6 +24,7 @@
                 <v-text-field
                   v-model="login"
                   required
+                  autofocus
                   :rules="rules"
                   hide-details="auto"
                 >
@@ -82,6 +83,7 @@
                 <v-text-field
                   v-model="tfaToken"
                   required
+                  autofocus
                   :rules="rules"
                   hide-details="auto"
                 >

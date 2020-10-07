@@ -119,8 +119,5 @@ export default defineComponent({
       this.localState.passwd = ''
     },
   },
-  mounted() {
-    console.log(this.error)
-  },
 })
 </script>

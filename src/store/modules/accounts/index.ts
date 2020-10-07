@@ -2,12 +2,24 @@ import { Module, MutationTree } from 'vuex'
 import { RequestStatus } from '@/types/network'
 
 import { IRootState } from '../../types'
-import { IAccount, IAccountsActions, IAccountsGetters, IAccountsState, IAccountError } from '@/store/modules/accounts/types'
+import {
+  IAccountsActions,
+  IAccountsGetters,
+  IAccountsState,
+  IAccountError,
+  INormalizedAccount
+} from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
+import { denormalizeData } from '@/utils/denormalizeData'
 
 const state: IAccountsState = {
-  accounts: [],
-  defaultId: 0,
+  accounts: {
+    data: {
+      allIds: [],
+      byId: {},
+      defaultId: 0,
+    }
+  },
   additional: {
     status: RequestStatus.INITIAL,
     error: {
@@ -18,45 +30,59 @@ const state: IAccountsState = {
 }
 
 const getters: IAccountsGetters = {
-  accounts: state => state.accounts,
-  defaultAccount: state => state.accounts.find(acc => acc.id === state.defaultId),
+  accounts: state => denormalizeData(state.accounts.data),
+  defaultAccount: state => state.accounts.data.byId[state.accounts.data.defaultId],
   error: state => state.additional.error
 }
 
 const mutations: MutationTree<IAccountsState> = {
-  ADD_ACCOUNT(state, account: IAccount) {
-    state.accounts.push(account)
+  ADD_ACCOUNT(state, account: INormalizedAccount) {
+    state.accounts.data.allIds.push(account.id)
+    state.accounts.data.byId[account.id] = account.byId
   },
-  REMOVE_ACCOUNT(state, index: number) {
-    state.accounts.splice(index, 1)
+  REMOVE_ACCOUNT(state, { id, index }: { id: number, index: number }) {
+    delete state.accounts.data.byId[id]
+    state.accounts.data.allIds.splice(index, 1)
   },
   SET_DEFAULT_ID(state, accountId: number) {
-    state.defaultId = accountId
+    state.accounts.data.defaultId = accountId
   },
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
   SET_ERROR(state, error: IAccountError) {
-    state.additional.error.status = error.status
-    state.additional.error.statusText = error.statusText
+    if(state.additional.error) {
+      state.additional.error.status = error.status
+      state.additional.error.statusText = error.statusText
+    }
   }
 }
 
 const actions: IAccountsActions = {
   addAccount({ state, commit }, account) {
-    if (state.accounts.length === 0) {
-      commit('SET_DEFAULT_ID', account.id)
+    const normalizedAccount = {
+      id: account.id,
+      byId: account
     }
 
-    state.accounts.find(acc => acc.id === account.id) ? console.log(`Account ${account.username} already exist in accounts list`) : commit('ADD_ACCOUNT', account)// TODO: need a toaster
-  },
-  removeAccount({ state, commit }, accountId) {
-    const index = state.accounts.findIndex(acc => acc.id === accountId)
-    commit('REMOVE_ACCOUNT', index)
+    if (state.accounts.data.allIds.length === 0) {
+      commit('SET_DEFAULT_ID', normalizedAccount.id)
+    }
 
-    if (state.accounts.length > 0) {
-      if(state.defaultId === accountId) {
-        commit('SET_DEFAULT_ID', state.accounts[0].id)
+    state.accounts.data.allIds.includes(normalizedAccount.id) ? console.log(`Account ${account.username} already exist in accounts list`) : commit('ADD_ACCOUNT', normalizedAccount)// TODO: need a toaster
+  },
+  removeAccount({ state, commit }, account) {
+    const index = state.accounts.data.allIds.findIndex(id => id === account.id)
+    const removingAccount = {
+      id: account.id,
+      index
+    }
+
+    commit('REMOVE_ACCOUNT', removingAccount)
+
+    if (state.accounts.data.allIds.length > 0) {
+      if(state.accounts.data.defaultId === removingAccount.id) {
+        commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
       }
     } else {
       commit('SET_DEFAULT_ID', 0)
@@ -99,6 +125,8 @@ const actions: IAccountsActions = {
           statusText: err.response.statusText
         }
         await dispatch('setError', error)
+      } else {
+        console.log(err)
       }
     }
   },
@@ -129,6 +157,8 @@ const actions: IAccountsActions = {
           statusText: err.response.statusText
         }
         await dispatch('setError', error)
+      } else {
+        console.log(err)
       }
     }
   }
