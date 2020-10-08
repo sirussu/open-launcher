@@ -125,8 +125,6 @@ const actions: IAccountsActions = {
           statusText: err.response.statusText
         }
         await dispatch('setError', error)
-      } else {
-        console.log(err)
       }
     }
   },
@@ -157,8 +155,6 @@ const actions: IAccountsActions = {
           statusText: err.response.statusText
         }
         await dispatch('setError', error)
-      } else {
-        console.log(err)
       }
     }
   }

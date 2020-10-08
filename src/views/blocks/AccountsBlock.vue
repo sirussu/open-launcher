@@ -1,54 +1,50 @@
 <template>
   <div>
-    <v-item-group mandatory>
-      <v-container>
-        <v-list>
-          <v-list-item-group mandatory>
-            <v-list-item
-              v-for="account in accounts"
-              :key="account.id"
-              @click="setDefaultAccount(account.id)"
-            >
-              <v-row align="center">
-                <v-list-item-icon>
-                  <v-icon>{{
-                    defaultAccount.id === account.id
-                      ? 'mdi-account-check'
-                      : 'mdi-account-switch'
-                  }}</v-icon>
-                </v-list-item-icon>
+    <v-container pa-0 class="accounts-block">
+      <v-list flat>
+        <v-list-item-group>
+          <v-list-item
+            v-for="account in accounts"
+            :key="account.id"
+            :class="{ 'v-item--active': defaultAccount.id === account.id }"
+            @click="setDefaultAccount(account.id)"
+            dense
+          >
+            <v-list-item-action>
+              <v-icon>{{
+                defaultAccount.id === account.id ? 'mdi-account-check' : ''
+              }}</v-icon>
+            </v-list-item-action>
 
-                <v-list-item-content>
-                  <v-list-item-title v-text="account.username" />
-                </v-list-item-content>
+            <v-list-item-content>
+              {{ account.username }}
+            </v-list-item-content>
 
-                <v-list-item-action>
-                  <v-btn block @click="removeAccount(account.id)">
-                    <template #default>
-                      {{ $t('accounts.remove_account') }}
-                    </template>
-                  </v-btn>
-                </v-list-item-action>
-              </v-row>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-container>
-    </v-item-group>
-    <accounts-modal
-      :has-tfa="hasTfa"
-      :passwd="localState.passwd"
-      :user-name="localState.username"
-      @clear-error="setError(null)"
-      @clear-form="resetForm"
-      @auth-requested="sendRequest"
-    />
+            <v-list-item-action>
+              <v-btn text @click="removeAccount(account)" tile>
+                <template #default>
+                  {{ $t('accounts.remove_account') }}
+                </template>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list-item-group>
+        <accounts-modal
+          :has-tfa="hasTfa"
+          :passwd="passwd"
+          :user-name="userName"
+          @clear-error="setError(null)"
+          @clear-form="resetForm"
+          @auth-requested="sendRequest"
+        />
+      </v-list>
+    </v-container>
   </div>
 </template>
 
 <script lang="ts">
 import { createNamespacedHelpers } from 'vuex-composition-helpers'
-import { defineComponent, reactive } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 
 import {
   IAccountsActions,
@@ -85,13 +81,12 @@ export default defineComponent({
       'accounts',
       'error',
     ])
-    const localState = reactive({
-      showModal: false,
-      username: '',
-      passwd: '',
-    })
+    const userName = ref('')
+    const passwd = ref('')
+
     return {
-      localState,
+      userName,
+      passwd,
       accounts,
       defaultAccount,
       error,
@@ -110,14 +105,19 @@ export default defineComponent({
   },
   methods: {
     async sendRequest({ username, password, token }) {
-      this.localState.username = username
-      this.localState.passwd = password
+      this.userName = username
+      this.passwd = password
       await this.sendAuthRequest({ username, password, token })
     },
     resetForm() {
-      this.localState.username = ''
-      this.localState.passwd = ''
+      this.userName = ''
+      this.passwd = ''
     },
   },
 })
 </script>
+<style scoped>
+.accounts-block .v-item--active {
+  background-color: rgba(255, 255, 255, 0.24);
+}
+</style>

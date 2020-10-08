@@ -12,8 +12,8 @@
     }
   },
   "accounts": {
-    "add_account": "Добавить",
-    "remove_account": "Удалить",
+    "add_account": "Добавить аккаунт",
+    "remove_account": "Удалить аккаунт",
     "modal": {
       "title": "Добавить аккаунт",
       "enter_login": "Введите логин",

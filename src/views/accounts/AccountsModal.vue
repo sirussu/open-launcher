@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-container pa-0 class="accounts-modal">
     <v-dialog
       max-width="600px"
       v-model="showModal"
@@ -7,11 +7,14 @@
       @keydown.enter="sendRequest"
     >
       <template #activator="{ on }">
-        <v-btn v-on="on">
-          <template #default>
+        <v-list-item v-on="on">
+          <v-list-item-action>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
             {{ $t('accounts.add_account') }}
-          </template>
-        </v-btn>
+          </v-list-item-content>
+        </v-list-item>
       </template>
       <v-card>
         <v-card-title>
@@ -110,7 +113,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -182,3 +185,8 @@ export default defineComponent({
   },
 })
 </script>
+<style scoped>
+.accounts-modal .v-btn {
+  padding: 0;
+}
+</style>
