@@ -2,7 +2,7 @@
   <v-container pa-0 class="accounts-modal">
     <v-dialog
       max-width="600px"
-      v-model="showModal"
+      v-model="modals.showModal"
       @click:outside="resetForm"
       @keydown.enter="sendRequest"
     >
@@ -25,11 +25,13 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  v-model="login"
-                  required
+                  v-model="authForm.login"
+                  :error-messages="loginErrors"
                   autofocus
-                  :rules="rules"
-                  hide-details="auto"
+                  clearable
+                  required
+                  @input="validate.authForm.login.$touch()"
+                  @blur="validate.authForm.login.$touch()"
                 >
                   <template #label>
                     {{ $t('accounts.modal.enter_login') }}*
@@ -38,10 +40,13 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  v-model="pass"
+                  type="password"
+                  v-model="authForm.pass"
+                  :error-messages="passwordErrors"
+                  clearable
                   required
-                  :rules="rules"
-                  hide-details="auto"
+                  @input="validate.authForm.pass.$touch()"
+                  @blur="validate.authForm.pass.$touch()"
                 >
                   <template #label>
                     {{ $t('accounts.modal.enter_pass') }}*
@@ -54,7 +59,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="sendRequest">
+          <v-btn text @click="sendRequest" :disabled="validate.$invalid">
             <template #default>
               {{ $t('accounts.add_account') }}
             </template>
@@ -70,7 +75,7 @@
     <v-dialog
       max-width="300px"
       persistent
-      v-model="showTfaModal"
+      v-model="modals.showTfaModal"
       @keydown.enter="sendRequest"
     >
       <v-card>
@@ -85,10 +90,12 @@
               <v-col cols="12" v-if="hasTfa">
                 <v-text-field
                   v-model="tfaToken"
-                  required
+                  :error-messages="tfaErrors"
                   autofocus
-                  :rules="rules"
-                  hide-details="auto"
+                  clearable
+                  required
+                  @input="validate.tfaToken.$touch()"
+                  @blur="validate.tfaToken.$touch()"
                 >
                   <template #label>
                     {{ $t('accounts.modal.enter_tfa_code') }}*
@@ -100,7 +107,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="sendRequest">
+          <v-btn text @click="sendRequest" :disabled="validate.$invalid">
             <template #default>
               {{ $t('accounts.add_account') }}
             </template>
@@ -117,7 +124,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, reactive, ref } from '@vue/composition-api'
+import { useVuelidate } from '@vuelidate/core'
+
+import { validateAccountFields } from '@/utils/validate'
 
 export default defineComponent({
   name: 'AccountsModal',
@@ -135,15 +145,66 @@ export default defineComponent({
       required: true,
     },
   },
-  data() {
-    return {
+  setup() {
+    const authForm = reactive({
       login: '',
       pass: '',
-      tfaToken: '',
+    })
+    const tfaToken = ref('')
+    const modals = reactive({
       showModal: false,
       showTfaModal: false,
-      rules: [(value) => !!value || ''],
+    })
+    const validate = useVuelidate(
+      validateAccountFields,
+      { authForm, tfaToken },
+      { $autoDirty: true }
+    )
+
+    return {
+      authForm,
+      tfaToken,
+      modals,
+      validate,
     }
+  },
+  computed: {
+    loginErrors() {
+      const errors = []
+      if (!this.validate.authForm.login.$dirty) {
+        return errors
+      }
+
+      this.validate.authForm.login.minLength.$invalid &&
+        errors.push('Login must be at least 3 characters long')
+      this.validate.authForm.login.required.$invalid &&
+        errors.push('Login is required.')
+      return errors
+    },
+    passwordErrors() {
+      const errors = []
+      if (!this.validate.authForm.pass.$dirty) {
+        return errors
+      }
+
+      this.validate.authForm.pass.minLength.$invalid &&
+        errors.push('Password must be at least 6 characters long')
+      this.validate.authForm.pass.required.$invalid &&
+        errors.push('Password is required.')
+      return errors
+    },
+    tfaErrors() {
+      const errors = []
+      if (!this.validate.tfaToken.$dirty) {
+        return errors
+      }
+
+      this.validate.tfaToken.minLength.$invalid &&
+        errors.push('2FA token must be at least 6 characters long')
+      this.validate.tfaToken.required.$invalid &&
+        errors.push('2FA token is required.')
+      return errors
+    },
   },
   methods: {
     clearErrorAndForm() {
@@ -151,42 +212,41 @@ export default defineComponent({
       this.$emit('clear-form')
     },
     resetForm() {
-      this.showModal = false
-      this.login = ''
-      this.pass = ''
+      this.modals.showModal = false
+      this.authForm.login = ''
+      this.authForm.pass = ''
       this.tfaToken = ''
       this.clearErrorAndForm()
     },
     sendRequest() {
+      if (this.validate.$invalid) {
+        return
+      }
+
       this.$emit('auth-requested', {
-        username: this.login,
-        password: this.pass,
+        username: this.authForm.login,
+        password: this.authForm.pass,
         token: this.tfaToken,
       })
-      this.showModal = false
-      this.login = ''
-      this.pass = ''
+      this.modals.showModal = false
+      this.authForm.login = ''
+      this.authForm.pass = ''
       this.tfaToken = ''
     },
   },
   watch: {
     hasTfa(tfa) {
       if (tfa) {
-        this.showTfaModal = true
-        this.pass = this.passwd
-        this.login = this.userName
+        this.modals.showTfaModal = true
+        this.authForm.pass = this.passwd
+        this.authForm.login = this.userName
       } else {
-        this.showTfaModal = false
-        this.pass = ''
-        this.login = ''
+        this.modals.showTfaModal = false
+        this.authForm.pass = ''
+        this.authForm.login = ''
         this.tfaToken = ''
       }
     },
   },
 })
 </script>
-<style scoped>
-.accounts-modal .v-btn {
-  padding: 0;
-}
-</style>
