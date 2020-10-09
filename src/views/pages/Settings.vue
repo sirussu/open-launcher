@@ -28,7 +28,7 @@
   </v-card>
 </template>
 <script>
-import { remote } from 'electron'
+import { remote } from 'electron' // TODO: move to interop
 
 export default {
   data() {
