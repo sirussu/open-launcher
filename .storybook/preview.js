@@ -35,7 +35,6 @@ Vue.use(Vuetify, {
 Vue.use((Vue) => {
   Vue.prototype.$interop = {
     openUrl(link) {
-      console.log(link)
       action('openUrl')(link)
     },
   }
