@@ -8,4 +8,3 @@
     </v-col>
   </v-row>
 </template>
-Skeleton Card
