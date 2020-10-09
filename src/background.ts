@@ -1,12 +1,12 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
-import {
-  createProtocol,
-  /* installVueDevtools */
-} from 'vue-cli-plugin-electron-builder/lib'
-import { autoUpdater } from 'electron-updater'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import {app, BrowserWindow, protocol} from 'electron'
+import {createProtocol,} from 'vue-cli-plugin-electron-builder/lib'
+import {autoUpdater} from 'electron-updater'
+import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer'
+import eventService from "@/background/EventService";
+import LauncherListener from "@/events/LauncherListener";
+import LauncherEvent from "@/events/LauncherEvent";
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -101,3 +101,11 @@ if (isDevelopment) {
     })
   }
 }
+
+class SelectDirectory extends LauncherListener {
+  handle(event: LauncherEvent, data: any) {
+    console.log('Event called', data)
+  }
+}
+
+eventService.on(LauncherEvent.SELECT_GAME_DIRECTORY, new SelectDirectory())

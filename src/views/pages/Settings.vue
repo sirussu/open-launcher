@@ -30,6 +30,9 @@
 <script>
 import { remote } from 'electron'
 
+import eventService from '@/services/EventService'
+import LauncherEvent from '@/events/LauncherEvent'
+
 export default {
   data() {
     return {
@@ -41,6 +44,8 @@ export default {
   methods: {
     async choose() {
       this.errors.clientDirectory = null
+
+      eventService.emit(LauncherEvent.SELECT_GAME_DIRECTORY, { hello: true })
 
       const selection = await remote.dialog.showOpenDialog({
         properties: ['openDirectory'],
