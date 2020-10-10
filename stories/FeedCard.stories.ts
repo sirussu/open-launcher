@@ -1,19 +1,23 @@
-import { storiesOf } from '@storybook/vue'
-import { withKnobs, text, number } from '@storybook/addon-knobs'
+import { text, number } from '@storybook/addon-knobs'
 
-import FeedCard from '@/views/feeds/FeedCard'
+import FeedCard from '@/views/feeds/FeedCard.vue'
 
-storiesOf('FeedCard', module)
-  .addDecorator(withKnobs)
-  .add('Full controlled FeedCard', () => ({
-    components: { FeedCard },
-    props: {
-      coverUrl: {
-        default: text('coverUrl', '', 'props'),
-      },
-      forumTopicId: {
-        default: number('forumTopicId', 0),
-      },
+export default {
+  title: 'FeedCard',
+}
+
+export const exampleWithKnobs = () => ({
+  components: { FeedCard },
+  props: {
+    coverUrl: {
+      default: text('coverUrl', '/uploads/news/nl3.jpg', 'feed'),
     },
-    template: '<feed-card :feed="{ coverUrl, forumTopicId }" />',
-  }))
+    forumTopicId: {
+      default: number('forumTopicId', 0, { min: 0 }, 'feed'),
+    },
+    title: {
+      default: text('title', 'Героические рейды на Neltharion x3', 'feed'),
+    },
+  },
+  template: '<feed-card :feed="{ coverUrl, forumTopicId, title }" />',
+})
