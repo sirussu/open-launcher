@@ -1,25 +1,26 @@
-import EventBus from "@/services/EventBus";
-import RenderedIpc from "@/events/ipcs/RenderedIpc";
-import {mocked} from "ts-jest/utils";
-import LauncherEvent from "@/events/LauncherEvent";
-import {DirectorySelected} from "@/events/ClientActions";
+import { mocked } from 'ts-jest/utils'
+
+import EventBus from '@/services/EventBus'
+import RenderedIpc from '@/events/ipcs/RenderedIpc'
+import LauncherEvent from '@/events/LauncherEvent'
+import { DirectorySelected } from '@/events/ClientActions'
 
 jest.mock('@/events/ipcs/RenderedIpc')
 jest.mock('@/events/ClientActions')
 
 describe('Event Bus', function () {
-  let MockedIpc = mocked(RenderedIpc, true);
-  let MockedDirectorySelected = mocked(DirectorySelected, true);
+  const MockedIpc = mocked(RenderedIpc, true)
+  const MockedDirectorySelected = mocked(DirectorySelected, true)
 
   beforeEach(() => {
     // Clear all instances and calls to constructor and all methods:
-    MockedIpc.mockClear();
-    MockedDirectorySelected.mockClear();
-  });
+    MockedIpc.mockClear()
+    MockedDirectorySelected.mockClear()
+  })
 
   it('event registration and emit', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
     bus.on(LauncherEvent.SELECT_GAME_DIRECTORY, listener)
     bus.emit(LauncherEvent.SELECT_GAME_DIRECTORY, {})
@@ -27,8 +28,8 @@ describe('Event Bus', function () {
   })
 
   it('multiple events called', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
     const listener2 = new DirectorySelected()
 
@@ -42,8 +43,8 @@ describe('Event Bus', function () {
   })
 
   it('correct listener used', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
     const listener2 = new DirectorySelected()
 
@@ -57,22 +58,25 @@ describe('Event Bus', function () {
   })
 
   it('data passed correctly', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
 
-    const data = {foo: 'bar'};
+    const data = { foo: 'bar' }
 
     bus.on(LauncherEvent.SELECT_GAME_DIRECTORY, listener)
 
-    bus.emit(LauncherEvent.SELECT_GAME_DIRECTORY, {...data})
+    bus.emit(LauncherEvent.SELECT_GAME_DIRECTORY, { ...data })
 
-    expect(listener.handle).toBeCalledWith(LauncherEvent.SELECT_GAME_DIRECTORY, {...data})
+    expect(listener.handle).toBeCalledWith(
+      LauncherEvent.SELECT_GAME_DIRECTORY,
+      { ...data }
+    )
   })
 
   it('once listener called once', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
     listener.once = true
 
@@ -85,8 +89,8 @@ describe('Event Bus', function () {
   })
 
   it('correctly called more then one time', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
 
     bus.on(LauncherEvent.SELECT_GAME_DIRECTORY, listener)
@@ -98,14 +102,16 @@ describe('Event Bus', function () {
   })
 
   it('ipc registered', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    /* eslint-disable no-new */
+    new EventBus(ipc)
+
     expect(ipc.on).toBeCalled()
   })
 
   it('ipc send on even emit', () => {
-    const ipc = new RenderedIpc();
-    const bus = new EventBus(ipc);
+    const ipc = new RenderedIpc()
+    const bus = new EventBus(ipc)
     const listener = new DirectorySelected()
     bus.on(LauncherEvent.SELECT_GAME_DIRECTORY, listener)
     bus.emit(LauncherEvent.SELECT_GAME_DIRECTORY, {})

@@ -1,3 +1,5 @@
+import { IpcMain, IpcRenderer } from 'electron'
+
 import LauncherEvent from '@/events/LauncherEvent'
 import LauncherListener from '@/events/LauncherListener'
 
@@ -10,9 +12,21 @@ export type IpcCallback = ({
 }) => void
 
 export abstract class Ipc {
-  abstract send(event: LauncherEvent, data: Record<string, unknown>)
+  private onCallback: IpcCallback | null = null
 
-  abstract on(callback: IpcCallback)
+  protected constructor(electronIpc: IpcMain | IpcRenderer) {
+    electronIpc.on(EventBus.CHANNEL_NAME, (event, args) => {
+      if (this.onCallback) {
+        this.onCallback(args)
+      }
+    })
+  }
+
+  on(callback: IpcCallback) {
+    this.onCallback = callback
+  }
+
+  abstract send(event: LauncherEvent, data: Record<string, unknown>)
 }
 
 class EventBus {

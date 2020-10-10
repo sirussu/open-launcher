@@ -1,20 +1,11 @@
-import EventBus, {Ipc, IpcCallback} from "@/services/EventBus";
-import {ipcRenderer} from "electron";
-import LauncherEvent from "@/events/LauncherEvent";
+import { ipcRenderer } from 'electron'
 
-export default class RenderedIpc implements Ipc {
-  private onCallback: IpcCallback | null = null
+import EventBus, { Ipc } from '@/services/EventBus'
+import LauncherEvent from '@/events/LauncherEvent'
 
+export default class RenderedIpc extends Ipc {
   constructor() {
-    ipcRenderer.on(EventBus.CHANNEL_NAME, (event, args) => {
-      if (this.onCallback) {
-        this.onCallback(args)
-      }
-    })
-  }
-
-  on(callback: IpcCallback) {
-    this.onCallback = callback
+    super(ipcRenderer)
   }
 
   send(event: LauncherEvent, data: Record<string, unknown>) {
