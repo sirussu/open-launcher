@@ -40,9 +40,9 @@ const mutations: MutationTree<IAccountsState> = {
     state.accounts.data.allIds.push(account.id)
     state.accounts.data.byId[account.id] = account.byId
   },
-  REMOVE_ACCOUNT(state, { id, index }: { id: number, index: number }) {
+  REMOVE_ACCOUNT(state, id: number) {
     delete state.accounts.data.byId[id]
-    state.accounts.data.allIds.splice(index, 1)
+    state.accounts.data.allIds = state.accounts.data.allIds.filter(accountId => accountId === id)
   },
   SET_DEFAULT_ID(state, accountId: number) {
     state.accounts.data.defaultId = accountId
@@ -71,14 +71,8 @@ const actions: IAccountsActions = {
 
     state.accounts.data.allIds.includes(normalizedAccount.id) ? console.log(`Account ${account.username} already exist in accounts list`) : commit('ADD_ACCOUNT', normalizedAccount)// TODO: need a toaster
   },
-  removeAccount({ state, commit }, account) {
-    const index = state.accounts.data.allIds.findIndex(id => id === account.id)
-    const removingAccount = {
-      id: account.id,
-      index
-    }
-
-    commit('REMOVE_ACCOUNT', removingAccount)
+  removeAccount({ state, commit }, accountId) {
+    commit('REMOVE_ACCOUNT', accountId)
 
     if (state.accounts.data.allIds.length > 0) {
       if(state.accounts.data.defaultId === removingAccount.id) {

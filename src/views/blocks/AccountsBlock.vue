@@ -21,7 +21,7 @@
             </v-list-item-content>
 
             <v-list-item-action>
-              <v-btn text @click="removeAccount(account)" tile>
+              <v-btn text @click="removeAccount(account.id)" tile>
                 <template #default>
                   {{ $t('accounts.remove_account') }}
                 </template>
