@@ -1,26 +1,30 @@
 import { ipcMain, BrowserWindow } from 'electron'
 
-import EventBus, { Ipc } from '@/services/EventBus'
-import LauncherEvent from "@/events/LauncherEvent";
+import EventBus, { Ipc, IpcCallback } from '@/services/EventBus'
+import LauncherEvent from '@/events/LauncherEvent'
 
 class MainIpc implements Ipc {
-  private onCallback: any;
+  private onCallback: IpcCallback | null = null
 
   constructor() {
-    ipcMain.on(EventBus.CHANNEL_NAME, ((event, args) => {
-      this.onCallback(args)
-    }))
+    ipcMain.on(EventBus.CHANNEL_NAME, (event, args) => {
+      if (this.onCallback) {
+        this.onCallback(args)
+      }
+    })
   }
 
-  on(callback: ({event, data}: { event: string; data: any }) => void) {
+  on(callback: IpcCallback) {
     this.onCallback = callback
   }
 
-  send(event: LauncherEvent, data: any) {
-    BrowserWindow.getAllWindows().forEach(w => w.webContents.send(EventBus.CHANNEL_NAME, { event, data }))
+  send(event: LauncherEvent, data: Record<string, unknown>) {
+    BrowserWindow.getAllWindows().forEach((w) =>
+      w.webContents.send(EventBus.CHANNEL_NAME, { event, data })
+    )
   }
 }
 
-const mainIpc = new MainIpc();
+const mainIpc = new MainIpc()
 
-export default new EventBus(mainIpc);
+export default new EventBus(mainIpc)

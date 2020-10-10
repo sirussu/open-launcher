@@ -1,11 +1,18 @@
 import LauncherEvent from '@/events/LauncherEvent'
 import LauncherListener from '@/events/LauncherListener'
 
+export type IpcCallback = ({
+  event,
+  data,
+}: {
+  event: string
+  data: Record<string, unknown>
+}) => void
+
 export abstract class Ipc {
-  abstract send(event: LauncherEvent, data: any)
-  abstract on(
-    callback: ({ event, data }: { event: string; data: any }) => void
-  )
+  abstract send(event: LauncherEvent, data: Record<string, unknown>)
+
+  abstract on(callback: IpcCallback)
 }
 
 class EventBus {
@@ -34,7 +41,7 @@ class EventBus {
     }
   }
 
-  emit(event: LauncherEvent, data: any) {
+  emit(event: LauncherEvent, data: Record<string, unknown>) {
     this.internalEmit(event, data, false)
   }
 
@@ -44,7 +51,11 @@ class EventBus {
    * @param isIpc - is ipc event, we should not publish it to ipc
    * @private
    */
-  private internalEmit(event: LauncherEvent, data: any, isIpc: boolean) {
+  private internalEmit(
+    event: LauncherEvent,
+    data: Record<string, unknown>,
+    isIpc: boolean
+  ) {
     const listeners = this.events.get(event)
     if (!isIpc) {
       this.ipc.send(event, data)

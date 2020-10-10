@@ -28,10 +28,9 @@
   </v-card>
 </template>
 <script>
-import { remote } from 'electron'
-
 import eventService from '@/services/EventService'
 import LauncherEvent from '@/events/LauncherEvent'
+import { CallbackListener } from '@/events/LauncherListener'
 
 export default {
   data() {
@@ -45,24 +44,15 @@ export default {
     async choose() {
       this.errors.clientDirectory = null
 
-      eventService.emit(LauncherEvent.SELECT_GAME_DIRECTORY, { hello: true })
-
-      const selection = await remote.dialog.showOpenDialog({
-        properties: ['openDirectory'],
-      })
-
-      if (!selection.canceled && selection.filePaths.length > 0) {
-        if (
-          !(await this.$store.dispatch(
-            'setClientDirectory',
-            selection.filePaths[0]
-          ))
-        ) {
+      eventService.emit(LauncherEvent.OPEN_SELECT_GAME_DIRECTORY_DIALOG, {})
+      eventService.on(
+        LauncherEvent.WRONG_GAME_DIRECTORY_SELECTED,
+        new CallbackListener(() => {
           this.errors.clientDirectory = this.$t(
             'settings.errors.wrong_client_directory'
           )
-        }
-      }
+        }, true)
+      )
     },
   },
   computed: {
