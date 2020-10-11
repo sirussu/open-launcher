@@ -15,11 +15,9 @@ export class SelectDirectory extends LauncherListener {
   }
 }
 
-export default {
-  init() {
-    eventService.on(
-      LauncherEvent.OPEN_SELECT_GAME_DIRECTORY_DIALOG,
-      new SelectDirectory()
-    )
-  },
+export function init() {
+  eventService.on(
+    LauncherEvent.OPEN_SELECT_GAME_DIRECTORY_DIALOG,
+    new SelectDirectory()
+  )
 }

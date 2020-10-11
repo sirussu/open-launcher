@@ -22,11 +22,6 @@ export class DirectorySelected extends LauncherListener {
   }
 }
 
-export default {
-  init() {
-    eventService.on(
-      LauncherEvent.SELECT_GAME_DIRECTORY,
-      new DirectorySelected()
-    )
-  },
+export function init() {
+  eventService.on(LauncherEvent.SELECT_GAME_DIRECTORY, new DirectorySelected())
 }
