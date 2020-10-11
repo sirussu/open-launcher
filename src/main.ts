@@ -7,6 +7,7 @@ import Vue from 'vue'
 import VueCompositionAPI from '@vue/composition-api'
 
 import { Interop } from '@/plugins/interop'
+import clientActions from '@/events/ClientActions'
 
 import i18n from './modules/i18n'
 import vuetifyConfig from './modules/vuetify'
@@ -23,5 +24,8 @@ new Vue({
   store,
   vuetify: vuetifyConfig(),
   i18n: i18n(),
+  created() {
+    clientActions.init()
+  },
   render: (h) => h(App),
 }).$mount('#app')

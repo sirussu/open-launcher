@@ -1,12 +1,11 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
-import {
-  createProtocol,
-  /* installVueDevtools */
-} from 'vue-cli-plugin-electron-builder/lib'
+import { app, BrowserWindow, protocol } from 'electron'
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { autoUpdater } from 'electron-updater'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+
+import clientActions from '@/background/ClientActions'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -53,6 +52,8 @@ function createWindow() {
   win.on('closed', () => {
     win = null
   })
+
+  clientActions.init()
 }
 
 // Quit when all windows are closed.
