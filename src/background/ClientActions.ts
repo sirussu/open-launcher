@@ -4,7 +4,7 @@ import LauncherListener from '@/events/LauncherListener'
 import LauncherEvent from '@/events/LauncherEvent'
 import eventService from '@/background/EventService'
 
-class SelectDirectory extends LauncherListener {
+export class SelectDirectory extends LauncherListener {
   async handle() {
     const selection = await dialog.showOpenDialog({
       properties: ['openDirectory'],
@@ -15,7 +15,11 @@ class SelectDirectory extends LauncherListener {
   }
 }
 
-eventService.on(
-  LauncherEvent.OPEN_SELECT_GAME_DIRECTORY_DIALOG,
-  new SelectDirectory()
-)
+export default {
+  init() {
+    eventService.on(
+      LauncherEvent.OPEN_SELECT_GAME_DIRECTORY_DIALOG,
+      new SelectDirectory()
+    )
+  },
+}

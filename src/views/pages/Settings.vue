@@ -30,7 +30,7 @@
 <script>
 import eventService from '@/services/EventService'
 import LauncherEvent from '@/events/LauncherEvent'
-import { CallbackListener } from '@/events/LauncherListener'
+import CallbackListener from '@/events/CallbackListener'
 
 export default {
   data() {

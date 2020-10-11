@@ -4,9 +4,12 @@ import LauncherListener from '@/events/LauncherListener'
 import store from '@/store'
 
 export class DirectorySelected extends LauncherListener {
-  async handle(event: LauncherEvent, data: Record<string, unknown>) {
-    const { directory } = data
+  async handle(
+    event: LauncherEvent,
+    { directory }: { directory: string | null }
+  ) {
     if (directory) {
+      // it can be null if windows closed but directory not selected
       const correct = await store.dispatch('setClientDirectory', directory)
       if (correct) {
         return
@@ -19,4 +22,11 @@ export class DirectorySelected extends LauncherListener {
   }
 }
 
-eventService.on(LauncherEvent.SELECT_GAME_DIRECTORY, new DirectorySelected())
+export default {
+  init() {
+    eventService.on(
+      LauncherEvent.SELECT_GAME_DIRECTORY,
+      new DirectorySelected()
+    )
+  },
+}

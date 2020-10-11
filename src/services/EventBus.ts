@@ -71,18 +71,22 @@ class EventBus {
     isIpc: boolean
   ) {
     const listeners = this.events.get(event)
+    // we need to send ipc event even we have no listeners, listeners still can be registered in main/render process
     if (!isIpc) {
       this.ipc.send(event, data)
     }
-    if (listeners) {
-      listeners.forEach((listener, index) => {
-        listener.handle(event, data)
 
-        if (listener.once) {
-          listeners.splice(index, 1)
-        }
-      })
+    if (!listeners || listeners.length === 0) {
+      return
     }
+
+    listeners.forEach((listener, index) => {
+      listener.handle(event, data)
+
+      if (listener.once) {
+        listeners.splice(index, 1)
+      }
+    })
   }
 }
 
