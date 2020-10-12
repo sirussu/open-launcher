@@ -7,7 +7,7 @@
             v-for="account in accounts"
             :key="account.id"
             :class="{ 'v-item--active': defaultAccount.id === account.id }"
-            @click="setDefaultAccount(account.id)"
+            @click="setDefaultAccount(account)"
             dense
           >
             <v-list-item-action>

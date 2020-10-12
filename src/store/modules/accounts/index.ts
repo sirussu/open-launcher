@@ -42,7 +42,9 @@ const mutations: MutationTree<IAccountsState> = {
   },
   REMOVE_ACCOUNT(state, id: number) {
     delete state.accounts.data.byId[id]
-    state.accounts.data.allIds = state.accounts.data.allIds.filter(accountId => accountId === id)
+
+    const index = state.accounts.data.allIds.findIndex(accountId => accountId === id)
+    state.accounts.data.allIds.splice(index, 1)
   },
   SET_DEFAULT_ID(state, accountId: number) {
     state.accounts.data.defaultId = accountId
@@ -59,31 +61,20 @@ const mutations: MutationTree<IAccountsState> = {
 }
 
 const actions: IAccountsActions = {
-  addAccount({ state, commit }, account) {
-    const normalizedAccount = {
-      id: account.id,
-      byId: account
-    }
-
-    if (state.accounts.data.allIds.length === 0) {
-      commit('SET_DEFAULT_ID', normalizedAccount.id)
-    }
-
-    state.accounts.data.allIds.includes(normalizedAccount.id) ? console.log(`Account ${account.username} already exist in accounts list`) : commit('ADD_ACCOUNT', normalizedAccount)// TODO: need a toaster
-  },
   removeAccount({ state, commit }, accountId) {
+    if(state.accounts.data.defaultId === accountId) {
+      commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
+    }
+
     commit('REMOVE_ACCOUNT', accountId)
 
-    if (state.accounts.data.allIds.length > 0) {
-      if(state.accounts.data.defaultId === removingAccount.id) {
-        commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
-      }
-    } else {
+    if (state.accounts.data.allIds.length === 0) {
       commit('SET_DEFAULT_ID', 0)
     }
   },
-  setDefaultAccount({ commit }, accountId) {
-    commit('SET_DEFAULT_ID', accountId)
+  setDefaultAccount({ commit }, account) {
+    commit('SET_DEFAULT_ID', account.id)
+    localStorage.setItem('tokens', JSON.stringify({ tokenType: account.tokens.tokenType, accessToken: account.tokens.accessToken }))
   },
   setError({ commit }, error) {
     if (error === null) {
@@ -94,61 +85,70 @@ const actions: IAccountsActions = {
   },
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
-
-    const params = {
-      grant_type: 'password',
-      client_id: 3,
-      client_secret: 'W90b7o7e81OI8JwNXItC8GXouS8rUStS9kQPKFul',
+    const data = {
       username,
       password,
       token,
+      grantType: process.env.VUE_APP_GRANT_TYPE,
+      clientId: Number(process.env.VUE_APP_CLIENT_ID),
+      clientSecret: process.env.VUE_APP_CLIENT_SECRET,
       scope: '*'
     }
+
     try {
-      await dispatch('setError', null)
-      const response = await axios.post('https://api.sirus.su/oauth/token', params)
-      await dispatch('loadAccInfo', response)
+      commit('SET_ERROR', { status: 0, statusText: '' })
+      const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', data)
+
+      localStorage.setItem('tokens', JSON.stringify({ tokenType: authResponse.tokenType, accessToken: authResponse.accessToken }))
+
+      await dispatch('loadAccountInfo', authResponse)
 
       commit('SET_STATUS', RequestStatus.LOADED)
-    } catch (err) {
+    } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
-      if (err.isAxiosError) {
-        const error: IAccountError = {
-          status: err.response.status,
-          statusText: err.response.statusText
+      if (error.isAxiosError) {
+        const typedError: IAccountError = {
+          status: error.response.status,
+          statusText: error.response.statusText
         }
-        await dispatch('setError', error)
+        commit('SET_ERROR', typedError)
       }
     }
   },
-  async loadAccInfo({ dispatch, commit }, authResponse) {
+  async loadAccountInfo({ state, commit }, authResponse) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
-    const params = {
-      headers: { 'Authorization': `${authResponse.tokenType} ${authResponse.accessToken}` }
-    }
-
     try {
-      const accountInfo: {id: number, username: string} = await axios.get('/user', params)
-      const extendedAccount = {
-        ...authResponse,
+      const accountInfo: {id: number, username: string} = await axios.get('/user')
+
+      const normalizedExtendedAccount = {
         id: accountInfo.id,
-        username: accountInfo.username,
-        accountInfo
+        byId: {
+          tokens: { ...authResponse },
+          accountInfo,
+          id: accountInfo.id,
+          username: accountInfo.username
+        }
       }
-      await dispatch('addAccount', extendedAccount)
+      if(state.accounts.data.allIds.length === 0) {
+        commit('SET_DEFAULT_ID', normalizedExtendedAccount.id)
+      }
+
+      if(!state.accounts.data.allIds.includes(normalizedExtendedAccount.id)) {
+        commit('ADD_ACCOUNT', normalizedExtendedAccount)
+      }
 
       commit('SET_STATUS', RequestStatus.LOADED)
-    } catch (err) {
+    } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
-      if (err.isAxiosError) {
-        const error: IAccountError = {
-          status: err.response.status,
-          statusText: err.response.statusText
+      if (error.isAxiosError) {
+        const typedError: IAccountError = {
+          status: error.response.status,
+          statusText: error.response.statusText
         }
-        await dispatch('setError', error)
+        commit('SET_ERROR', typedError)
       }
     }
   }
