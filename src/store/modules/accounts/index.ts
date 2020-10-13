@@ -1,7 +1,6 @@
-import { Module, MutationTree } from 'vuex'
+import { MutationTree } from 'vuex'
 import { RequestStatus } from '@/types/network'
 
-import { IRootState } from '../../types'
 import {
   IAccountsActions,
   IAccountsGetters,
@@ -11,6 +10,8 @@ import {
 } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
+import { modulesFactory } from '@/utils/modulesFactory'
+import { IRootState } from '@/store/types'
 
 const state: IAccountsState = {
   accounts: {
@@ -154,10 +155,4 @@ const actions: IAccountsActions = {
   }
 }
 
-export const accountsModule: Module<IAccountsState, IRootState> = {
-  namespaced: true,
-  state,
-  mutations,
-  actions,
-  getters,
-}
+export const accountsModule = modulesFactory<IAccountsState, IRootState>({ state, mutations, actions, getters })
