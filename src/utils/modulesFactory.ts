@@ -1,6 +1,14 @@
-import { Module } from 'vuex'
+import { ActionTree, GetterTree, Module, MutationTree } from 'vuex'
 
-export function modulesFactory<S, R>(fields: Module<S, R>): Module<S, R> {
-  fields.namespaced = true
-  return fields
+interface IModuleFields<S, R> {
+  namespaced?: boolean
+  state?: S | (() => S)
+  mutations?: MutationTree<S>
+  actions?: ActionTree<S, R>
+  getters?: GetterTree<S, R>
+}
+
+export function modulesFactory<S, R>(moduleFields: IModuleFields<S, R>): Module<S, R> {
+  moduleFields.namespaced = true
+  return moduleFields
 }

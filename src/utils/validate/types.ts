@@ -11,6 +11,9 @@ export interface IAccountFieldsValidator {
       minLength: (length: number) => boolean
     }
   }
+}
+
+export interface I2faValidator {
   tfaToken: {
     required: () => ValidationRule
     minLength: (length: number) => boolean

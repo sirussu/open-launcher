@@ -1,5 +1,5 @@
 import { required, minLength } from 'vuelidate/lib/validators'
-import { IAccountFieldsValidator } from '@/utils/validate/types'
+import { I2faValidator, IAccountFieldsValidator } from '@/utils/validate/types'
 
 export const validateAccountFields: IAccountFieldsValidator = {
   authForm: {
@@ -12,6 +12,9 @@ export const validateAccountFields: IAccountFieldsValidator = {
       minLength: minLength(6),
     },
   },
+}
+
+export const validate2fa: I2faValidator = {
   tfaToken: {
     required,
     minLength: minLength(6),

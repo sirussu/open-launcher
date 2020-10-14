@@ -41,7 +41,7 @@ const mutations: MutationTree<IAccountsState> = {
     state.accounts.data.allIds.push(account.id)
     state.accounts.data.byId[account.id] = account.byId
   },
-  REMOVE_ACCOUNT(state, id: number) {
+  REMOVE_ACCOUNT(state, id) {
     delete state.accounts.data.byId[id]
 
     const index = state.accounts.data.allIds.findIndex(accountId => accountId === id)
@@ -71,18 +71,15 @@ const actions: IAccountsActions = {
 
     if (state.accounts.data.allIds.length === 0) {
       commit('SET_DEFAULT_ID', 0)
+      localStorage.removeItem('tokens')
     }
   },
   setDefaultAccount({ commit }, account) {
     commit('SET_DEFAULT_ID', account.id)
-    localStorage.setItem('tokens', JSON.stringify({ tokenType: account.tokens.tokenType, accessToken: account.tokens.accessToken }))
+    localStorage.setItem('tokens', `${account.tokens.tokenType} ${account.tokens.accessToken}`)
   },
-  setError({ commit }, error) {
-    if (error === null) {
-      commit('SET_ERROR', { status: 0, statusText: '' })
-    } else {
-      commit('SET_ERROR', error)
-    }
+  clearError({ commit }) {
+    commit('SET_ERROR', { status: 0, statusText: '' })
   },
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
@@ -100,7 +97,7 @@ const actions: IAccountsActions = {
       commit('SET_ERROR', { status: 0, statusText: '' })
       const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', data)
 
-      localStorage.setItem('tokens', JSON.stringify({ tokenType: authResponse.tokenType, accessToken: authResponse.accessToken }))
+      localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
 
       await dispatch('loadAccountInfo', authResponse)
 
@@ -132,6 +129,7 @@ const actions: IAccountsActions = {
           username: accountInfo.username
         }
       }
+
       if(state.accounts.data.allIds.length === 0) {
         commit('SET_DEFAULT_ID', normalizedExtendedAccount.id)
       }

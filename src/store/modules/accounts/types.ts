@@ -47,11 +47,10 @@ export interface IAccountsState {
 type ActionCtx = ActionContext<IAccountsState, IRootState>
 
 export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>{
-  addAccount: (ctx: ActionCtx, payload: IAccount) => void
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
-  setError: (ctx: ActionCtx, payload: IAccountError | null) => void
-  loadAccInfo: (ctx: ActionCtx, payload: IAuthResponse) => Promise<void>
+  clearError: (ctx: ActionCtx) => void
+  loadAccountInfo: (ctx: ActionCtx, payload: IAuthResponse) => Promise<void>
   sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string}) => Promise<void>
 }
 

@@ -2,7 +2,7 @@
   <v-container pa-0 class="accounts-modal">
     <v-dialog
       max-width="600px"
-      v-model="modals.showModal"
+      v-model="showModal"
       @click:outside="resetForm"
       @keydown.enter="sendRequest"
     >
@@ -59,55 +59,11 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="sendRequest" :disabled="validate.$invalid">
-            <template #default>
-              {{ $t('accounts.add_account') }}
-            </template>
-          </v-btn>
-          <v-btn text @click="resetForm">
-            <template #default>
-              {{ $t('accounts.modal.close_modal') }}
-            </template>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog
-      max-width="300px"
-      persistent
-      v-model="modals.showTfaModal"
-      @keydown.enter="sendRequest"
-    >
-      <v-card>
-        <v-card-title>
-          <span class="headline">{{
-            $t('accounts.modal.enter_tfa_code')
-          }}</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" v-if="hasTfa">
-                <v-text-field
-                  v-model="tfaToken"
-                  :error-messages="tfaErrors"
-                  autofocus
-                  clearable
-                  required
-                  @input="validate.tfaToken.$touch()"
-                  @blur="validate.tfaToken.$touch()"
-                >
-                  <template #label>
-                    {{ $t('accounts.modal.enter_tfa_code') }}*
-                  </template>
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="sendRequest" :disabled="validate.$invalid">
+          <v-btn
+            text
+            @click="sendRequest"
+            :disabled="validate.authForm.$invalid"
+          >
             <template #default>
               {{ $t('accounts.add_account') }}
             </template>
@@ -125,46 +81,29 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from '@vue/composition-api'
-import { useVuelidate } from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core'
 
 import { validateAccountFields } from '@/utils/validate'
 
 export default defineComponent({
   name: 'AccountsModal',
-  props: {
-    hasTfa: {
-      type: Boolean,
-      default: false,
-    },
-    userName: {
-      type: String,
-      required: true,
-    },
-    passwd: {
-      type: String,
-      required: true,
-    },
-  },
   setup() {
     const authForm = reactive({
       login: '',
       pass: '',
     })
     const tfaToken = ref('')
-    const modals = reactive({
-      showModal: false,
-      showTfaModal: false,
-    })
+    const showModal = ref(false)
     const validate = useVuelidate(
       validateAccountFields,
-      { authForm, tfaToken },
+      { authForm },
       { $autoDirty: true }
     )
 
     return {
       authForm,
       tfaToken,
-      modals,
+      showModal,
       validate,
     }
   },
@@ -172,6 +111,10 @@ export default defineComponent({
     loginErrors() {
       const errors = []
       if (!this.validate.authForm.login.$dirty) {
+        return errors
+      }
+
+      if (this.showModal === false) {
         return errors
       }
 
@@ -187,22 +130,14 @@ export default defineComponent({
         return errors
       }
 
+      if (this.showModal === false) {
+        return errors
+      }
+
       this.validate.authForm.pass.minLength.$invalid &&
         errors.push('Password must be at least 6 characters long')
       this.validate.authForm.pass.required.$invalid &&
         errors.push('Password is required.')
-      return errors
-    },
-    tfaErrors() {
-      const errors = []
-      if (!this.validate.tfaToken.$dirty) {
-        return errors
-      }
-
-      this.validate.tfaToken.minLength.$invalid &&
-        errors.push('2FA token must be at least 6 characters long')
-      this.validate.tfaToken.required.$invalid &&
-        errors.push('2FA token is required.')
       return errors
     },
   },
@@ -212,14 +147,14 @@ export default defineComponent({
       this.$emit('clear-form')
     },
     resetForm() {
-      this.modals.showModal = false
+      this.showModal = false
       this.authForm.login = ''
       this.authForm.pass = ''
       this.tfaToken = ''
       this.clearErrorAndForm()
     },
     sendRequest() {
-      if (this.validate.$invalid) {
+      if (this.validate.authForm.$invalid) {
         return
       }
 
@@ -228,24 +163,10 @@ export default defineComponent({
         password: this.authForm.pass,
         token: this.tfaToken,
       })
-      this.modals.showModal = false
+      this.showModal = false
       this.authForm.login = ''
       this.authForm.pass = ''
       this.tfaToken = ''
-    },
-  },
-  watch: {
-    hasTfa(tfa) {
-      if (tfa) {
-        this.modals.showTfaModal = true
-        this.authForm.pass = this.passwd
-        this.authForm.login = this.userName
-      } else {
-        this.modals.showTfaModal = false
-        this.authForm.pass = ''
-        this.authForm.login = ''
-        this.tfaToken = ''
-      }
     },
   },
 })

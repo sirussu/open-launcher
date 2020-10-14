@@ -20,7 +20,17 @@
       "enter_pass": "Enter password",
       "enter_tfa_code": "Enter 2FA code",
       "close_modal": "Close modal",
-      "req_fields": "* - indicates required field"
+      "req_fields": "* - indicates required field",
+      "tfaError": {
+        "minLength": "2FA token must be at least 6 characters long",
+        "required": "2FA token is required"
+      },
+      "authError": {
+        "loginMinLength": "Login must be at least 3 characters long",
+        "loginRequired": "Login is required",
+        "passMinLength": "Password must be at least 6 characters long",
+        "passRequired": "Password is required"
+      }
     }
   },
   "feeds": {

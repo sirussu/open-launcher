@@ -30,12 +30,15 @@
           </v-list-item>
         </v-list-item-group>
         <accounts-modal
-          :has-tfa="hasTfa"
-          :passwd="passwd"
-          :user-name="userName"
-          @clear-error="setError(null)"
+          @clear-error="clearError"
           @clear-form="resetForm"
           @auth-requested="sendRequest"
+        />
+        <tfa-modal
+          :has-tfa="hasTfa"
+          @tfa-was-entered="tfaWasEntered"
+          @clear-error="clearError"
+          @clear-form="resetForm"
         />
       </v-list>
     </v-container>
@@ -53,6 +56,7 @@ import {
 } from '@/store/modules/accounts/types'
 
 import AccountsModal from '../accounts/AccountsModal.vue'
+import TfaModal from '../accounts/TfaModal.vue'
 
 const {
   useGetters: useAccountsGetters,
@@ -62,18 +66,18 @@ const {
 )
 export default defineComponent({
   name: 'AccountsBlock',
-  components: { AccountsModal },
+  components: { AccountsModal, TfaModal },
   setup() {
     const {
       setDefaultAccount,
       removeAccount,
       sendAuthRequest,
-      setError,
+      clearError,
     } = useAccountsActions([
       'setDefaultAccount',
       'removeAccount',
       'sendAuthRequest',
-      'setError',
+      'clearError',
     ])
 
     const { defaultAccount, accounts, error } = useAccountsGetters([
@@ -93,7 +97,7 @@ export default defineComponent({
       setDefaultAccount,
       removeAccount,
       sendAuthRequest,
-      setError,
+      clearError,
     }
   },
   computed: {
@@ -108,6 +112,13 @@ export default defineComponent({
       this.userName = username
       this.passwd = password
       await this.sendAuthRequest({ username, password, token })
+    },
+    async tfaWasEntered(tfaToken) {
+      await this.sendAuthRequest({
+        username: this.userName,
+        password: this.passwd,
+        token: tfaToken,
+      })
     },
     resetForm() {
       this.userName = ''
