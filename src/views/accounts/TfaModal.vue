@@ -14,13 +14,11 @@
           <v-row>
             <v-col cols="12" v-if="hasTfa">
               <v-text-field
-                v-model="tfaToken"
-                :error-messages="tfaErrors"
+                v-model.lazy="validate.tfaToken.$model"
+                :error-messages="tfaError"
                 autofocus
                 clearable
                 required
-                @input="validate.tfaToken.$touch()"
-                @blur="validate.tfaToken.$touch()"
               >
                 <template #label>
                   {{ $t('accounts.modal.enter_tfa_code') }}*
@@ -81,21 +79,17 @@ export default defineComponent({
         }
       },
     },
-    tfaErrors() {
-      const errors = []
-      if (!this.validate.tfaToken.$dirty) {
-        return errors
+    tfaError() {
+      if (!this.validate.tfaToken.$dirty || this.isTfa === false) {
+        return
       }
 
-      if (this.isTfa === false) {
-        return errors
+      if (this.validate.tfaToken.minLength.$invalid) {
+        return this.$t('accounts.modal.tfaError.minLength')
       }
-
-      this.validate.tfaToken.minLength.$invalid &&
-        errors.push(this.$t('accounts.modal.tfaError.minLength'))
-      this.validate.tfaToken.required.$invalid &&
-        errors.push(this.$t('accounts.modal.tfaError.required'))
-      return errors
+      if (this.validate.tfaToken.required.$invalid) {
+        return this.$t('accounts.modal.tfaError.required')
+      }
     },
   },
   methods: {

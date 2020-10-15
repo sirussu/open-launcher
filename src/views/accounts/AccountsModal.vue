@@ -25,13 +25,11 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  v-model="authForm.login"
-                  :error-messages="loginErrors"
+                  v-model.lazy="validate.authForm.login.$model"
+                  :error-messages="loginError"
                   autofocus
                   clearable
                   required
-                  @input="validate.authForm.login.$touch()"
-                  @blur="validate.authForm.login.$touch()"
                 >
                   <template #label>
                     {{ $t('accounts.modal.enter_login') }}*
@@ -41,12 +39,10 @@
               <v-col cols="12">
                 <v-text-field
                   type="password"
-                  v-model="authForm.pass"
-                  :error-messages="passwordErrors"
+                  v-model.lazy="validate.authForm.pass.$model"
+                  :error-messages="passwordError"
                   clearable
                   required
-                  @input="validate.authForm.pass.$touch()"
-                  @blur="validate.authForm.pass.$touch()"
                 >
                   <template #label>
                     {{ $t('accounts.modal.enter_pass') }}*
@@ -108,37 +104,31 @@ export default defineComponent({
     }
   },
   computed: {
-    loginErrors() {
-      const errors = []
-      if (!this.validate.authForm.login.$dirty) {
-        return errors
+    loginError() {
+      if (!this.validate.authForm.login.$dirty || this.showModal === false) {
+        return
       }
 
-      if (this.showModal === false) {
-        return errors
+      if (this.validate.authForm.login.minLength.$invalid) {
+        return this.$t('accounts.modal.authError.loginMinLength')
       }
 
-      this.validate.authForm.login.minLength.$invalid &&
-        errors.push(this.$t('accounts.modal.authError.loginMinLength'))
-      this.validate.authForm.login.required.$invalid &&
-        errors.push(this.$t('accounts.modal.authError.loginRequired'))
-      return errors
+      if (this.validate.authForm.login.required.$invalid) {
+        return this.$t('accounts.modal.authError.loginRequired')
+      }
     },
-    passwordErrors() {
-      const errors = []
-      if (!this.validate.authForm.pass.$dirty) {
-        return errors
+    passwordError() {
+      if (!this.validate.authForm.pass.$dirty || this.showModal === false) {
+        return
       }
 
-      if (this.showModal === false) {
-        return errors
+      if (this.validate.authForm.pass.minLength.$invalid) {
+        return this.$t('accounts.modal.authError.passMinLength')
       }
 
-      this.validate.authForm.pass.minLength.$invalid &&
-        errors.push(this.$t('accounts.modal.authError.passMinLength'))
-      this.validate.authForm.pass.required.$invalid &&
-        errors.push(this.$t('accounts.modal.authError.passRequired'))
-      return errors
+      if (this.validate.authForm.pass.required.$invalid) {
+        return this.$t('accounts.modal.authError.passRequired')
+      }
     },
   },
   methods: {
