@@ -62,6 +62,15 @@ const mutations: MutationTree<IAccountsState> = {
 }
 
 const actions: IAccountsActions = {
+  addAccount({ state, commit }, account) {
+    if(state.accounts.data.allIds.length === 0) {
+      commit('SET_DEFAULT_ID', account.id)
+    }
+
+    if(!state.accounts.data.allIds.includes(account.id)) {
+      commit('ADD_ACCOUNT', account)
+    }
+  },
   removeAccount({ state, commit }, accountId) {
     if(state.accounts.data.defaultId === accountId) {
       commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
@@ -102,8 +111,6 @@ const actions: IAccountsActions = {
       localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
 
       await dispatch('loadAccountInfo', authResponse)
-
-      commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
@@ -116,9 +123,7 @@ const actions: IAccountsActions = {
       }
     }
   },
-  async loadAccountInfo({ state, commit }, authResponse) {
-    commit('SET_STATUS', RequestStatus.PENDING)
-
+  async loadAccountInfo({ dispatch, commit }, authResponse) {
     try {
       const accountInfo: {id: number, username: string} = await axios.get('/user')
 
@@ -132,13 +137,7 @@ const actions: IAccountsActions = {
         }
       }
 
-      if(state.accounts.data.allIds.length === 0) {
-        commit('SET_DEFAULT_ID', normalizedExtendedAccount.id)
-      }
-
-      if(!state.accounts.data.allIds.includes(normalizedExtendedAccount.id)) {
-        commit('ADD_ACCOUNT', normalizedExtendedAccount)
-      }
+      await dispatch('addAccount', normalizedExtendedAccount)
 
       commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {

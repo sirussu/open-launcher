@@ -47,6 +47,7 @@ export interface IAccountsState {
 type ActionCtx = ActionContext<IAccountsState, IRootState>
 
 export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>{
+  addAccount: (ctx: ActionCtx, payload: INormalizedAccount) => void
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
   clearError: (ctx: ActionCtx) => void
