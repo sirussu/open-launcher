@@ -92,9 +92,9 @@ export default defineComponent({
       }
 
       this.validate.tfaToken.minLength.$invalid &&
-        errors.push('2FA token must be at least 6 characters long')
+        errors.push(this.$t('accounts.modal.tfaError.minLength'))
       this.validate.tfaToken.required.$invalid &&
-        errors.push('2FA token is required.')
+        errors.push(this.$t('accounts.modal.tfaError.required'))
       return errors
     },
   },
@@ -103,6 +103,7 @@ export default defineComponent({
       this.$emit('tfa-was-entered', {
         tfaToken: this.tfaToken,
       })
+      this.tfaToken = ''
     },
     resetForm() {
       this.tfaToken = ''

@@ -56,6 +56,6 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
 
 export interface IAccountsGetters extends GetterTree<IAccountsState, IRootState>{
   accounts: (state: IAccountsState) => Array<IAccount>
-  defaultAccount: (state: IAccountsState) => IAccount | undefined
-  error: (state: IAccountsState) => IAccountError | undefined
+  defaultAccount: (state: IAccountsState) => IAccount
+  error: (state: IAccountsState) => IAccountError
 }

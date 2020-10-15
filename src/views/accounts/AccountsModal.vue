@@ -119,9 +119,9 @@ export default defineComponent({
       }
 
       this.validate.authForm.login.minLength.$invalid &&
-        errors.push('Login must be at least 3 characters long')
+        errors.push(this.$t('accounts.modal.authError.loginMinLength'))
       this.validate.authForm.login.required.$invalid &&
-        errors.push('Login is required.')
+        errors.push(this.$t('accounts.modal.authError.loginRequired'))
       return errors
     },
     passwordErrors() {
@@ -135,9 +135,9 @@ export default defineComponent({
       }
 
       this.validate.authForm.pass.minLength.$invalid &&
-        errors.push('Password must be at least 6 characters long')
+        errors.push(this.$t('accounts.modal.authError.passMinLength'))
       this.validate.authForm.pass.required.$invalid &&
-        errors.push('Password is required.')
+        errors.push(this.$t('accounts.modal.authError.passRequired'))
       return errors
     },
   },
