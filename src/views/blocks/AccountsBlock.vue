@@ -64,6 +64,7 @@ const {
 } = createNamespacedHelpers<IAccountsState, IAccountsGetters, IAccountsActions>(
   'accounts'
 )
+
 export default defineComponent({
   name: 'AccountsBlock',
   components: { AccountsModal, TfaModal },
@@ -85,6 +86,7 @@ export default defineComponent({
       'accounts',
       'error',
     ])
+
     const userName = ref('')
     const passwd = ref('')
 
@@ -127,6 +129,7 @@ export default defineComponent({
   },
 })
 </script>
+
 <style scoped>
 .accounts-block .v-item--active {
   background-color: rgba(255, 255, 255, 0.24);

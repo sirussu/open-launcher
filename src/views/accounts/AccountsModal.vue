@@ -88,7 +88,6 @@ export default defineComponent({
       login: '',
       pass: '',
     })
-    const tfaToken = ref('')
     const showModal = ref(false)
     const validate = useVuelidate(
       validateAccountFields,
@@ -98,14 +97,13 @@ export default defineComponent({
 
     return {
       authForm,
-      tfaToken,
       showModal,
       validate,
     }
   },
   computed: {
     loginError() {
-      if (!this.validate.authForm.login.$dirty || this.showModal === false) {
+      if (!(this.validate.authForm.login.$dirty && this.showModal)) {
         return
       }
 
@@ -118,7 +116,7 @@ export default defineComponent({
       }
     },
     passwordError() {
-      if (!this.validate.authForm.pass.$dirty || this.showModal === false) {
+      if (!(this.validate.authForm.pass.$dirty && this.showModal)) {
         return
       }
 
@@ -151,12 +149,11 @@ export default defineComponent({
       this.$emit('auth-requested', {
         username: this.authForm.login,
         password: this.authForm.pass,
-        token: this.tfaToken,
       })
+
       this.showModal = false
       this.authForm.login = ''
       this.authForm.pass = ''
-      this.tfaToken = ''
     },
   },
 })

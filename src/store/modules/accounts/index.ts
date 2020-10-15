@@ -83,6 +83,7 @@ const actions: IAccountsActions = {
   },
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
+
     const data = {
       username,
       password,
@@ -95,6 +96,7 @@ const actions: IAccountsActions = {
 
     try {
       commit('SET_ERROR', { status: 0, statusText: '' })
+
       const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', data)
 
       localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
@@ -105,7 +107,7 @@ const actions: IAccountsActions = {
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
-      if (error.isAxiosError) {
+      if (error.response) {
         const typedError: IAccountError = {
           status: error.response.status,
           statusText: error.response.statusText
@@ -123,7 +125,7 @@ const actions: IAccountsActions = {
       const normalizedExtendedAccount = {
         id: accountInfo.id,
         byId: {
-          tokens: { ...authResponse },
+          tokens: authResponse,
           accountInfo,
           id: accountInfo.id,
           username: accountInfo.username
@@ -142,7 +144,7 @@ const actions: IAccountsActions = {
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
-      if (error.isAxiosError) {
+      if (error.response) {
         const typedError: IAccountError = {
           status: error.response.status,
           statusText: error.response.statusText

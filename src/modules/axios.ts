@@ -37,13 +37,13 @@ export const revertCamelCaseIntoSnakeCaseInterceptor = (config: AxiosRequestConf
 
 
 export const addAuthHeadersInterceptor = (config: AxiosRequestConfig) => {
-  if (localStorage.tokens) {
-    const tokens = localStorage.getItem('tokens')
+  const tokens = localStorage.getItem('tokens')
 
-    config.headers = {
-      ...config.headers,
-      'Authorization': tokens,
-    }
+  if(!tokens) return config
+
+  config.headers = {
+    ...config.headers,
+    'Authorization': tokens,
   }
 
   return config

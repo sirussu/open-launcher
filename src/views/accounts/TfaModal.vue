@@ -80,13 +80,14 @@ export default defineComponent({
       },
     },
     tfaError() {
-      if (!this.validate.tfaToken.$dirty || this.isTfa === false) {
+      if (!(this.validate.tfaToken.$dirty && this.isTfa)) {
         return
       }
 
       if (this.validate.tfaToken.minLength.$invalid) {
         return this.$t('accounts.modal.tfaError.minLength')
       }
+
       if (this.validate.tfaToken.required.$invalid) {
         return this.$t('accounts.modal.tfaError.required')
       }
@@ -97,6 +98,7 @@ export default defineComponent({
       this.$emit('tfa-was-entered', {
         tfaToken: this.tfaToken,
       })
+
       this.tfaToken = ''
     },
     resetForm() {

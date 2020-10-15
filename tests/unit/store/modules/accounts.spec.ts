@@ -30,8 +30,8 @@ describe('accounts module', () => {
     nock(baseURL).post('/oauth/token').reply(200, accountsStub.account1.tokens)
     nock(baseURL).get('/api/user').reply(200, accountsStub.account1)
 
-    await store.dispatch('accounts/sendAuthRequest', { username: 'vylor1', password: 'Cbhtytdsq03' })
-    console.log(store.getters['accounts/defaultAccount'])
+    await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa' })
+
     expect(Object.keys(store.getters)).toContain('accounts/accounts')
     expect(Object.keys(store.getters)).toContain('accounts/defaultAccount')
     expect(store.getters['accounts/accounts']).toHaveLength(1)
