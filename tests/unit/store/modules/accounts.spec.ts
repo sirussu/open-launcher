@@ -28,7 +28,7 @@ describe('accounts module', () => {
 
   test('correct account from request & setting as default', async () => {
     nock(baseURL).post('/oauth/token').reply(200, accountsStub.account1.tokens)
-    nock(baseURL).get('/api/user').reply(200, accountsStub.account1)
+    nock(baseURL).get('/api/user').reply(200, accountsStub.account1.accountInfo)
 
     await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa' })
 
