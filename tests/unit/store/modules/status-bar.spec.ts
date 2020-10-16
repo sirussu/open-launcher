@@ -3,8 +3,8 @@ import Vuex, { Store } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import nock from 'nock'
 
-import { statusBarModule } from '@/store/modules/statusBar'
-import { IStatusState } from '@/store/modules/statusBar/types'
+import { statusBarModule } from '@/store/modules/status_bar'
+import { IStatusState } from '@/store/modules/status_bar/types'
 
 import realmsStub from './stubs/realms.json'
 
@@ -28,11 +28,11 @@ describe('status bar module', () => {
   test('get realms, save them in store', async () => {
     nock('https://api.sirus.su/api').get('/server/status').reply(200, realmsStub)
 
-    await store.dispatch('getRealms')
+    await store.dispatch('status/getRealms')
 
     expect(Object.keys(store.getters)).toContain('status/realms')
     expect(Object.keys(store.getters)).toContain('status/summaryOnline')
-    expect(store.getters['status/realms']).toHaveLength(4)
     expect(store.getters['status/summaryOnline']).toBe(8764)
+    expect(store.getters['status/realms']).toHaveLength(4)
   })
 })
