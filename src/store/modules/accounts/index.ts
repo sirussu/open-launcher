@@ -104,7 +104,7 @@ const actions: IAccountsActions = {
     }
 
     try {
-      commit('SET_ERROR', { status: 0, statusText: '' })
+      await dispatch('clearError')
 
       const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', data)
 
