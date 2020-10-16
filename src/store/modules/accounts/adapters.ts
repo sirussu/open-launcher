@@ -1,4 +1,4 @@
-export const userDataToRequestParams = ({ username, password, token }: { username: string, password: string, token?: string }) => {
+export const getUserDataToRequestParams = ({ username, password, token }: { username: string, password: string, token?: string }) => {
   return {
     username,
     password,

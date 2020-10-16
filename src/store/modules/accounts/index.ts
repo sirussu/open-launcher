@@ -11,7 +11,7 @@ import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
-import { userDataToRequestParams, getExtendedAccount } from '@/store/modules/accounts/adapters'
+import { getUserDataToRequestParams, getExtendedAccount } from '@/store/modules/accounts/adapters'
 
 const state: IAccountsState = {
   accounts: {
@@ -88,10 +88,10 @@ const actions: IAccountsActions = {
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
-    const data = userDataToRequestParams({ username, password, token })
+    const userDataToRequestParams = getUserDataToRequestParams({ username, password, token })
 
     try {
-      const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', data)
+      const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', userDataToRequestParams)
 
       localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
 
