@@ -14,7 +14,7 @@ export interface IRealmAdditional extends NormalizedAdditional {
   summaryOnline: number
 }
 
-export interface IStatusState extends NormalizedSchema<IRealm>{
+export interface IStatusState {
   realms: NormalizedSchema<IRealm>
   additional: IRealmAdditional
 }
