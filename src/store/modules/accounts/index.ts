@@ -108,11 +108,7 @@ const actions: IAccountsActions = {
       commit('SET_STATUS', RequestStatus.FAILED)
 
       if (error.response) {
-        const typedError: IAccountError = {
-          status: error.response.status,
-          statusText: error.response.statusText
-        }
-        commit('SET_ERROR', typedError)
+        commit('SET_ERROR', { status: error.response.status, statusText: error.response.statusText })
       }
     }
   },
@@ -127,14 +123,6 @@ const actions: IAccountsActions = {
       commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
-
-      if (error.response) {
-        const typedError: IAccountError = {
-          status: error.response.status,
-          statusText: error.response.statusText
-        }
-        commit('SET_ERROR', typedError)
-      }
     }
   }
 }
