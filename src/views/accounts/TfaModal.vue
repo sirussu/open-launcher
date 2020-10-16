@@ -2,7 +2,7 @@
   <v-dialog
     max-width="300px"
     persistent
-    v-model="isTfa"
+    v-model="hasTfa"
     @keydown.enter="tfaWasEntered"
   >
     <v-card>
@@ -69,18 +69,8 @@ export default defineComponent({
     }
   },
   computed: {
-    isTfa: {
-      get() {
-        return this.hasTfa
-      },
-      set(val) {
-        if (val) {
-          return this.get()
-        }
-      },
-    },
     tfaError() {
-      if (!(this.validate.tfaToken.$dirty && this.isTfa)) {
+      if (!(this.validate.tfaToken.$dirty && this.hasTfa)) {
         return
       }
 
@@ -103,7 +93,6 @@ export default defineComponent({
     },
     resetForm() {
       this.tfaToken = ''
-      this.$emit('clear-error')
       this.$emit('clear-form')
     },
   },

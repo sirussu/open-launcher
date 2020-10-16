@@ -130,8 +130,7 @@ export default defineComponent({
     },
   },
   methods: {
-    clearErrorAndForm() {
-      this.$emit('clear-error')
+    clearForm() {
       this.$emit('clear-form')
     },
     resetForm() {
@@ -139,7 +138,7 @@ export default defineComponent({
       this.authForm.login = ''
       this.authForm.pass = ''
       this.tfaToken = ''
-      this.clearErrorAndForm()
+      this.clearForm()
     },
     sendRequest() {
       if (this.validate.authForm.$invalid) {

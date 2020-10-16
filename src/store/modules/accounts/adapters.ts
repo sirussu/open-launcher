@@ -1,4 +1,4 @@
-export const authData = ({ username, password, token }: { username: string, password: string, token?: string }) => {
+export const userDataToRequestParams = ({ username, password, token }: { username: string, password: string, token?: string }) => {
   return {
     username,
     password,
@@ -10,7 +10,7 @@ export const authData = ({ username, password, token }: { username: string, pass
   }
 }
 
-export const normalizedExtendedAccount = (accountInfo, authResponse) => {
+export const getExtendedAccount = (accountInfo, authResponse) => {
   return {
     id: accountInfo.id,
     byId: {

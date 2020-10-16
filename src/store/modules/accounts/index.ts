@@ -5,14 +5,13 @@ import {
   IAccountsActions,
   IAccountsGetters,
   IAccountsState,
-  IAccountError,
   INormalizedAccount
 } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
-import { authData, normalizedExtendedAccount } from '@/store/modules/accounts/lib'
+import { userDataToRequestParams, getExtendedAccount } from '@/store/modules/accounts/adapters'
 
 const state: IAccountsState = {
   accounts: {
@@ -24,17 +23,15 @@ const state: IAccountsState = {
   },
   additional: {
     status: RequestStatus.INITIAL,
-    error: {
-      status: 0,
-      statusText: ''
-    }
+    needTfa: false
   }
 }
 
 const getters: IAccountsGetters = {
   accounts: state => denormalizeData(state.accounts.data),
   defaultAccount: state => state.accounts.data.byId[state.accounts.data.defaultId],
-  error: state => state.additional.error
+  needTfa: state => state.additional.needTfa,
+  getStatus: state => state.additional.status
 }
 
 const mutations: MutationTree<IAccountsState> = {
@@ -54,12 +51,9 @@ const mutations: MutationTree<IAccountsState> = {
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
-  SET_ERROR(state, error: IAccountError) {
-    if(state.additional.error) {
-      state.additional.error.status = error.status
-      state.additional.error.statusText = error.statusText
-    }
-  }
+  SET_NEED_TFA(state, value) {
+    state.additional.needTfa = value
+  },
 }
 
 const actions: IAccountsActions = {
@@ -88,17 +82,15 @@ const actions: IAccountsActions = {
     commit('SET_DEFAULT_ID', account.id)
     localStorage.setItem('tokens', `${account.tokens.tokenType} ${account.tokens.accessToken}`)
   },
-  clearError({ commit }) {
-    commit('SET_ERROR', { status: 0, statusText: '' })
+  switchOffTfa({ commit }) {
+    commit('SET_NEED_TFA', false)
   },
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
-    const data = authData({ username, password, token })
+    const data = userDataToRequestParams({ username, password, token })
 
     try {
-      await dispatch('clearError')
-
       const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', data)
 
       localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
@@ -107,8 +99,10 @@ const actions: IAccountsActions = {
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
-      if (error.response) {
-        commit('SET_ERROR', { status: error.response.status, statusText: error.response.statusText })
+      if (error.response && error.response.status === 401) {
+        commit('SET_NEED_TFA', true)
+      } else {
+        console.error(error)
       }
     }
   },
@@ -116,13 +110,16 @@ const actions: IAccountsActions = {
     try {
       const accountInfo: {id: number, username: string} = await axios.get('/user')
 
-      const account = normalizedExtendedAccount(accountInfo, authResponse)
+      const account = getExtendedAccount(accountInfo, authResponse)
 
       await dispatch('addAccount', account)
 
       commit('SET_STATUS', RequestStatus.LOADED)
+
+      commit('SET_NEED_TFA', false)
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
+      console.error(error)
     }
   }
 }

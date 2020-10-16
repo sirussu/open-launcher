@@ -11,9 +11,9 @@
             dense
           >
             <v-list-item-action>
-              <v-icon>{{
-                defaultAccount.id === account.id ? 'mdi-account-check' : ''
-              }}</v-icon>
+              <v-icon v-if="defaultAccount.id === account.id"
+                >mdi-account-check</v-icon
+              >
             </v-list-item-action>
 
             <v-list-item-content>
@@ -29,15 +29,10 @@
             </v-list-item-action>
           </v-list-item>
         </v-list-item-group>
-        <accounts-modal
-          @clear-error="clearError"
-          @clear-form="resetForm"
-          @auth-requested="sendRequest"
-        />
+        <accounts-modal @clear-form="resetForm" @auth-requested="sendRequest" />
         <tfa-modal
           :has-tfa="hasTfa"
           @tfa-was-entered="tfaWasEntered"
-          @clear-error="clearError"
           @clear-form="resetForm"
         />
       </v-list>
@@ -73,40 +68,45 @@ export default defineComponent({
       setDefaultAccount,
       removeAccount,
       sendAuthRequest,
-      clearError,
+      switchOffTfa,
     } = useAccountsActions([
       'setDefaultAccount',
       'removeAccount',
       'sendAuthRequest',
-      'clearError',
+      'switchOffTfa',
     ])
 
-    const { defaultAccount, accounts, error } = useAccountsGetters([
+    const {
+      defaultAccount,
+      accounts,
+      needTfa,
+      getStatus,
+    } = useAccountsGetters([
       'defaultAccount',
       'accounts',
-      'error',
+      'needTfa',
+      'getStatus',
     ])
 
-    const userName = ref('')
-    const passwd = ref('')
+    const username = ref('')
+    const password = ref('')
 
     return {
-      userName,
-      passwd,
+      username,
+      password,
       accounts,
       defaultAccount,
-      error,
+      needTfa,
       setDefaultAccount,
       removeAccount,
       sendAuthRequest,
-      clearError,
+      getStatus,
+      switchOffTfa,
     }
   },
   computed: {
     hasTfa() {
-      if (this.error) {
-        return this.error.status === 401
-      }
+      return this.needTfa
     },
   },
   methods: {
@@ -117,14 +117,15 @@ export default defineComponent({
     },
     async tfaWasEntered(tfaToken) {
       await this.sendAuthRequest({
-        username: this.userName,
-        password: this.passwd,
+        username: this.username,
+        password: this.password,
         token: tfaToken,
       })
     },
     resetForm() {
-      this.userName = ''
-      this.passwd = ''
+      this.username = ''
+      this.password = ''
+      this.switchOffTfa()
     },
   },
 })

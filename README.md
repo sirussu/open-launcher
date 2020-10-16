@@ -8,6 +8,7 @@
 ```
 yarn install
 ```
+Need to copy `.env.example` to `.env` and fill in the variables 
 
 ### Compiles and hot-reloads for development
 ```
