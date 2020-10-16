@@ -12,6 +12,7 @@ import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
+import { authData, normalizedExtendedAccount } from '@/store/modules/accounts/lib'
 
 const state: IAccountsState = {
   accounts: {
@@ -93,15 +94,7 @@ const actions: IAccountsActions = {
   async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
-    const data = {
-      username,
-      password,
-      token,
-      grantType: process.env.VUE_APP_GRANT_TYPE,
-      clientId: Number(process.env.VUE_APP_CLIENT_ID),
-      clientSecret: process.env.VUE_APP_CLIENT_SECRET,
-      scope: '*'
-    }
+    const data = authData({ username, password, token })
 
     try {
       await dispatch('clearError')
@@ -127,17 +120,9 @@ const actions: IAccountsActions = {
     try {
       const accountInfo: {id: number, username: string} = await axios.get('/user')
 
-      const normalizedExtendedAccount = {
-        id: accountInfo.id,
-        byId: {
-          tokens: authResponse,
-          accountInfo,
-          id: accountInfo.id,
-          username: accountInfo.username
-        }
-      }
+      const account = normalizedExtendedAccount(accountInfo, authResponse)
 
-      await dispatch('addAccount', normalizedExtendedAccount)
+      await dispatch('addAccount', account)
 
       commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {
