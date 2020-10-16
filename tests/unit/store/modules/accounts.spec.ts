@@ -6,6 +6,8 @@ import nock from 'nock'
 import { accountsModule } from '@/store/modules/accounts'
 import { IAccountsState } from '@/store/modules/accounts/types'
 
+import tokensStub from './stubs/tokens.json'
+import accountInfoStub from './stubs/accountInfo.json'
 import accountsStub from './stubs/accounts.json'
 
 describe('accounts module', () => {
@@ -27,8 +29,8 @@ describe('accounts module', () => {
   })
 
   test('correct account from request & setting as default', async () => {
-    nock(baseURL).post('/oauth/token').reply(200, accountsStub.account1.tokens)
-    nock(baseURL).get('/api/user').reply(200, accountsStub.account1.accountInfo)
+    nock(baseURL).post('/oauth/token').reply(200, tokensStub.tokens1)
+    nock(baseURL).get('/api/user').reply(200, accountInfoStub.accountInfo1)
 
     await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa' })
 
