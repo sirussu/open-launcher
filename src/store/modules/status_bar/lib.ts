@@ -1,4 +1,4 @@
 
 export const getSummaryOnline = <T extends { online: number }>(realms: Array<T>): number => {
-  return realms.reduce((acc, element) => acc + element.online, 0)
+  return realms.reduce((online, element) => online + element.online, 0)
 }
