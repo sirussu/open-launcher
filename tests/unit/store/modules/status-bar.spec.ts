@@ -32,7 +32,7 @@ describe('status bar module', () => {
 
     expect(Object.keys(store.getters)).toContain('status/realms')
     expect(Object.keys(store.getters)).toContain('status/summaryOnline')
-    expect(store.getters['status/summaryOnline']).toBe(8764)
+    expect(store.getters['status/summaryOnline']).toBe(8674)
     expect(store.getters['status/realms']).toHaveLength(4)
   })
 })
