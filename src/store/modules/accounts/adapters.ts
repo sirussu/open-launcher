@@ -1,4 +1,4 @@
-export const getUserDataToRequestParams = ({ username, password, token }: { username: string, password: string, token?: string }) => {
+export const adaptUserDataToRequestParams = ({ username, password, token }: { username: string, password: string, token?: string }) => {
   return {
     username,
     password,
@@ -10,7 +10,7 @@ export const getUserDataToRequestParams = ({ username, password, token }: { user
   }
 }
 
-export const getExtendedAccount = (accountInfo, authResponse) => {
+export const adaptExtendedAccount = (accountInfo, authResponse) => {
   return {
     id: accountInfo.id,
     byId: {

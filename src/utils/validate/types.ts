@@ -13,7 +13,7 @@ export interface IAccountFieldsValidator {
   }
 }
 
-export interface I2faValidator {
+export interface ITfaValidator {
   tfaToken: {
     required: () => ValidationRule
     minLength: (length: number) => boolean

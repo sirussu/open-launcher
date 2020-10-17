@@ -49,7 +49,7 @@
 import { defineComponent, ref } from '@vue/composition-api'
 import useVuelidate from '@vuelidate/core'
 
-import { validate2fa } from '@/utils/validate'
+import { validateTfa } from '@/utils/validate'
 
 export default defineComponent({
   name: 'TfaModal',
@@ -61,7 +61,7 @@ export default defineComponent({
   },
   setup() {
     const tfaToken = ref('')
-    const validate = useVuelidate(validate2fa, { tfaToken }, 'tfaToken')
+    const validate = useVuelidate(validateTfa, { tfaToken }, 'tfaToken')
 
     return {
       tfaToken,
