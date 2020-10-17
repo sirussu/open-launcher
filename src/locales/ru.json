@@ -35,5 +35,9 @@
   },
   "feeds": {
     "to_forum": "Подробнее"
+  },
+  "statusBar": {
+    "minimize": "Свернуть",
+    "close": "Закрыть"
   }
 }

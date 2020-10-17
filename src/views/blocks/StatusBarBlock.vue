@@ -1,5 +1,19 @@
 <template>
-  <div></div>
+  <v-system-bar window app>
+    <span>Sirus.su</span>
+    <span>(ver.{{ version }})</span>
+    <v-spacer />
+    <v-btn tile small>
+      <v-icon :title="$t('statusBar.minimize')" @click="minimizeApp">
+        mdi-minus
+      </v-icon>
+    </v-btn>
+    <v-btn tile small>
+      <v-icon v-ripple :title="$t('statusBar.close')" @click="closeApp">
+        mdi-close
+      </v-icon>
+    </v-btn>
+  </v-system-bar>
 </template>
 
 <script lang="ts">
@@ -26,6 +40,9 @@ export default defineComponent({
     ])
 
     getRealms()
+    setInterval(() => {
+      getRealms()
+    }, 3 * 60 * 1000)
 
     return {
       getRealms,
@@ -33,5 +50,24 @@ export default defineComponent({
       summaryOnline,
     }
   },
+  computed: {
+    version() {
+      return '1.0.0'
+    },
+  },
+  methods: {
+    minimizeApp() {
+      console.log(`minimize`)
+    },
+    closeApp() {
+      console.log(`close`)
+    },
+  },
 })
 </script>
+
+<style scoped>
+.rounded {
+  border-radius: 100%;
+}
+</style>

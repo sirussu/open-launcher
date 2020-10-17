@@ -35,5 +35,9 @@
   },
   "feeds": {
     "to_forum": "Learn More"
+  },
+  "statusBar": {
+    "minimize": "Minimize",
+    "close": "Close"
   }
 }
