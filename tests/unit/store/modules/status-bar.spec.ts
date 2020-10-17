@@ -7,6 +7,7 @@ import { statusBarModule } from '@/store/modules/status_bar'
 import { IStatusState } from '@/store/modules/status_bar/types'
 
 import realmsStub from './stubs/realms.json'
+import realmsRawStub from './stubs/realmsRaw.json'
 
 describe('status bar module', () => {
   let store: Store<{ status: IStatusState }>
@@ -26,13 +27,15 @@ describe('status bar module', () => {
   })
 
   test('get realms, save them in store', async () => {
-    nock('https://api.sirus.su/api').get('/server/status').reply(200, realmsStub)
+    nock('https://api.sirus.su/api').get('/server/status').reply(200, realmsRawStub)
 
     await store.dispatch('status/getRealms')
 
     expect(Object.keys(store.getters)).toContain('status/realms')
+    expect(store.getters['status/realms']).toHaveLength(4)
+    expect(store.getters['status/realms']).toMatchObject(realmsStub)
+
     expect(Object.keys(store.getters)).toContain('status/summaryOnline')
     expect(store.getters['status/summaryOnline']).toBe(8674)
-    expect(store.getters['status/realms']).toHaveLength(4)
   })
 })
