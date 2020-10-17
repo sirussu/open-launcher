@@ -1,4 +1,4 @@
-import Axios, { AxiosResponse } from 'axios'
+import Axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import humps from 'humps'
 import isArrayBuffer from 'is-array-buffer'
 
@@ -24,6 +24,33 @@ export const camelizeKeysInterceptor = (response: AxiosResponse) => {
   return response
 }
 
+/**
+ * Converts object keys from camelCase to snake_case
+ */
+export const revertCamelCaseIntoSnakeCaseInterceptor = (config: AxiosRequestConfig) => {
+  if(config.data) {
+    config.data = humps.decamelizeKeys(config.data)
+  }
+
+  return config
+}
+
+
+export const addAuthHeadersInterceptor = (config: AxiosRequestConfig) => {
+  const tokens = localStorage.getItem('tokens')
+
+  if(!tokens) return config
+
+  config.headers = {
+    ...config.headers,
+    'Authorization': tokens,
+  }
+
+  return config
+}
+
 axios.interceptors.response.use(camelizeKeysInterceptor)
+axios.interceptors.request.use(revertCamelCaseIntoSnakeCaseInterceptor)
+axios.interceptors.request.use(addAuthHeadersInterceptor)
 
 export { axios }

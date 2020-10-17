@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Feeds from '@/views/pages/Feeds.vue'
 import Settings from '@/views/pages/Settings.vue'
+import Accounts from '@/views/pages/Accounts.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
+  },
+  {
+    path: '/accounts',
+    name: 'Accounts',
+    component: Accounts,
   },
 ]
 

@@ -1,13 +1,36 @@
 {
   "sidebar": {
     "news": "Новости",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "accounts": "Аккаунты"
   },
   "settings": {
     "choose_lang": "Выберите язык",
     "choose_client_directory": "Выберите папку с игрой",
     "errors": {
       "wrong_client_directory": "Пожалуйста выберите папку с клиентом"
+    }
+  },
+  "accounts": {
+    "add_account": "Добавить аккаунт",
+    "remove_account": "Удалить аккаунт",
+    "modal": {
+      "title": "Добавить аккаунт",
+      "enter_login": "Введите логин",
+      "enter_pass": "Введите пароль",
+      "enter_tfa_code": "Введите 2FA код",
+      "close_modal": "Закрыть",
+      "req_fields": "* - обязательные поля",
+      "tfaError": {
+        "minLength": "2FA токен должен состоять из 6 символов",
+        "required": "2FA токен обязателен"
+      },
+      "authError": {
+        "loginMinLength": "Логин должен содержать минимум 3 символа",
+        "loginRequired": "Логин обязателен",
+        "passMinLength": "Пароль должен содержать минимум 6 символов",
+        "passRequired": "Пароль обязателен"
+      }
     }
   },
   "feeds": {
