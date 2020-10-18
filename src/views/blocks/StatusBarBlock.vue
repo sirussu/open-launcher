@@ -1,18 +1,8 @@
 <template>
-  <v-system-bar window app>
-    <span>Sirus.su</span>
-    <span>(ver.{{ version }})</span>
+  <v-system-bar window app class="status-bar">
+    <status-bar :online="summaryOnline" :realms="realms" />
     <v-spacer />
-    <v-btn tile small>
-      <v-icon :title="$t('statusBar.minimize')" @click="minimizeApp">
-        mdi-minus
-      </v-icon>
-    </v-btn>
-    <v-btn tile small>
-      <v-icon v-ripple :title="$t('statusBar.close')" @click="closeApp">
-        mdi-close
-      </v-icon>
-    </v-btn>
+    <window-controls />
   </v-system-bar>
 </template>
 
@@ -20,6 +10,8 @@
 import { createNamespacedHelpers } from 'vuex-composition-helpers'
 import { defineComponent } from '@vue/composition-api'
 
+import StatusBar from '@/views/status-bar/StatusBar.vue'
+import WindowControls from '@/views/status-bar/WindowControls.vue'
 import {
   IStatusGetters,
   IStatusActions,
@@ -32,6 +24,7 @@ const {
 
 export default defineComponent({
   name: 'StatusBarBlock',
+  components: { WindowControls, StatusBar },
   setup() {
     const { getRealms } = useStatusActions(['getRealms'])
     const { realms, summaryOnline } = useStatusGetters([
@@ -50,24 +43,12 @@ export default defineComponent({
       summaryOnline,
     }
   },
-  computed: {
-    version() {
-      return '1.0.0'
-    },
-  },
-  methods: {
-    minimizeApp() {
-      console.log(`minimize`)
-    },
-    closeApp() {
-      console.log(`close`)
-    },
-  },
 })
 </script>
 
 <style scoped>
-.rounded {
-  border-radius: 100%;
+.status-bar {
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
 }
 </style>
