@@ -6,6 +6,7 @@ import { IRealm, IStatusActions, IStatusGetters, IStatusState } from '@/store/mo
 import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
 import { getSummaryOnline } from '@/store/modules/status_bar/lib'
+import { modulesFactory } from '@/utils/modulesFactory'
 
 const state: IStatusState = {
   realms: {
@@ -62,10 +63,4 @@ const actions: IStatusActions = {
   },
 }
 
-export const statusBarModule: Module<IStatusState, IRootState> = {
-  namespaced: true,
-  state,
-  mutations,
-  actions,
-  getters,
-}
+export const statusBarModule = modulesFactory<IStatusState, IRootState>({ state, mutations, actions, getters })
