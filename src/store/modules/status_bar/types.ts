@@ -24,6 +24,8 @@ export interface IStatusGetters extends GetterTree<IStatusState, IRootState> {
   summaryOnline: (state: IStatusState) => number
 }
 
+type ActionCtx = ActionContext<IStatusState, IRootState>
+
 export interface IStatusActions extends ActionTree<IStatusState, IRootState> {
-  getRealms: (ctx: ActionContext<IStatusState, IRootState>) => Promise<void>
+  getRealms: (ctx: ActionCtx) => Promise<void>
 }
