@@ -31,9 +31,10 @@ function createWindow() {
       nodeIntegration: Boolean(process.env.ELECTRON_NODE_INTEGRATION),
       contextIsolation: false,
       webviewTag: true,
+      enableRemoteModule: true,
     },
     useContentSize: true,
-    // frame: false, // TODO: uncomment afeter add top panel
+    frame: false,
   })
 
   win.removeMenu()
