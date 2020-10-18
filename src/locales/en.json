@@ -38,6 +38,7 @@
   },
   "statusBar": {
     "minimize": "Minimize",
-    "close": "Close"
+    "close": "Close",
+    "online": "players"
   }
 }
