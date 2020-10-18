@@ -111,8 +111,8 @@ export default defineComponent({
   },
   methods: {
     async sendRequest({ username, password, token }) {
-      this.userName = username
-      this.passwd = password
+      this.username = username
+      this.password = password
       await this.sendAuthRequest({ username, password, token })
     },
     async tfaWasEntered(tfaToken) {
