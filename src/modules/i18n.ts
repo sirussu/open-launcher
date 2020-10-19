@@ -15,36 +15,20 @@ export default () =>
       ru,
     },
     pluralizationRules: {
-      'ru': (choice: number, choicesLength: number) => {
+      'ru': (choice: number) => {
         if (choice === 0) {
           return 0
         }
 
-        let result
-        const teen = choice > 10 && choice < 20
-        const endsWithOne = choice % 10 === 1
-
-        if ((!teen && endsWithOne) && choicesLength < 4) {
-          result = 1
+        let form
+        if (choice % 10 === 1 && choice % 100 !== 11) {
+          form = 0
+        } else if (choice % 10 >= 2 && choice % 10 <= 4 && (choice % 100 < 10 || choice % 100 >= 20)) {
+          form = 1
         } else {
-          result = 2
+          form = 2
         }
-
-        if (choicesLength < 4) {
-          result = 2
-        } else {
-          result = 3
-        }
-
-        if (!teen && endsWithOne) {
-          result = 1
-        }
-
-        if (!teen && choice % 10 >= 2 && choice % 10 <= 4) {
-          result = 2
-        }
-
-        return result
+        return form
       }
     }
   })
