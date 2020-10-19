@@ -39,6 +39,6 @@
   "statusBar": {
     "minimize": "Minimize",
     "close": "Close",
-    "online": "players"
+    "online": "0 players | {n} player | {n} players"
   }
 }

@@ -1,7 +1,6 @@
-import { NormalizedSchema, NormalizedAdditional } from '@/types/normalze'
-
 import { IRootState } from '@/store/types'
 import { ActionContext, ActionTree, GetterTree } from 'vuex'
+import { RequestStatus } from '@/types/network'
 
 export interface IRealm {
   id: number
@@ -10,13 +9,10 @@ export interface IRealm {
   online: number
 }
 
-export interface IRealmAdditional extends NormalizedAdditional {
-  summaryOnline: number
-}
-
 export interface IStatusState {
-  realms: NormalizedSchema<IRealm>
-  additional: IRealmAdditional
+  realms: Array<IRealm>
+  status: RequestStatus
+  summaryOnline: number
 }
 
 export interface IStatusGetters extends GetterTree<IStatusState, IRootState> {
