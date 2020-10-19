@@ -37,6 +37,15 @@ Vue.use((Vue) => {
     openUrl(link) {
       action('openUrl')(link)
     },
+    minimizeApp() {
+      action('minimizeApp')()
+    },
+    closeApp() {
+      action('closeApp')()
+    },
+    getAppVersion() {
+      action('getAppVersion')()
+    },
   }
 })
 

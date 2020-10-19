@@ -1,13 +1,15 @@
 import { object, number } from '@storybook/addon-knobs'
 
 import StatusBar from '@/views/statusBar/StatusBar.vue'
-import { IRealm } from '../src/store/modules/statusBar/types'
+import WindowControls from '@/views/statusBar/WindowControls.vue'
+
+import { IRealm } from '@/store/modules/statusBar/types'
 
 export default {
   title: 'StatusBar',
 }
 
-export const exampleWithKnobs = () => ({
+export const StatusBarText = () => ({
   components: { StatusBar },
   props: {
     sirus: {
@@ -27,4 +29,9 @@ export const exampleWithKnobs = () => ({
     },
   },
   template: '<status-bar :realms="[sirus, scourge, frostmourne, neltharion]" :online="online" />',
+})
+
+export const StatusBarWindowControls = () => ({
+  components: { WindowControls },
+  template: '<window-controls />',
 })
