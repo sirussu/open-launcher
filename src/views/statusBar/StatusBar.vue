@@ -30,7 +30,8 @@ export default defineComponent({
   },
   computed: {
     version() {
-      return this.$interop.getAppVersion() || `0.0.0`
+      // return this.$interop.getAppVersion() || `0.0.0`
+      return `0.0.0`
     },
   },
 })

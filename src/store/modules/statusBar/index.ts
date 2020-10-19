@@ -2,10 +2,10 @@ import { Module, MutationTree } from 'vuex'
 import { IRootState } from '@/store/types'
 import { normalizeData } from '@/utils/normalizeData'
 import { denormalizeData } from '@/utils/denormalizeData'
-import { IRealm, IStatusActions, IStatusGetters, IStatusState } from '@/store/modules/status_bar/types'
+import { IRealm, IStatusActions, IStatusGetters, IStatusState } from '@/store/modules/statusBar/types'
 import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
-import { getSummaryOnline } from '@/store/modules/status_bar/lib'
+import { getSummaryOnline } from '@/store/modules/statusBar/lib'
 import { modulesFactory } from '@/utils/modulesFactory'
 
 const state: IStatusState = {
