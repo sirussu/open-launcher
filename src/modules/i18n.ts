@@ -15,12 +15,7 @@ export default () =>
       ru,
     },
     pluralizationRules: {
-      /**
-       * @param choice {number} индекс выбора, переданный в $tc: `$tc('path.to.rule', choiceIndex)`
-       * @param choicesLength {number} общее количество доступных вариантов
-       * @returns финальный индекс для выбора соответственного варианта слова
-       */
-      'ru': function(choice, choicesLength) {
+      'ru': function(choice: number, choicesLength: number) {
         if (choice === 0) {
           return 0;
         }

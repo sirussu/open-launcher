@@ -9,37 +9,27 @@ import { getSummaryOnline } from '@/store/modules/status_bar/lib'
 import { modulesFactory } from '@/utils/modulesFactory'
 
 const state: IStatusState = {
-  realms: {
-    data: {
-      allIds: [],
-      byId: {},
-    },
-  },
-  additional: {
-    status: RequestStatus.INITIAL,
-    summaryOnline: 0,
-  },
+  realms: [],
+  status: RequestStatus.INITIAL,
+  summaryOnline: 0,
 }
 
 const getters: IStatusGetters = {
-  realms: state => denormalizeData(state.realms.data),
-  summaryOnline: state => state.additional.summaryOnline,
+  realms: state => state.realms,
+  summaryOnline: state => state.summaryOnline,
 }
 
 const mutations: MutationTree<IStatusState> = {
   SET_REALMS(state, realms: Array<IRealm>) {
-    const normalizedRealms = normalizeData(realms)
-
-    state.realms.data.allIds = normalizedRealms.allIds
-    state.realms.data.byId = normalizedRealms.byId
+    state.realms = realms
   },
 
   SET_SUMMARY_ONLINE(state, summaryOnline) {
-    state.additional.summaryOnline = summaryOnline
+    state.summaryOnline = summaryOnline
   },
 
   SET_STATUS(state, status: RequestStatus) {
-    state.additional.status = status
+    state.status = status
   },
 }
 

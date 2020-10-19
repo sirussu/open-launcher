@@ -7,7 +7,9 @@
       <span v-if="realm.isOnline">&#128994;</span>
       <span v-else>&#128308;</span>
     </span>
-    <span class="online">{{ online }} {{ $t('statusBar.online') }}</span>
+    <span class="online">
+      {{ $tc('statusBar.online', online) }}
+    </span>
   </div>
 </template>
 
@@ -28,13 +30,8 @@ export default defineComponent({
   },
   computed: {
     version() {
-      return this.$interop.getAppVersion() || `0.1.0`
+      return this.$interop.getAppVersion() || `0.0.0`
     },
   },
 })
 </script>
-<style scoped>
-.online {
-  margin-left: 10px;
-}
-</style>
