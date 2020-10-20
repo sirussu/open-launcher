@@ -23,7 +23,7 @@ export interface IAuthResponse {
 
 export interface IAccountsAdditional extends NormalizedAdditional{
   needTfa: boolean
-  lastValidateAccountsTimestamp: number
+  lastValidationTimestamp: number
 }
 
 export interface IAccounts extends NormalizedSchema<IAccount> {

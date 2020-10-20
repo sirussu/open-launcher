@@ -25,7 +25,7 @@ const state: IAccountsState = {
   additional: {
     status: RequestStatus.INITIAL,
     needTfa: false,
-    lastValidateAccountsTimestamp: 0
+    lastValidationTimestamp: 0
   },
 }
 
@@ -57,7 +57,7 @@ const mutations: MutationTree<IAccountsState> = {
     state.additional.needTfa = value
   },
   SET_VALIDATE_ACCOUNTS_TIME(state, timestamp) {
-    state.additional.lastValidateAccountsTimestamp = timestamp
+    state.additional.lastValidationTimestamp = timestamp
   },
 }
 
@@ -109,7 +109,6 @@ const actions: IAccountsActions = {
 
       if (error.response && error.response.status === 401) {
         commit('SET_NEED_TFA', true)
-        commit('SET_STATUS', RequestStatus.PENDING)
       } else {
         console.error(error)
       }
@@ -118,7 +117,7 @@ const actions: IAccountsActions = {
   async validateAccountsInfo({ dispatch, commit, getters, state }) {
     const currentTime = Date.now()
 
-    if ((state.additional.lastValidateAccountsTimestamp + PENDING_TIME_MS) > currentTime) {
+    if ((state.additional.lastValidationTimestamp + PENDING_TIME_MS) > currentTime) {
       return
     }
 
