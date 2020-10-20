@@ -21,6 +21,7 @@ export default () =>
         }
 
         let form
+
         if (choice % 10 === 1 && choice % 100 !== 11) {
           form = 0
         } else if (choice % 10 >= 2 && choice % 10 <= 4 && (choice % 100 < 10 || choice % 100 >= 20)) {
@@ -28,6 +29,7 @@ export default () =>
         } else {
           form = 2
         }
+
         return form
       }
     }
