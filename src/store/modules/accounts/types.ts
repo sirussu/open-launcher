@@ -1,7 +1,13 @@
 import { ActionContext, ActionTree, GetterTree } from 'vuex'
+
 import { IRootState } from '@/store/types'
 import { NormalizedAdditional, NormalizedSchema } from '@/types/normalze'
 import { RequestStatus } from '@/types/network'
+
+export interface IAuthResponse {
+  tokenType: string
+  accessToken: string
+}
 
 export interface IAccount {
   id: number
@@ -15,12 +21,7 @@ export interface INormalizedAccount {
   byId: IAccount
 }
 
-export interface IAuthResponse {
-  tokenType: string
-  accessToken: string
-}
-
-export interface IAccountsAdditional extends NormalizedAdditional{
+export interface IAccountsAdditional extends NormalizedAdditional {
   needTfa: boolean
 }
 
@@ -39,16 +40,21 @@ export interface IAccountsState {
 
 type ActionCtx = ActionContext<IAccountsState, IRootState>
 
-export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>{
+export interface IAccountsActions
+  extends ActionTree<IAccountsState, IRootState> {
   addAccount: (ctx: ActionCtx, payload: INormalizedAccount) => void
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
   switchOffTfa: (ctx: ActionCtx) => void
   loadAccountInfo: (ctx: ActionCtx, payload: IAuthResponse) => Promise<void>
-  sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string}) => Promise<void>
+  sendAuthRequest: (
+    ctx: ActionCtx,
+    payload: { username: string; password: string; token?: string }
+  ) => Promise<void>
 }
 
-export interface IAccountsGetters extends GetterTree<IAccountsState, IRootState>{
+export interface IAccountsGetters
+  extends GetterTree<IAccountsState, IRootState> {
   accounts: (state: IAccountsState) => Array<IAccount>
   defaultAccount: (state: IAccountsState) => IAccount
   needTfa: (state: IAccountsState) => boolean

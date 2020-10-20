@@ -5,7 +5,7 @@ import isArrayBuffer from 'is-array-buffer'
 Axios.defaults.adapter = global.require('axios/lib/adapters/http')
 
 const config = {
-  baseURL: 'https://api.sirus.su/api',
+  baseURL: process.env.VUE_API_URL,
   headers: {
     'User-Agent': `sirus-launcher`, // TODO: add version
   },
@@ -27,23 +27,24 @@ export const camelizeKeysInterceptor = (response: AxiosResponse) => {
 /**
  * Converts object keys from camelCase to snake_case
  */
-export const revertCamelCaseIntoSnakeCaseInterceptor = (config: AxiosRequestConfig) => {
-  if(config.data) {
+export const revertCamelCaseIntoSnakeCaseInterceptor = (
+  config: AxiosRequestConfig
+) => {
+  if (config.data) {
     config.data = humps.decamelizeKeys(config.data)
   }
 
   return config
 }
 
-
 export const addAuthHeadersInterceptor = (config: AxiosRequestConfig) => {
   const tokens = localStorage.getItem('tokens')
 
-  if(!tokens) return config
+  if (!tokens) return config
 
   config.headers = {
     ...config.headers,
-    'Authorization': tokens,
+    Authorization: tokens,
   }
 
   return config
