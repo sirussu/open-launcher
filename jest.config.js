@@ -1,24 +1,28 @@
 module.exports = {
-  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   setupFiles: ['jest-localstorage-mock'],
   collectCoverageFrom: ['src/**/*.{t|j}s'],
   collectCoverage: true,
   setupFilesAfterEnv: ['./jest.setup.js'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^vue$': 'vue/dist/vue.common.js',
   },
-  reporters: ['default', 'jest-github-actions-reporter'],
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   transform: {
-    '^.*\\.js$': 'babel-jest',
-    '^.+\\.vue$': 'vue-jest',
-    '.*\\.ts?$': 'ts-jest',
+    '.*\\.(vue)$': 'vue-jest',
+    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.js$': 'babel-jest',
   },
-  transformIgnorePatterns: ['node_modules/(?!vue-router|@babel|vuetify)'],
+  testURL: 'http://localhost/',
+  transformIgnorePatterns: [
+    'node_modules/(?!vue-router|vuetify|babel-jest|jest-vue-preprocessor)',
+  ],
+  snapshotSerializers: ['jest-serializer-vue'],
   testMatch: ['**/*.spec.{js,ts,vue}'],
   globals: {
     'ts-jest': {
       diagnostics: false,
     },
   },
+  reporters: ['default', 'jest-github-actions-reporter'],
 }

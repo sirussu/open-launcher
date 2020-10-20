@@ -1,6 +1,6 @@
-const mock = require('mock-fs')
+import mock from 'mock-fs'
 
-const Files = require('@/services/Files').default
+import Files from '@/services/Files'
 
 describe('File helper', () => {
   const FILE = mock.file({

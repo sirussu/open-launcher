@@ -3,15 +3,16 @@ import Vuex from 'vuex'
 import VueI18n from 'vue-i18n'
 import Vuetify from 'vuetify'
 import cloneDeep from 'lodash/cloneDeep'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
 
-import SettingsPage from '@/views/pages/Settings.vue'
+// @ts-ignore
+import Settings from '@/views/pages/Settings.vue'
 import { modules } from '@/store/modules'
 import i18n from '@/modules/i18n'
 
 Vue.use(Vuetify)
 
-describe('setting view', () => {
+describe('Settings', () => {
   let store
   let localVue
 
@@ -24,14 +25,14 @@ describe('setting view', () => {
     })
   })
 
-  it('language setting', async () => {
-    const component = shallowMount(SettingsPage, {
+  it('should render properly', () => {
+    const settings = mount(Settings, {
       i18n: i18n(),
       store,
       localVue,
       vuetify: new Vuetify(),
     })
 
-    expect(true).toBe(true)
+    expect(settings.exists()).toBe(true)
   })
 })
