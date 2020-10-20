@@ -40,7 +40,7 @@ const actions: IStatusActions = {
     try {
       const realms: Array<IRealm> = await axios.get('/server/status')
 
-      const summaryOnline = getSummaryOnline<IRealm>(realms)
+      const summaryOnline = getSummaryOnline(realms)
 
       commit('SET_REALMS', realms)
       commit('SET_SUMMARY_ONLINE', summaryOnline)
