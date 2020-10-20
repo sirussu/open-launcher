@@ -129,7 +129,6 @@ const actions: IAccountsActions = {
       try {
         await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
       } catch (error) {
-        console.dir(error)
         if ([400, 401].includes(error.response.status)) {
           console.warn(`${account.username} account password has been changed or auth token has expired`) // TODO: Need a notificator
           await dispatch('removeAccount', account.id)
