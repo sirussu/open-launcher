@@ -26,6 +26,7 @@ export const adaptExtendedAccount = (accountInfo, authResponse) => {
       accountInfo,
       id: accountInfo.id,
       username: accountInfo.username,
+      password: authResponse.password
     },
   }
 }

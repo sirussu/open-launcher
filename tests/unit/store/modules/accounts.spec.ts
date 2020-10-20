@@ -9,6 +9,7 @@ import { IAccountsState } from '@/store/modules/accounts/types'
 import tokensStub from './stubs/tokens.json'
 import accountInfoStub from './stubs/accountInfo.json'
 import accountStub from './stubs/defaultAccount.json'
+import normalizedAccountStub from './stubs/normalizedAccount.json'
 
 describe('accounts module', () => {
   let store: Store<{ accounts: IAccountsState }>
@@ -41,5 +42,15 @@ describe('accounts module', () => {
     expect(Object.keys(store.getters)).toContain('accounts/defaultAccount')
     expect(store.getters['accounts/accounts']).toHaveLength(1)
     expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+  })
+
+  test('validate account information', async () => {
+    nock(baseURL).post('/oauth/token').reply(400)
+
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    expect(store.getters['accounts/accounts']).toHaveLength(1)
+
+    await store.dispatch('accounts/validateAccountsInfo')
+    expect(store.getters['accounts/accounts']).not.toHaveLength(1)
   })
 })

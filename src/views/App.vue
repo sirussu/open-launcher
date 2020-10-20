@@ -23,6 +23,9 @@ export default {
     Navigation,
     StatusBarBlock,
   },
+  created() {
+    this.$store.dispatch('accounts/validateAccountsInfo', { root: true })
+  },
 }
 </script>
 

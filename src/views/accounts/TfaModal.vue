@@ -95,9 +95,7 @@ export default defineComponent({
   },
   methods: {
     tfaWasEntered() {
-      this.$emit('tfa-was-entered', {
-        tfaToken: this.tfaToken,
-      })
+      this.$emit('tfa-was-entered', this.tfaToken)
 
       this.tfaToken = ''
     },
