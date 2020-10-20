@@ -11,7 +11,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   transform: {
     '^.*\\.js$': 'babel-jest',
-    '.*\\.(vue)$': 'vue-jest',
+    '^.+\\.vue$': 'vue-jest',
     '.*\\.ts?$': 'ts-jest',
   },
   transformIgnorePatterns: ['node_modules/(?!vue-router|@babel|vuetify)'],

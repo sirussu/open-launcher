@@ -1,14 +1,12 @@
-import { ActionTree, GetterTree, Module, MutationTree } from 'vuex'
+import { Module } from 'vuex'
 
-interface IModuleFields<S, R> {
-  namespaced?: boolean
-  state?: S | (() => S)
-  mutations?: MutationTree<S>
-  actions?: ActionTree<S, R>
-  getters?: GetterTree<S, R>
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface IModuleFields<S, R> extends Module<S, R> {}
 
-export function modulesFactory<S, R>(moduleFields: IModuleFields<S, R>): Module<S, R> {
+export function modulesFactory<S, R>(
+  moduleFields: IModuleFields<S, R>
+): Module<S, R> {
   moduleFields.namespaced = true
+
   return moduleFields
 }

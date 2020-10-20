@@ -1,17 +1,20 @@
 import { MutationTree } from 'vuex'
-import { RequestStatus } from '@/types/network'
 
+import { RequestStatus } from '@/types/network'
 import {
   IAccountsActions,
   IAccountsGetters,
   IAccountsState,
-  INormalizedAccount
+  INormalizedAccount,
 } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
-import { adaptUserDataToRequestParams, adaptExtendedAccount } from '@/store/modules/accounts/adapters'
+import {
+  adaptUserDataToRequestParams,
+  adaptExtendedAccount,
+} from '@/store/modules/accounts/adapters'
 
 const state: IAccountsState = {
   accounts: {
@@ -19,19 +22,20 @@ const state: IAccountsState = {
       allIds: [],
       byId: {},
       defaultId: 0,
-    }
+    },
   },
   additional: {
     status: RequestStatus.INITIAL,
-    needTfa: false
-  }
+    needTfa: false,
+  },
 }
 
 const getters: IAccountsGetters = {
-  accounts: state => denormalizeData(state.accounts.data),
-  defaultAccount: state => state.accounts.data.byId[state.accounts.data.defaultId],
-  needTfa: state => state.additional.needTfa,
-  getStatus: state => state.additional.status
+  accounts: (state) => denormalizeData(state.accounts.data),
+  defaultAccount: (state) =>
+    state.accounts.data.byId[state.accounts.data.defaultId],
+  needTfa: (state) => state.additional.needTfa,
+  getStatus: (state) => state.additional.status,
 }
 
 const mutations: MutationTree<IAccountsState> = {
@@ -42,7 +46,9 @@ const mutations: MutationTree<IAccountsState> = {
   REMOVE_ACCOUNT(state, id) {
     delete state.accounts.data.byId[id]
 
-    const index = state.accounts.data.allIds.findIndex(accountId => accountId === id)
+    const index = state.accounts.data.allIds.findIndex(
+      (accountId) => accountId === id
+    )
     state.accounts.data.allIds.splice(index, 1)
   },
   SET_DEFAULT_ID(state, accountId: number) {
@@ -58,16 +64,16 @@ const mutations: MutationTree<IAccountsState> = {
 
 const actions: IAccountsActions = {
   addAccount({ state, commit }, account) {
-    if(state.accounts.data.allIds.length === 0) {
+    if (state.accounts.data.allIds.length === 0) {
       commit('SET_DEFAULT_ID', account.id)
     }
 
-    if(!state.accounts.data.allIds.includes(account.id)) {
+    if (!state.accounts.data.allIds.includes(account.id)) {
       commit('ADD_ACCOUNT', account)
     }
   },
   removeAccount({ state, commit }, accountId) {
-    if(state.accounts.data.defaultId === accountId) {
+    if (state.accounts.data.defaultId === accountId) {
       commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
     }
 
@@ -80,20 +86,36 @@ const actions: IAccountsActions = {
   },
   setDefaultAccount({ commit }, account) {
     commit('SET_DEFAULT_ID', account.id)
-    localStorage.setItem('tokens', `${account.tokens.tokenType} ${account.tokens.accessToken}`)
+    localStorage.setItem(
+      'tokens',
+      `${account.tokens.tokenType} ${account.tokens.accessToken}`
+    )
   },
   switchOffTfa({ commit }) {
     commit('SET_NEED_TFA', false)
   },
-  async sendAuthRequest({ dispatch, commit }, {username, password, token}) {
+  async sendAuthRequest({ dispatch, commit }, { username, password, token }) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
-    const userDataToRequestParams = adaptUserDataToRequestParams({ username, password, token })
+    const userDataToRequestParams = adaptUserDataToRequestParams({
+      username,
+      password,
+      token,
+    })
 
     try {
-      const authResponse: { tokenType: string, accessToken: string } = await axios.post('https://api.sirus.su/oauth/token', userDataToRequestParams)
+      const authResponse: {
+        tokenType: string
+        accessToken: string
+      } = await axios.post(
+        'https://api.sirus.su/oauth/token',
+        userDataToRequestParams
+      )
 
-      localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
+      localStorage.setItem(
+        'tokens',
+        `${authResponse.tokenType} ${authResponse.accessToken}`
+      )
 
       await dispatch('loadAccountInfo', authResponse)
     } catch (error) {
@@ -108,7 +130,9 @@ const actions: IAccountsActions = {
   },
   async loadAccountInfo({ dispatch, commit }, authResponse) {
     try {
-      const accountInfo: {id: number, username: string} = await axios.get('/user')
+      const accountInfo: { id: number; username: string } = await axios.get(
+        '/user'
+      )
 
       const account = adaptExtendedAccount(accountInfo, authResponse)
 
@@ -121,7 +145,12 @@ const actions: IAccountsActions = {
       commit('SET_STATUS', RequestStatus.FAILED)
       console.error(error)
     }
-  }
+  },
 }
 
-export const accountsModule = modulesFactory<IAccountsState, IRootState>({ state, mutations, actions, getters })
+export const accountsModule = modulesFactory<IAccountsState, IRootState>({
+  state,
+  mutations,
+  actions,
+  getters,
+})

@@ -5,7 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { autoUpdater } from 'electron-updater'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
-import clientActions from '@/background/ClientActions'
+import * as clientActions from '@/background/ClientActions'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

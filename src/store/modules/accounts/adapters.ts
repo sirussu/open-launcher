@@ -1,4 +1,12 @@
-export const adaptUserDataToRequestParams = ({ username, password, token }: { username: string, password: string, token?: string }) => {
+export const adaptUserDataToRequestParams = ({
+  username,
+  password,
+  token,
+}: {
+  username: string
+  password: string
+  token?: string
+}) => {
   return {
     username,
     password,
@@ -6,7 +14,7 @@ export const adaptUserDataToRequestParams = ({ username, password, token }: { us
     grantType: process.env.VUE_APP_GRANT_TYPE,
     clientId: Number(process.env.VUE_APP_CLIENT_ID),
     clientSecret: process.env.VUE_APP_CLIENT_SECRET,
-    scope: '*'
+    scope: '*',
   }
 }
 
@@ -17,7 +25,7 @@ export const adaptExtendedAccount = (accountInfo, authResponse) => {
       tokens: authResponse,
       accountInfo,
       id: accountInfo.id,
-      username: accountInfo.username
-    }
+      username: accountInfo.username,
+    },
   }
 }

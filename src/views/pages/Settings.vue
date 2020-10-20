@@ -27,13 +27,16 @@
     </v-card-text>
   </v-card>
 </template>
-<script>
+
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api'
+
 import eventService from '@/services/EventService'
 import LauncherEvent from '@/events/LauncherEvent'
 import CallbackListener from '@/events/CallbackListener'
 
-export default {
-  data() {
+export default defineComponent({
+  data(): { errors: { clientDirectory: string | null } } {
     return {
       errors: {
         clientDirectory: null,
@@ -50,7 +53,7 @@ export default {
         new CallbackListener(() => {
           this.errors.clientDirectory = this.$t(
             'settings.errors.wrong_client_directory'
-          )
+          ) as string
         }, true)
       )
     },
@@ -72,5 +75,5 @@ export default {
       },
     },
   },
-}
+})
 </script>
