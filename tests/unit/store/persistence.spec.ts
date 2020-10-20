@@ -31,6 +31,7 @@ describe('File list receive', () => {
     localVue.use(Vuex)
 
     localStorage.clear()
+    // @ts-ignore
     localStorage.setItem.mockClear()
   })
 

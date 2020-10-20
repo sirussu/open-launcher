@@ -15,7 +15,7 @@ export abstract class Ipc {
   private onCallback: IpcCallback | null = null
 
   protected constructor(electronIpc: IpcMain | IpcRenderer) {
-    electronIpc.on(EventBus.CHANNEL_NAME, (event, args) => {
+    electronIpc?.on(EventBus.CHANNEL_NAME, (event, args) => {
       if (this.onCallback) {
         this.onCallback(args)
       }

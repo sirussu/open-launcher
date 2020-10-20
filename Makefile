@@ -5,6 +5,8 @@ lint:
 test:
 	yarn test:unit
 	yarn test:e2e
+unit:
+	yarn test:unit
 test-coverage:
 	npm test:unit -- --coverage
 build:
