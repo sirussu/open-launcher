@@ -1,3 +1,5 @@
+import { IAdaptedResponse, IAuthResponse } from '@/store/modules/accounts/types'
+
 export const adaptUserDataToRequestParams = ({
   username,
   password,
@@ -18,15 +20,35 @@ export const adaptUserDataToRequestParams = ({
   }
 }
 
-export const adaptExtendedAccount = (accountInfo, authResponse) => {
+export const adaptResponse = (authResponse: IAuthResponse, { username, password, token }: { username: string, password: string, token?: string}): IAdaptedResponse => {
+  return {
+    username: username,
+    password: password,
+    tfaToken: token,
+    tokenIsExpired: false,
+    tokenType: authResponse.tokenType,
+    accessToken: authResponse.accessToken,
+    refreshToken: authResponse.refreshToken,
+    expiresIn: authResponse.expiresIn,
+  }
+}
+
+export const adaptExtendedAccount = (accountInfo, authResponse: IAdaptedResponse) => {
   return {
     id: accountInfo.id,
     byId: {
-      tokens: authResponse,
+      tokens: {
+        tokenType: authResponse.tokenType,
+        accessToken: authResponse.accessToken,
+        refreshToken: authResponse.refreshToken,
+        expiresIn: authResponse.expiresIn,
+        tfaToken: authResponse.tfaToken,
+      },
       accountInfo,
       id: accountInfo.id,
-      username: accountInfo.username,
-      password: authResponse.password
+      username: authResponse.username,
+      password: authResponse.password,
+      tokenIsExpired: authResponse.tokenIsExpired,
     },
   }
 }

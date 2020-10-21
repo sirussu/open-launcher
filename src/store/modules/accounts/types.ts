@@ -7,6 +7,7 @@ export interface IAccount {
   id: number
   username: string
   password: string
+  tfaToken?: string
   tokens: IAuthResponse
 }
 
@@ -18,6 +19,14 @@ export interface INormalizedAccount {
 export interface IAuthResponse {
   tokenType: string
   accessToken: string
+  refreshToken: string
+  expiresIn: number
+  tokenIsExpired: boolean
+}
+
+export interface IAdaptedResponse extends IAuthResponse{
+  username: string
+  password: string
   tfaToken?: string
 }
 
@@ -46,7 +55,7 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
   switchOffTfa: (ctx: ActionCtx) => void
-  loadAccountInfo: (ctx: ActionCtx, payload: IAuthResponse) => Promise<void>
+  loadAccountInfo: (ctx: ActionCtx, payload: IAdaptedResponse) => Promise<void>
   sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string}) => Promise<void>
   validateAccountsInfo: (ctx: ActionCtx) => Promise<void>
 }

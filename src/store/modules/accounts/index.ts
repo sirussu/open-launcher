@@ -4,14 +4,14 @@ import { RequestStatus } from '@/types/network'
 import {
   IAccountsActions,
   IAccountsGetters,
-  IAccountsState,
-  INormalizedAccount,
+  IAccountsState, IAuthResponse,
+  INormalizedAccount
 } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
-import { adaptUserDataToRequestParams, adaptExtendedAccount } from '@/store/modules/accounts/adapters'
+import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from '@/store/modules/accounts/adapters'
 import { PENDING_TIME_MS } from '@/config'
 
 const state: IAccountsState = {
@@ -96,14 +96,13 @@ const actions: IAccountsActions = {
     const userDataToRequestParams = adaptUserDataToRequestParams({ username, password, token })
 
     try {
-      const authResponse: { tokenType: string, accessToken: string, tfaToken?: string, password?: string } = await axios.post('https://api.sirus.su/oauth/token', userDataToRequestParams)
+      const authResponse: IAuthResponse = await axios.post('https://api.sirus.su/oauth/token', userDataToRequestParams)
 
       localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
 
-      authResponse.tfaToken = token
-      authResponse.password = password
+      const adaptedResponse = adaptResponse(authResponse, { username, password, token })
 
-      await dispatch('loadAccountInfo', authResponse)
+      await dispatch('loadAccountInfo', adaptedResponse)
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
@@ -136,11 +135,11 @@ const actions: IAccountsActions = {
       }
     }
   },
-  async loadAccountInfo({ dispatch, commit }, authResponse) {
+  async loadAccountInfo({ dispatch, commit }, adaptedAuthResponse) {
     try {
-      const accountInfo: {id: number, username: string} = await axios.get('/user')
+      const accountInfo = await axios.get('/user')
 
-      const account = adaptExtendedAccount(accountInfo, authResponse)
+      const account = adaptExtendedAccount(accountInfo, adaptedAuthResponse)
 
       await dispatch('addAccount', account)
 
