@@ -1,41 +1,49 @@
 <template>
   <div>
-    <v-container pa-0 class="accounts-block">
-      <v-list flat>
-        <v-list-item-group>
-          <v-list-item
-            v-for="account in accounts"
-            :key="account.id"
-            :class="{ 'v-item--active': defaultAccount.id === account.id }"
-            @click="setDefaultAccount(account)"
-            dense
-          >
-            <v-list-item-action>
-              <v-icon v-if="defaultAccount.id === account.id"
-                >mdi-account-check</v-icon
-              >
-            </v-list-item-action>
+    <v-container class="accounts-block">
+      <v-row
+        v-for="account in accounts"
+        :key="account.id"
+        :class="{ 'v-item--active': defaultAccount.id === account.id }"
+        @click="setDefaultAccount(account)"
+        dense
+        v-ripple
+        justify="space-around"
+        align="center"
+        :disabled="account.tokenIsExpired"
+      >
+        <v-col cols="auto" order="1">
+          <v-spacer />
+        </v-col>
 
-            <v-list-item-content>
-              {{ account.username }}
-            </v-list-item-content>
+        <v-col cols="1" order="2">
+          <v-icon v-if="defaultAccount.id === account.id">
+            mdi-account-check
+          </v-icon>
+        </v-col>
 
-            <v-list-item-action>
-              <v-btn text @click="removeAccount(account.id)" tile>
-                <template #default>
-                  {{ $t('accounts.remove_account') }}
-                </template>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list-item-group>
-        <accounts-modal @clear-form="resetForm" @auth-requested="sendRequest" />
-        <tfa-modal
-          :has-tfa="hasTfa"
-          @tfa-was-entered="tfaWasEntered"
-          @clear-form="resetForm"
-        />
-      </v-list>
+        <v-col cols="auto" order="3">
+          {{ account.username }}
+        </v-col>
+
+        <v-col order="4">
+          <v-spacer />
+        </v-col>
+
+        <v-col cols="auto" order="5">
+          <v-btn text @click="removeAccount(account.id)" tile>
+            <template #default>
+              {{ $t('accounts.remove_account') }}
+            </template>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <accounts-modal @clear-form="resetForm" @auth-requested="sendRequest" />
+      <tfa-modal
+        :has-tfa="hasTfa"
+        @tfa-was-entered="tfaWasEntered"
+        @clear-form="resetForm"
+      />
     </v-container>
   </div>
 </template>
@@ -134,5 +142,9 @@ export default defineComponent({
 <style scoped>
 .accounts-block .v-item--active {
   background-color: rgba(255, 255, 255, 0.24);
+}
+.accounts-block .row:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
 }
 </style>

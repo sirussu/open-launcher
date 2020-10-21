@@ -33,7 +33,7 @@ export const adaptResponse = (authResponse: IAuthResponse, { username, password,
   }
 }
 
-export const adaptExtendedAccount = (accountInfo, authResponse: IAdaptedResponse) => {
+export const adaptExtendedAccount = (accountInfo: { id: number }, authResponse: IAdaptedResponse) => {
   return {
     id: accountInfo.id,
     byId: {

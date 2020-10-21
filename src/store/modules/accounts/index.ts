@@ -59,6 +59,9 @@ const mutations: MutationTree<IAccountsState> = {
   SET_VALIDATE_ACCOUNTS_TIME(state, timestamp) {
     state.additional.lastValidationTimestamp = timestamp
   },
+  SET_IS_EXPIRED(state, { value, id }: { value: boolean, id: number }) {
+    state.accounts.data.byId[id].tokens.tokenIsExpired = value
+  },
 }
 
 const actions: IAccountsActions = {
@@ -113,7 +116,7 @@ const actions: IAccountsActions = {
       }
     }
   },
-  async validateAccountsInfo({ dispatch, commit, getters, state }) {
+  async validateAccountsInfo({ commit, getters, state }) {
     const currentTime = Date.now()
 
     if ((state.additional.lastValidationTimestamp + PENDING_TIME_MS) > currentTime) {
@@ -130,14 +133,14 @@ const actions: IAccountsActions = {
       } catch (error) {
         if ([400, 401].includes(error.response.status)) {
           console.warn(`${account.username} account password has been changed or auth token has expired`) // TODO: Need a notificator
-          await dispatch('removeAccount', account.id)
+          commit('SET_IS_EXPIRED', { value: true, id: account.id })
         }
       }
     }
   },
   async loadAccountInfo({ dispatch, commit }, adaptedAuthResponse) {
     try {
-      const accountInfo = await axios.get('/user')
+      const accountInfo: { id: number } = await axios.get('/user')
 
       const account = adaptExtendedAccount(accountInfo, adaptedAuthResponse)
 
