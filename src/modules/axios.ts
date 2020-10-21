@@ -5,7 +5,7 @@ import isArrayBuffer from 'is-array-buffer'
 Axios.defaults.adapter = global.require('axios/lib/adapters/http')
 
 const config = {
-  baseURL: process.env.VUE_API_URL,
+  baseURL: process.env.VUE_APP_API_URL,
   headers: {
     'User-Agent': `sirus-launcher`, // TODO: add version
   },
