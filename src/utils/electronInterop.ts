@@ -1,6 +1,6 @@
 import { openLink } from './openLink'
-import { minimize, close } from './windowControls'
-import { version } from './version'
+import { minimize, close } from './remote/windowControls'
+import { version } from './remote/version'
 
 export class ElectronInterop {
   openUrl(url: string) {
