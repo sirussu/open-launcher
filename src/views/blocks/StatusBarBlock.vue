@@ -30,15 +30,20 @@ export default defineComponent({
     ])
 
     getRealms()
-    setInterval(() => {
+
+    const interval = setInterval(() => {
       getRealms()
     }, 3 * 60 * 1000)
 
     return {
+      interval,
       getRealms,
       realms,
       summaryOnline,
     }
+  },
+  destroyed() {
+    clearInterval(this.interval)
   },
 })
 </script>

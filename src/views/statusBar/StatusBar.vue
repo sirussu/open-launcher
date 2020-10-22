@@ -2,8 +2,8 @@
   <div>
     <span>Sirus.su</span>
     <span>(ver. {{ version }})</span>
-    <span v-for="realm in realms" :key="realm.id">
-      {{ realm.name.split(' -')[0] }}
+    <span v-for="realm in mappedRealms" :key="realm.id">
+      {{ realm.name }}
       <span v-if="realm.isOnline">&#128994;</span>
       <span v-else>&#128308;</span>
     </span>
@@ -31,6 +31,16 @@ export default defineComponent({
   computed: {
     version() {
       return `0.0.0` // TODO: need fix this.$interop.getAppVersion()
+    },
+    mappedRealms() {
+      return this.realms.map((realm) => {
+        return {
+          id: realm.id,
+          isOnline: realm.isOnline,
+          online: realm.online,
+          name: realm.name.split(' -')[0],
+        }
+      })
     },
   },
 })
