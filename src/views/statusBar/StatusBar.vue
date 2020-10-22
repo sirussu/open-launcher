@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
@@ -30,7 +30,7 @@ export default defineComponent({
   },
   computed: {
     version() {
-      return this.$interop.getAppVersion() || `0.0.0`
+      return `0.0.0` // TODO: need fix this.$interop.getAppVersion()
     },
   },
 })
