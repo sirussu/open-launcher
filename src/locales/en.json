@@ -14,6 +14,7 @@
   "accounts": {
     "add_account": "Add account",
     "remove_account": "Remove account",
+    "re_login": "Re-login",
     "modal": {
       "title": "Add account",
       "enter_login": "Enter login",

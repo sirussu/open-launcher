@@ -4,34 +4,49 @@
       <v-row
         v-for="account in accounts"
         :key="account.id"
-        :class="{ 'v-item--active': defaultAccount.id === account.id }"
-        @click="setDefaultAccount(account)"
+        :class="{ 'row-active': activeClass(account) }"
         dense
         v-ripple
         justify="space-around"
         align="center"
-        :disabled="account.tokenIsExpired"
       >
-        <v-col cols="auto" order="1">
-          <v-spacer />
-        </v-col>
+        <v-col cols="8" order="1" class="accounts-block__main-btn">
+          <v-btn
+            pa-0
+            block
+            text
+            tile
+            :disabled="account.tokenIsExpired"
+            @click.stop="setDefaultAccount(account)"
+            :ripple="false"
+          >
+            <v-col cols="1" order="1" class="pl-0 ml-n3">
+              <v-icon v-if="defaultAccount.id === account.id">
+                mdi-account-check
+              </v-icon>
+            </v-col>
 
-        <v-col cols="1" order="2">
-          <v-icon v-if="defaultAccount.id === account.id">
-            mdi-account-check
-          </v-icon>
-        </v-col>
+            <v-col cols="auto" order="2">
+              {{ account.username }}
+            </v-col>
 
-        <v-col cols="auto" order="3">
-          {{ account.username }}
+            <v-col order="3">
+              <v-spacer />
+            </v-col>
+          </v-btn>
         </v-col>
-
-        <v-col order="4">
-          <v-spacer />
-        </v-col>
-
-        <v-col cols="auto" order="5">
-          <v-btn text @click="removeAccount(account.id)" tile>
+        <v-col cols="auto" order="2">
+          <v-btn
+            v-if="account.tokenIsExpired"
+            text
+            @click.stop="reLogin(account)"
+            tile
+          >
+            <template #default>
+              {{ $t('accounts.re_login') }}
+            </template>
+          </v-btn>
+          <v-btn v-else text @click.stop="removeAccount(account.id)" tile>
             <template #default>
               {{ $t('accounts.remove_account') }}
             </template>
@@ -113,7 +128,7 @@ export default defineComponent({
     }
   },
   computed: {
-    hasTfa() {
+    hasTfa(): boolean {
       return this.needTfa
     },
   },
@@ -130,21 +145,37 @@ export default defineComponent({
         token: tfaToken,
       })
     },
+    async reLogin(account) {
+      await this.sendAuthRequest({
+        username: account.username,
+        password: account.password,
+        token: account.tokens.tfaToken,
+      })
+    },
     resetForm() {
       this.username = ''
       this.password = ''
       this.switchOffTfa()
+    },
+    activeClass(account) {
+      return this.defaultAccount.id === account.id && !account.tokenIsExpired
     },
   },
 })
 </script>
 
 <style scoped>
-.accounts-block .v-item--active {
+.accounts-block .row-active {
   background-color: rgba(255, 255, 255, 0.24);
+}
+.accounts-block .row-active:hover {
+  background-color: rgba(255, 255, 255, 0.24) !important;
 }
 .accounts-block .row:hover {
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
+}
+.accounts-block__main-btn .theme--dark.v-btn:hover::before {
+  opacity: 0;
 }
 </style>

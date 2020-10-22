@@ -14,6 +14,7 @@
   "accounts": {
     "add_account": "Добавить аккаунт",
     "remove_account": "Удалить аккаунт",
+    "re_login": "Перезайти",
     "modal": {
       "title": "Добавить аккаунт",
       "enter_login": "Введите логин",

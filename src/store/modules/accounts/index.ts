@@ -41,11 +41,10 @@ const mutations: MutationTree<IAccountsState> = {
     state.accounts.data.allIds.push(account.id)
     state.accounts.data.byId[account.id] = account.byId
   },
-  REMOVE_ACCOUNT(state, id) {
-    delete state.accounts.data.byId[id]
+  REMOVE_ACCOUNT(state, id: number) {
+    state.accounts.data.allIds = state.accounts.data.allIds.filter(accountId => accountId !== id)
 
-    const index = state.accounts.data.allIds.findIndex(accountId => accountId === id)
-    state.accounts.data.allIds.splice(index, 1)
+    delete state.accounts.data.byId[id]
   },
   SET_DEFAULT_ID(state, accountId: number) {
     state.accounts.data.defaultId = accountId
@@ -53,14 +52,14 @@ const mutations: MutationTree<IAccountsState> = {
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
-  SET_NEED_TFA(state, value) {
+  SET_NEED_TFA(state, value: boolean) {
     state.additional.needTfa = value
   },
-  SET_VALIDATE_ACCOUNTS_TIME(state, timestamp) {
+  SET_VALIDATE_ACCOUNTS_TIME(state, timestamp: number) {
     state.additional.lastValidationTimestamp = timestamp
   },
   SET_IS_EXPIRED(state, { value, id }: { value: boolean, id: number }) {
-    state.accounts.data.byId[id].tokens.tokenIsExpired = value
+    state.accounts.data.byId[id].tokenIsExpired = value
   },
 }
 
@@ -68,10 +67,17 @@ const actions: IAccountsActions = {
   addAccount({ state, commit }, account) {
     if (state.accounts.data.allIds.length === 0) {
       commit('SET_DEFAULT_ID', account.id)
+      commit('ADD_ACCOUNT', account)
     }
 
     if (!state.accounts.data.allIds.includes(account.id)) {
       commit('ADD_ACCOUNT', account)
+    } else {
+      console.warn(`Account ${account.byId.username} already exist in account list`) // TODO: Need a notifier
+    }
+
+    if (state.accounts.data.byId[account.id].tokenIsExpired) {
+      commit('SET_IS_EXPIRED', { value: false, id: account.id })
     }
   },
   removeAccount({ state, commit }, accountId) {
@@ -79,12 +85,12 @@ const actions: IAccountsActions = {
       commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
     }
 
-    commit('REMOVE_ACCOUNT', accountId)
-
     if (state.accounts.data.allIds.length === 0) {
       commit('SET_DEFAULT_ID', 0)
       localStorage.removeItem('tokens')
     }
+
+    commit('REMOVE_ACCOUNT', accountId)
   },
   setDefaultAccount({ commit }, account) {
     commit('SET_DEFAULT_ID', account.id)

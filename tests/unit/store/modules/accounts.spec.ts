@@ -51,6 +51,6 @@ describe('accounts module', () => {
     expect(store.getters['accounts/accounts']).toHaveLength(1)
 
     await store.dispatch('accounts/validateAccountsInfo')
-    expect(store.getters['accounts/accounts']).not.toHaveLength(1)
+    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
   })
 })

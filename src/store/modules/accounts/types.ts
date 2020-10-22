@@ -9,6 +9,7 @@ export interface IAccount {
   password: string
   tfaToken?: string
   tokens: IAuthResponse
+  tokenIsExpired: boolean
 }
 
 export interface INormalizedAccount {
