@@ -3,14 +3,14 @@ import path from 'path'
 import crypto from 'crypto'
 
 export class FileCheckProgress {
-  public bytes: number = 0
-  public bytesDone: number = 0
+  public bytes = 0
+  public bytesDone = 0
   public path: string | null = null
 
   constructor(bytes: number, path: string, bytesDone: number) {
-    this.bytes = bytes;
-    this.path = path;
-    this.bytesDone = bytesDone;
+    this.bytes = bytes
+    this.path = path
+    this.bytesDone = bytesDone
   }
 }
 
@@ -60,7 +60,10 @@ export default class Files {
    * @param path - path to file
    * @param onProgress
    */
-  static async getFileHash(path: string, onProgress?: (progress: FileCheckProgress) => void) {
+  static async getFileHash(
+    path: string,
+    onProgress?: (progress: FileCheckProgress) => void
+  ) {
     const stats = await fs.stat(path)
 
     const hash = crypto.createHash('md5')
@@ -85,10 +88,10 @@ export default class Files {
         resolve(hash.digest('hex'))
       })
 
-      fileStream.on('error', () => {
-        reject()
+      fileStream.on('error', error => {
+        reject(error)
       })
-    });
+    })
   }
 
   /**

@@ -1,6 +1,6 @@
 import mock from 'mock-fs'
 
-import Files, {FileCheckProgress} from '@/services/Files'
+import Files, { FileCheckProgress } from '@/services/Files'
 
 describe('File helper', () => {
   const FILE = mock.file({
@@ -82,8 +82,14 @@ describe('File helper', () => {
 
     await Files.getFileHash(path, progressMock)
 
-    expect(progressMock).toHaveBeenNthCalledWith(1, new FileCheckProgress(7, path, 0))
-    expect(progressMock).toHaveBeenNthCalledWith(2, new FileCheckProgress(7, path, 7))
+    expect(progressMock).toHaveBeenNthCalledWith(
+      1,
+      new FileCheckProgress(7, path, 0)
+    )
+    expect(progressMock).toHaveBeenNthCalledWith(
+      2,
+      new FileCheckProgress(7, path, 7)
+    )
   })
 
   it('check file including without timestamp', async () => {
