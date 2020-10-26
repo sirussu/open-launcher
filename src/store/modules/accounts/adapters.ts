@@ -42,12 +42,12 @@ export const adaptExtendedAccount = (accountInfo: { id: number }, authResponse: 
         accessToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
         expiresIn: authResponse.expiresIn,
-        tfaToken: authResponse.tfaToken,
       },
       accountInfo,
       id: accountInfo.id,
       username: authResponse.username,
       password: authResponse.password,
+      tfaToken: authResponse.tfaToken,
       tokenIsExpired: authResponse.tokenIsExpired,
     },
   }

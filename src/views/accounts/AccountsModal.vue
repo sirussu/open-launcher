@@ -144,6 +144,7 @@ export default defineComponent({
       this.authForm.pass = ''
       this.tfaToken = ''
       this.clearForm()
+      this.validate.authForm.$reset()
     },
     sendRequest() {
       if (this.validate.authForm.$invalid) {
@@ -158,6 +159,7 @@ export default defineComponent({
       this.showModal = false
       this.authForm.login = ''
       this.authForm.pass = ''
+      this.validate.authForm.$reset()
     },
   },
 })

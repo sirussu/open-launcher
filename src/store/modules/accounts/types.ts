@@ -32,7 +32,12 @@ export interface IAdaptedResponse extends IAuthResponse{
 }
 
 export interface IAccountsAdditional extends NormalizedAdditional{
-  needTfa: boolean
+  needTfa: {
+    needTfa: boolean
+    isReLogin: boolean
+    username: string
+    password: string
+  }
   lastValidationTimestamp: number
 }
 
@@ -57,13 +62,18 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
   switchOffTfa: (ctx: ActionCtx) => void
   loadAccountInfo: (ctx: ActionCtx, payload: IAdaptedResponse) => Promise<void>
-  sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string}) => Promise<void>
+  sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string, isReLogin: boolean}) => Promise<void>
   validateAccountsInfo: (ctx: ActionCtx) => Promise<void>
 }
 
 export interface IAccountsGetters extends GetterTree<IAccountsState, IRootState>{
   accounts: (state: IAccountsState) => Array<IAccount>
   defaultAccount: (state: IAccountsState) => IAccount
-  needTfa: (state: IAccountsState) => boolean
+  needTfa: (state: IAccountsState) => {
+    needTfa: boolean
+    isReLogin: boolean
+    username: string
+    password: string
+  }
   getStatus: (state: IAccountsState) => RequestStatus
 }

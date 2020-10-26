@@ -12,7 +12,7 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" v-if="hasTfa">
+            <v-col cols="12">
               <v-text-field
                 v-model.lazy="validate.tfaToken.$model"
                 :error-messages="tfaError"
@@ -30,12 +30,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="tfaWasEntered" :disabled="validate.$invalid">
+        <v-btn text @click.stop="tfaWasEntered" :disabled="validate.$invalid">
           <template #default>
             {{ $t('accounts.add_account') }}
           </template>
         </v-btn>
-        <v-btn text @click="resetForm">
+        <v-btn text @click.stop="resetForm">
           <template #default>
             {{ $t('accounts.modal.close_modal') }}
           </template>
@@ -55,8 +55,8 @@ export default defineComponent({
   name: 'TfaModal',
   props: {
     hasTfa: {
-      type: Boolean,
-      default: false,
+      type: Object,
+      required: true,
     },
   },
   setup() {
@@ -71,14 +71,14 @@ export default defineComponent({
   computed: {
     tfaModalToggler: {
       get() {
-        return this.hasTfa
+        return this.hasTfa.needTfa
       },
       set(val) {
         this.$emit('tfa-modal-closed', !val)
       },
     },
     tfaError() {
-      if (!(this.validate.tfaToken.$dirty && this.hasTfa)) {
+      if (!(this.validate.tfaToken.$dirty && this.hasTfa.needTfa)) {
         return
       }
 
@@ -98,10 +98,12 @@ export default defineComponent({
       this.$emit('tfa-was-entered', this.tfaToken)
 
       this.tfaToken = ''
+      this.validate.tfaToken.$reset()
     },
     resetForm() {
       this.tfaToken = ''
       this.$emit('clear-form')
+      this.validate.tfaToken.$reset()
     },
   },
 })

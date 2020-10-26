@@ -39,7 +39,7 @@
           <v-btn
             v-if="account.tokenIsExpired"
             text
-            @click.stop="reLogin(account)"
+            @click.stop="reLogin('', account)"
             tile
           >
             <template #default>
@@ -55,7 +55,7 @@
       </v-row>
       <accounts-modal @clear-form="resetForm" @auth-requested="sendRequest" />
       <tfa-modal
-        :has-tfa="hasTfa"
+        :has-tfa="needTfa"
         @tfa-was-entered="tfaWasEntered"
         @clear-form="resetForm"
       />
@@ -68,6 +68,7 @@ import { createNamespacedHelpers } from 'vuex-composition-helpers'
 import { defineComponent, ref } from '@vue/composition-api'
 
 import {
+  IAccount,
   IAccountsActions,
   IAccountsGetters,
   IAccountsState,
@@ -127,30 +128,45 @@ export default defineComponent({
       switchOffTfa,
     }
   },
-  computed: {
-    hasTfa(): boolean {
-      return this.needTfa
-    },
-  },
   methods: {
     async sendRequest({ username, password, token }) {
-      this.username = username
-      this.password = password
-      await this.sendAuthRequest({ username, password, token })
-    },
-    async tfaWasEntered(tfaToken) {
       await this.sendAuthRequest({
-        username: this.username,
-        password: this.password,
+        username,
+        password,
+        token,
+        isReLogin: false,
+      })
+    },
+    async tfaWasEntered(tfaToken: string) {
+      if (this.needTfa.isReLogin) {
+        await this.reLogin(tfaToken)
+      }
+
+      await this.sendAuthRequest({
+        username: this.needTfa.username,
+        password: this.needTfa.password,
         token: tfaToken,
+        isReLogin: false,
       })
     },
-    async reLogin(account) {
-      await this.sendAuthRequest({
-        username: account.username,
-        password: account.password,
-        token: account.tokens.tfaToken,
-      })
+    async reLogin(tfaToken?: string, account?: IAccount) {
+      if (account) {
+        await this.sendAuthRequest({
+          username: account.username,
+          password: account.password,
+          token: account.tfaToken,
+          isReLogin: true,
+        })
+      }
+
+      if (tfaToken) {
+        await this.sendAuthRequest({
+          username: this.needTfa.username,
+          password: this.needTfa.password,
+          token: tfaToken,
+          isReLogin: false,
+        })
+      }
     },
     resetForm() {
       this.username = ''

@@ -24,7 +24,12 @@ const state: IAccountsState = {
   },
   additional: {
     status: RequestStatus.INITIAL,
-    needTfa: false,
+    needTfa: {
+      needTfa: false,
+      isReLogin: false,
+      username: '',
+      password: '',
+    },
     lastValidationTimestamp: 0
   },
 }
@@ -52,8 +57,13 @@ const mutations: MutationTree<IAccountsState> = {
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
-  SET_NEED_TFA(state, value: boolean) {
-    state.additional.needTfa = value
+  SET_NEED_TFA(state, { needTfa, isReLogin, username, password }: { needTfa: boolean, isReLogin: boolean, username: string, password: string }) {
+    state.additional.needTfa = {
+      needTfa,
+      isReLogin,
+      username,
+      password,
+    }
   },
   SET_VALIDATE_ACCOUNTS_TIME(state, timestamp: number) {
     state.additional.lastValidationTimestamp = timestamp
@@ -99,7 +109,7 @@ const actions: IAccountsActions = {
   switchOffTfa({ commit }) {
     commit('SET_NEED_TFA', false)
   },
-  async sendAuthRequest({ dispatch, commit }, { username, password, token }) {
+  async sendAuthRequest({ dispatch, commit }, { username, password, token, isReLogin }) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
     const userDataToRequestParams = adaptUserDataToRequestParams({ username, password, token })
@@ -116,7 +126,7 @@ const actions: IAccountsActions = {
       commit('SET_STATUS', RequestStatus.FAILED)
 
       if (error.response && error.response.status === 401) {
-        commit('SET_NEED_TFA', true)
+        commit('SET_NEED_TFA', { needTfa: true, isReLogin, username, password })
       } else {
         console.error(error)
       }
@@ -154,7 +164,7 @@ const actions: IAccountsActions = {
 
       commit('SET_STATUS', RequestStatus.LOADED)
 
-      commit('SET_NEED_TFA', false)
+      commit('SET_NEED_TFA', { needTfa: false, isReLogin: false, username: '', password: '' })
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
       console.error(error)
