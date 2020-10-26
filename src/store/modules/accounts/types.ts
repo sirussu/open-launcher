@@ -31,6 +31,12 @@ export interface IAdaptedResponse extends IAuthResponse{
   tfaToken?: string
 }
 
+export interface IValidationTimestamp {
+  timestamp: number
+  timestampWithPendingTime: number
+  timezone: string
+}
+
 export interface IAccountsAdditional extends NormalizedAdditional{
   needTfa: {
     needTfa: boolean
@@ -38,7 +44,7 @@ export interface IAccountsAdditional extends NormalizedAdditional{
     username: string
     password: string
   }
-  lastValidationTimestamp: number
+  lastValidationTimestamp: IValidationTimestamp
 }
 
 export interface IAccounts extends NormalizedSchema<IAccount> {

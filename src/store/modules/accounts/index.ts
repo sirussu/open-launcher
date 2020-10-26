@@ -5,14 +5,14 @@ import {
   IAccountsActions,
   IAccountsGetters,
   IAccountsState, IAuthResponse,
-  INormalizedAccount
+  INormalizedAccount, IValidationTimestamp
 } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
 import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from '@/store/modules/accounts/adapters'
-import { PENDING_TIME_MS } from '@/config'
+import { getTimestamp, getTimestampOffset } from '@/store/modules/accounts/lib'
 
 const state: IAccountsState = {
   accounts: {
@@ -30,7 +30,11 @@ const state: IAccountsState = {
       username: '',
       password: '',
     },
-    lastValidationTimestamp: 0
+    lastValidationTimestamp: {
+      timestamp: 0,
+      timezone: '',
+      timestampWithPendingTime: 0,
+    }
   },
 }
 
@@ -65,7 +69,7 @@ const mutations: MutationTree<IAccountsState> = {
       password,
     }
   },
-  SET_VALIDATE_ACCOUNTS_TIME(state, timestamp: number) {
+  SET_VALIDATE_ACCOUNTS_TIME(state, timestamp: IValidationTimestamp) {
     state.additional.lastValidationTimestamp = timestamp
   },
   SET_IS_EXPIRED(state, { value, id }: { value: boolean, id: number }) {
@@ -83,7 +87,7 @@ const actions: IAccountsActions = {
     if (!state.accounts.data.allIds.includes(account.id)) {
       commit('ADD_ACCOUNT', account)
     } else {
-      console.warn(`Account ${account.byId.username} already exist in account list`) // TODO: Need a notifier
+      console.warn(`Account ${account.byId.username} already exist in account list`) // TODO: Need a notificator
     }
 
     if (state.accounts.data.byId[account.id].tokenIsExpired) {
@@ -133,13 +137,21 @@ const actions: IAccountsActions = {
     }
   },
   async validateAccountsInfo({ commit, getters, state }) {
-    const currentTime = Date.now()
+    const date = new Date()
+    const timestampObject = getTimestamp(date)
 
-    if ((state.additional.lastValidationTimestamp + PENDING_TIME_MS) > currentTime) {
+    if (state.additional.lastValidationTimestamp.timezone && timestampObject.timezone !== state.additional.lastValidationTimestamp.timezone) {
+      const offset = getTimestampOffset(date)
+      const shiftedTimestampObject = getTimestamp(date, offset)
+
+      commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
+    }
+
+    if(state.additional.lastValidationTimestamp.timestampWithPendingTime && timestampObject.timestamp < state.additional.lastValidationTimestamp.timestampWithPendingTime) {
       return
     }
 
-    commit('SET_VALIDATE_ACCOUNTS_TIME', currentTime)
+    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
 
     for(let account of getters.accounts) {
       const accountDataToRequestParams = adaptUserDataToRequestParams({ username: account.username, password: account.password, token: account.tokens.tfaToken })
