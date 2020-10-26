@@ -1,4 +1,4 @@
-import { boolean } from '@storybook/addon-knobs'
+import { object } from '@storybook/addon-knobs'
 
 import AccountsModal from '@/views/accounts/AccountsModal.vue'
 import TfaModal from '@/views/accounts/TfaModal.vue'
@@ -19,8 +19,8 @@ export const TfaModalView = () => ({
   components: { TfaModal },
   props: {
     hasTfa: {
-      default: boolean('hasTfa', true)
+      default: object('hasTfa', { needTfa: true, isReLogin: false, username: '', password: '' })
     }
   },
-  template: '<tfa-modal :hasTfa="hasTfa"/>',
+  template: '<tfa-modal :hasTfa="hasTfa" />',
 })

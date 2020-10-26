@@ -53,4 +53,16 @@ describe('accounts module', () => {
     await store.dispatch('accounts/validateAccountsInfo')
     expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
   })
+
+  test('re-login with tfa', async () => {
+    nock(baseURL).post('/oauth/token').reply(401)
+    nock(baseURL).post('/oauth/token').reply(200, tokensStub)
+    nock(baseURL).get('/api/user').reply(200, accountInfoStub)
+
+    await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa', token: undefined, isReLogin: true })
+    expect(store.state.accounts.accounts.data.allIds).toHaveLength(0)
+
+    await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa', token: '123123', isReLogin: true })
+    expect(store.state.accounts.accounts.data.allIds).toHaveLength(1)
+  })
 })
