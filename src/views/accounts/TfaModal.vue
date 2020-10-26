@@ -81,6 +81,8 @@ export default defineComponent({
       if (this.validate.tfaToken.required.$invalid) {
         return this.$t('accounts.modal.tfaError.required')
       }
+
+      return null
     },
   },
   methods: {

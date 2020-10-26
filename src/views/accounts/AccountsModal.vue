@@ -114,6 +114,8 @@ export default defineComponent({
       if (this.validate.authForm.login.required.$invalid) {
         return this.$t('accounts.modal.authError.loginRequired')
       }
+
+      return null
     },
     passwordError() {
       if (!(this.validate.authForm.pass.$dirty && this.showModal)) {
@@ -127,6 +129,8 @@ export default defineComponent({
       if (this.validate.authForm.pass.required.$invalid) {
         return this.$t('accounts.modal.authError.passRequired')
       }
+
+      return null
     },
   },
   methods: {

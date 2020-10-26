@@ -2756,6 +2756,11 @@
   resolved "https://registry.yarnpkg.com/@mdi/font/-/font-5.7.55.tgz#8e05c27824f0c29c236389fc59db39bde5e92d8d"
   integrity sha512-NAixLcux0dBY6dH8wOW7fQ5J86auAqqu+r0B1F36W8/+BTeCIQGYz0hs08ojc8I+uDP7qxeOr8CFAZMyUUlDoQ==
 
+"@mdi/js@^5.8.55":
+  version "5.8.55"
+  resolved "https://registry.yarnpkg.com/@mdi/js/-/js-5.8.55.tgz#630bc5fafd8b1d2f6e63489a9ab170177559e41b"
+  integrity sha512-2bvln56SW6V/nSDC/0/NTu1bMF/CgSyZox8mcWbAPWElBN3UYIrukKDUckEER8ifr8X2YJl1RLKQqi7T7qLzmg==
+
 "@mdx-js/loader@^1.5.1":
   version "1.6.18"
   resolved "https://registry.yarnpkg.com/@mdx-js/loader/-/loader-1.6.18.tgz#8d63fcc029573b3a33968c78d1c5e927ad8e497d"
@@ -8608,6 +8613,11 @@ electron-devtools-installer@^3.1.1:
     semver "^7.2.1"
     unzip-crx-3 "^0.2.0"
 
+electron-is-dev@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-1.2.0.tgz#2e5cea0a1b3ccf1c86f577cee77363ef55deb05e"
+  integrity sha512-R1oD5gMBPS7PVU8gJwH6CtT0e6VSoD0+SzSnYpNm+dBkcijgA+K7VAMHDfnRq/lkKPZArpzplTW6jfiMYosdzw==
+
 electron-publish@22.7.0:
   version "22.7.0"
   resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-22.7.0.tgz#d92ba7c4007c9ac1dd070593e48028184fb2dc19"
@@ -8639,6 +8649,14 @@ electron-updater@^4.3.5:
     lazy-val "^1.0.4"
     lodash.isequal "^4.5.0"
     semver "^7.3.2"
+
+electron-util@^0.14.2:
+  version "0.14.2"
+  resolved "https://registry.yarnpkg.com/electron-util/-/electron-util-0.14.2.tgz#793ebd61f75435363b0dbbba61dddb0f17812fb1"
+  integrity sha512-pnnRJiWajDcTtEAS33RgP3XVO+9cJjOlBA0BKk6cABjcPxihgCwiGWplCOHc0lH43f68ZJZweiunwomJC+TWng==
+  dependencies:
+    electron-is-dev "^1.1.0"
+    new-github-issue-url "^0.2.1"
 
 electron@^10.1.4:
   version "10.1.4"
@@ -14425,6 +14443,11 @@ nan@^2.12.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.1.tgz#d7be34dfa3105b91494c3147089315eff8874b01"
   integrity sha512-isWHgVjnFjh2x2yuJ/tj3JbwoHu3UC2dX5G/88Cm24yB6YopVgxvBObDY7n5xW6ExmFhJpSEQqFPvq9zaXc8Jw==
 
+nanoid@^3.1.16:
+  version "3.1.16"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.16.tgz#b21f0a7d031196faf75314d7c65d36352beeef64"
+  integrity sha512-+AK8MN0WHji40lj8AEuwLOvLSbWYApQpre/aFJZD71r43wVRLrOYS4FmJOPQYon1TqB462RzrrxlfA74XRES8w==
+
 nanomatch@^1.2.9:
   version "1.2.13"
   resolved "https://registry.yarnpkg.com/nanomatch/-/nanomatch-1.2.13.tgz#b87a8aa4fc0de8fe6be88895b38983ff265bd119"
@@ -14461,6 +14484,11 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+new-github-issue-url@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/new-github-issue-url/-/new-github-issue-url-0.2.1.tgz#e17be1f665a92de465926603e44b9f8685630c1d"
+  integrity sha512-md4cGoxuT4T4d/HDOXbrUHkTKrp/vp+m3aOA7XXVYwNsUNMK49g3SQicTSeV5GIz/5QVGAeYRAOlyp9OvlgsYA==
 
 nice-try@^1.0.4:
   version "1.0.5"

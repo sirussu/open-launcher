@@ -1,9 +1,9 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // @ts-ignore
-import StatusBar from '@/views/statusBar/StatusBar.vue'
-
 import VueI18n from 'vue-i18n'
+
+import StatusBar from '@/views/statusBar/StatusBar.vue'
 import en from '@/locales/en.json'
 import ru from '@/locales/ru.json'
 
@@ -18,7 +18,7 @@ const i18n = new VueI18n({
     ru,
   },
   pluralizationRules: {
-    'ru': (choice: number) => {
+    ru: (choice: number) => {
       if (choice === 0) {
         return 0
       }
@@ -27,15 +27,19 @@ const i18n = new VueI18n({
 
       if (choice % 10 === 1 && choice % 100 !== 11) {
         form = 0
-      } else if (choice % 10 >= 2 && choice % 10 <= 4 && (choice % 100 < 10 || choice % 100 >= 20)) {
+      } else if (
+        choice % 10 >= 2 &&
+        choice % 10 <= 4 &&
+        (choice % 100 < 10 || choice % 100 >= 20)
+      ) {
         form = 1
       } else {
         form = 2
       }
 
       return form
-    }
-  }
+    },
+  },
 })
 
 const cases = [0, 1, 2, 5, 1001, 1002, 1005, 1011, 1012]
@@ -59,7 +63,6 @@ describe('Status bar component', () => {
   })
 
   test.each(cases)('correct plural ru locale', async (currentCase) => {
-
     await wrapper.setProps({ realms: [], online: currentCase })
     const online = wrapper.find('.online')
     const expected = getExpected(currentCase)

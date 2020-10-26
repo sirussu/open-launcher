@@ -11,6 +11,7 @@ import { axios } from '@/modules/axios'
 import { normalizeData } from '@/utils/normalizeData'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { NormalizedSchema, NormalizedAdditional } from '@/types/normalze'
+import { NotificationTypes } from '@/types/notification'
 
 import { IRootState } from '../types'
 
@@ -63,7 +64,7 @@ export interface IFeedsActions extends ActionTree<IFeedState, IRootState> {
 }
 
 const actions: IFeedsActions = {
-  async getFeeds({ commit }) {
+  async getFeeds({ commit, dispatch }) {
     commit('SET_STATUS', RequestStatus.PENDING)
     try {
       const { data: feeds } = await axios.get('/news')
@@ -71,7 +72,13 @@ const actions: IFeedsActions = {
       commit('SET_FEEDS', { feeds })
       commit('SET_STATUS', RequestStatus.LOADED)
     } catch (error) {
-      console.error(error)
+      console.error('getFeeds', error)
+
+      dispatch(
+        'notification/addNotification',
+        { type: NotificationTypes.ERROR, i18n: 'feeds_loading_error' },
+        { root: true }
+      )
 
       commit('SET_STATUS', RequestStatus.FAILED)
     }

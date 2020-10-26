@@ -8,7 +8,7 @@ import { mount, createLocalVue } from '@vue/test-utils'
 // @ts-ignore
 import Settings from '@/views/pages/Settings.vue'
 import { modules } from '@/store/modules'
-import i18n from '@/modules/i18n'
+import { i18n } from '@/modules/i18n'
 
 Vue.use(Vuetify)
 
@@ -27,7 +27,7 @@ describe('Settings', () => {
 
   it('should render properly', () => {
     const settings = mount(Settings, {
-      i18n: i18n(),
+      i18n,
       store,
       localVue,
       vuetify: new Vuetify(),
