@@ -11,14 +11,14 @@ import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
-import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from '@/store/modules/accounts/adapters'
+import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from './adapters'
 import {
   getShiftedTimestamp,
   getTimestamp,
   getTimestampOffset,
   isDelayTimeIsGone,
   isTimezoneHasOffset
-} from '@/store/modules/accounts/lib'
+} from './lib'
 
 const state: IAccountsState = {
   accounts: {
@@ -153,7 +153,7 @@ const actions: IAccountsActions = {
 
     if (hasTimezoneOffset) {
       const offset = getTimestampOffset(date)
-      const shiftedTimestampObject = getShiftedTimestamp(date, timezone, offset)
+      const shiftedTimestampObject = getShiftedTimestamp(state.additional.lastValidationTimestamp, timezone, offset)
 
       commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
     }

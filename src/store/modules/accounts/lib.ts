@@ -12,13 +12,10 @@ export const getTimestamp = (date: Date, timezone: string): IValidationTimestamp
   }
 }
 
-export const getShiftedTimestamp = (date: Date, timezone: string, shift: number): IValidationTimestamp => {
-  const timestamp = date.getTime()
-  const timestampWithDelayTime = timestamp + DELAY_TIME_MS
-
+export const getShiftedTimestamp = (storeTimestamp: IValidationTimestamp, timezone: string, shift: number): IValidationTimestamp => {
   return {
-    timestampWithDelayTime: timestampWithDelayTime + shift,
-    timestamp: timestamp + shift,
+    timestampWithDelayTime: storeTimestamp.timestampWithDelayTime + shift,
+    timestamp: storeTimestamp.timestamp + shift,
     timezone,
   }
 }
