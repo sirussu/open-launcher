@@ -12,7 +12,13 @@ import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
 import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from '@/store/modules/accounts/adapters'
-import { getTimestamp, getTimestampOffset } from '@/store/modules/accounts/lib'
+import {
+  getShiftedTimestamp,
+  getTimestamp,
+  getTimestampOffset,
+  isDelayTimeIsGone,
+  isTimezoneHasOffset
+} from '@/store/modules/accounts/lib'
 
 const state: IAccountsState = {
   accounts: {
@@ -33,7 +39,7 @@ const state: IAccountsState = {
     lastValidationTimestamp: {
       timestamp: 0,
       timezone: '',
-      timestampWithPendingTime: 0,
+      timestampWithDelayTime: 0,
     }
   },
 }
@@ -132,22 +138,27 @@ const actions: IAccountsActions = {
       if (error.response && error.response.status === 401) {
         commit('SET_NEED_TFA', { needTfa: true, isReLogin, username, password })
       } else {
-        console.error(error)
+        console.dir(error)
       }
     }
   },
   async validateAccountsInfo({ commit, getters, state }) {
     const date = new Date()
-    const timestampObject = getTimestamp(date)
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const timestampObject = getTimestamp(date, timezone)
 
-    if (state.additional.lastValidationTimestamp.timezone && timestampObject.timezone !== state.additional.lastValidationTimestamp.timezone) {
+    // validators
+    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timestampObject.timezone)
+    const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
+
+    if (hasTimezoneOffset) {
       const offset = getTimestampOffset(date)
-      const shiftedTimestampObject = getTimestamp(date, offset)
+      const shiftedTimestampObject = getShiftedTimestamp(date, timezone, offset)
 
       commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
     }
 
-    if(state.additional.lastValidationTimestamp.timestampWithPendingTime && timestampObject.timestamp < state.additional.lastValidationTimestamp.timestampWithPendingTime) {
+    if(!hasDelayTimeIsGone) {
       return
     }
 

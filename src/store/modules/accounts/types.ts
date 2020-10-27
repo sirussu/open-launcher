@@ -33,7 +33,7 @@ export interface IAdaptedResponse extends IAuthResponse{
 
 export interface IValidationTimestamp {
   timestamp: number
-  timestampWithPendingTime: number
+  timestampWithDelayTime: number
   timezone: string
 }
 

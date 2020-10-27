@@ -135,15 +135,10 @@ export default defineComponent({
     },
   },
   methods: {
-    clearForm() {
-      this.$emit('clear-form')
-    },
     resetForm() {
       this.showModal = false
       this.authForm.login = ''
       this.authForm.pass = ''
-      this.tfaToken = ''
-      this.clearForm()
       this.validate.authForm.$reset()
     },
     sendRequest() {

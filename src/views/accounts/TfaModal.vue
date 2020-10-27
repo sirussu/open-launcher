@@ -102,7 +102,7 @@ export default defineComponent({
     },
     resetForm() {
       this.tfaToken = ''
-      this.$emit('clear-form')
+      this.$emit('clear-tfa-form')
       this.validate.tfaToken.$reset()
     },
   },

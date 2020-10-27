@@ -53,11 +53,11 @@
           </v-btn>
         </v-col>
       </v-row>
-      <accounts-modal @clear-form="resetForm" @auth-requested="sendRequest" />
+      <accounts-modal @auth-requested="sendRequest" />
       <tfa-modal
         :has-tfa="needTfa"
         @tfa-was-entered="tfaWasEntered"
-        @clear-form="resetForm"
+        @clear-tfa-form="closeTfaForm"
       />
     </v-container>
   </div>
@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { createNamespacedHelpers } from 'vuex-composition-helpers'
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
 
 import {
   IAccount,
@@ -112,12 +112,7 @@ export default defineComponent({
       'getStatus',
     ])
 
-    const username = ref('')
-    const password = ref('')
-
     return {
-      username,
-      password,
       accounts,
       defaultAccount,
       needTfa,
@@ -140,6 +135,8 @@ export default defineComponent({
     async tfaWasEntered(tfaToken: string) {
       if (this.needTfa.isReLogin) {
         await this.reLogin(tfaToken)
+
+        return
       }
 
       await this.sendAuthRequest({
@@ -150,7 +147,7 @@ export default defineComponent({
       })
     },
     async reLogin(tfaToken?: string, account?: IAccount) {
-      if (account) {
+      if (!tfaToken && account) {
         await this.sendAuthRequest({
           username: account.username,
           password: account.password,
@@ -159,18 +156,16 @@ export default defineComponent({
         })
       }
 
-      if (tfaToken) {
+      if (tfaToken && !account) {
         await this.sendAuthRequest({
           username: this.needTfa.username,
           password: this.needTfa.password,
           token: tfaToken,
-          isReLogin: false,
+          isReLogin: true,
         })
       }
     },
-    resetForm() {
-      this.username = ''
-      this.password = ''
+    closeTfaForm() {
       this.switchOffTfa()
     },
     activeClass(account) {
