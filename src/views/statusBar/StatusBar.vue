@@ -1,20 +1,24 @@
 <template>
-  <div>
-    <span>Sirus.su</span>
-    <span>(ver. {{ version }})</span>
-    <span v-for="realm in mappedRealms" :key="realm.id">
+  <v-row align="center" dense>
+    <v-col cols="auto" class="pt-0 pb-0">
+      <span>Sirus.su</span>
+      <span>(ver. {{ version }})</span>
+    </v-col>
+    <v-col v-for="realm in mappedRealms" :key="realm.id" cols="auto">
       {{ realm.name }}
-      <span v-if="realm.isOnline">&#128994;</span>
-      <span v-else>&#128308;</span>
-    </span>
-    <span class="online">
+      <v-icon :color="getColor(realm)" class="mr-0" size="22">
+        {{ mdiCircle }}
+      </v-icon>
+    </v-col>
+    <v-col class="online" cols="auto">
       {{ $tc('statusBar.online', online) }}
-    </span>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import { defineComponent } from '@vue/composition-api'
+import { mdiCircle } from '@mdi/js'
 
 export default defineComponent({
   name: 'StatusBar',
@@ -27,6 +31,11 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+  },
+  setup() {
+    return {
+      mdiCircle,
+    }
   },
   computed: {
     version() {
@@ -41,6 +50,11 @@ export default defineComponent({
           name: realm.name.split(' -')[0],
         }
       })
+    },
+  },
+  methods: {
+    getColor(realm) {
+      return realm.isOnline ? 'green' : 'red'
     },
   },
 })
