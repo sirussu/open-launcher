@@ -13,12 +13,15 @@ import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
 import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from './adapters'
 import {
+  getDate,
+  getTimezone,
   getShiftedTimestamp,
   getTimestamp,
   getTimestampOffset,
   isDelayTimeIsGone,
   isTimezoneHasOffset
 } from './lib'
+import { NotificationTypes } from '@/types/notification'
 
 const state: IAccountsState = {
   accounts: {
@@ -84,7 +87,7 @@ const mutations: MutationTree<IAccountsState> = {
 }
 
 const actions: IAccountsActions = {
-  addAccount({ state, commit }, account) {
+  async addAccount({ dispatch, state, commit }, account) {
     if (state.accounts.data.allIds.length === 0) {
       commit('SET_DEFAULT_ID', account.id)
       commit('ADD_ACCOUNT', account)
@@ -93,7 +96,11 @@ const actions: IAccountsActions = {
     if (!state.accounts.data.allIds.includes(account.id)) {
       commit('ADD_ACCOUNT', account)
     } else {
-      console.warn(`Account ${account.byId.username} already exist in account list`) // TODO: Need a notificator
+      await dispatch(
+        'notification/addNotification',
+        { type: NotificationTypes.WARN, i18n: 'account_duplicate' },
+        { root: true }
+      )
     }
 
     if (state.accounts.data.byId[account.id].tokenIsExpired) {
@@ -138,13 +145,19 @@ const actions: IAccountsActions = {
       if (error.response && error.response.status === 401) {
         commit('SET_NEED_TFA', { needTfa: true, isReLogin, username, password })
       } else {
-        console.dir(error)
+        console.error(`sendAuthRequest`, error)
+
+        await dispatch(
+          'notification/addNotification',
+          { type: NotificationTypes.ERROR, i18n: 'send_auth_request' },
+          { root: true }
+        )
       }
     }
   },
-  async validateAccountsInfo({ commit, getters, state }) {
-    const date = new Date()
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  async validateAccountsInfo({ dispatch, commit, getters, state }) {
+    const date = getDate()
+    const timezone = getTimezone()
     const timestampObject = getTimestamp(date, timezone)
 
     // validators
@@ -171,7 +184,12 @@ const actions: IAccountsActions = {
         await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
       } catch (error) {
         if ([400, 401].includes(error.response.status)) {
-          console.warn(`${account.username} account password has been changed or auth token has expired`) // TODO: Need a notificator
+          await dispatch(
+            'notification/addNotification',
+            { type: NotificationTypes.WARN, i18n: 'token_has_expired' },
+            { root: true }
+          )
+
           commit('SET_IS_EXPIRED', { value: true, id: account.id })
         }
       }
@@ -190,7 +208,14 @@ const actions: IAccountsActions = {
       commit('SET_NEED_TFA', { needTfa: false, isReLogin: false, username: '', password: '' })
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
-      console.error(error)
+
+      await dispatch(
+        'notification/addNotification',
+        { type: NotificationTypes.ERROR, i18n: 'send_auth_request' },
+        { root: true }
+      )
+
+      console.error(`loadAccountInfo`, error)
     }
   },
 }

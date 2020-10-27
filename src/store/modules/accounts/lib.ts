@@ -39,3 +39,7 @@ export const isDelayTimeIsGone = (stateTimestamp: number, currentTimestamp: numb
 
   return false
 }
+
+export const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone
+
+export const getDate = () => new Date()
