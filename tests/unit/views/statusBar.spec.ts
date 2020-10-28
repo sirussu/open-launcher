@@ -1,7 +1,7 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-// @ts-ignore
-import VueI18n from 'vue-i18n'
 
+import VueI18n from 'vue-i18n'
+// @ts-ignore
 import StatusBar from '@/views/statusBar/StatusBar.vue'
 import en from '@/locales/en.json'
 import ru from '@/locales/ru.json'
@@ -42,7 +42,7 @@ const i18n = new VueI18n({
 })
 
 const cases = [0, 1, 2, 5, 1001, 1002, 1005, 1011, 1012]
-const expectCases = {
+const expectedCases = {
   0: '0 человек',
   1: '1 человек',
   2: '2 человека',
@@ -53,7 +53,7 @@ const expectCases = {
   1011: '1011 человек',
   1012: '1012 человек',
 }
-const getExpected = (currentCase: number): string => expectCases[currentCase]
+const getExpected = (currentCase: number): string => expectedCases[currentCase]
 
 describe('Status bar component', () => {
   const wrapper = mount(StatusBar, {
@@ -63,6 +63,7 @@ describe('Status bar component', () => {
 
   test.each(cases)('correct plural ru locale', async (currentCase) => {
     await wrapper.setProps({ realms: [], online: currentCase })
+
     const online = wrapper.find('.online')
     const expected = getExpected(currentCase)
 

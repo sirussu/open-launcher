@@ -19,7 +19,7 @@ import {
   getTimestamp,
   getTimestampOffset,
   isDelayTimeIsGone,
-  isTimezoneHasOffset
+  isTimezoneHasOffset,
 } from './lib'
 import { NotificationTypes } from '@/types/notification'
 
@@ -155,46 +155,6 @@ const actions: IAccountsActions = {
       }
     }
   },
-  async validateAccountsInfo({ dispatch, commit, getters, state }) {
-    const date = getDate()
-    const timezone = getTimezone()
-    const timestampObject = getTimestamp(date, timezone)
-
-    // validators
-    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timestampObject.timezone)
-    const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
-
-    if (hasTimezoneOffset) {
-      const offset = getTimestampOffset(date)
-      const shiftedTimestampObject = getShiftedTimestamp(state.additional.lastValidationTimestamp, timezone, offset)
-
-      commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
-    }
-
-    if(!hasDelayTimeIsGone) {
-      return
-    }
-
-    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
-
-    for(let account of getters.accounts) {
-      const accountDataToRequestParams = adaptUserDataToRequestParams({ username: account.username, password: account.password, token: account.tokens.tfaToken })
-
-      try {
-        await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
-      } catch (error) {
-        if ([400, 401].includes(error.response.status)) {
-          await dispatch(
-            'notification/addNotification',
-            { type: NotificationTypes.WARN, i18n: 'token_has_expired' },
-            { root: true }
-          )
-
-          commit('SET_IS_EXPIRED', { value: true, id: account.id })
-        }
-      }
-    }
-  },
   async loadAccountInfo({ dispatch, commit }, adaptedAuthResponse) {
     try {
       const accountInfo: { id: number } = await axios.get('/user')
@@ -216,6 +176,57 @@ const actions: IAccountsActions = {
       )
 
       console.error(`loadAccountInfo`, error)
+    }
+  },
+  async controlValidationTimestamp({ dispatch, commit, state }) {
+    const date = getDate()
+    const timezone = getTimezone()
+    const timestampObject = getTimestamp(date, timezone)
+
+    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timestampObject.timezone)
+
+    if (hasTimezoneOffset) {
+      const offset = getTimestampOffset(date)
+      const shiftedTimestampObject = getShiftedTimestamp(state.additional.lastValidationTimestamp, timezone, offset)
+
+      commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
+    }
+
+    await dispatch('beforeValidateAccountsCheck', timestampObject)
+  },
+  async beforeValidateAccountsCheck({ dispatch, commit, state }, timestampObject) {
+    const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
+
+    if(!hasDelayTimeIsGone) {
+      console.log(`checked failed`)
+      return
+    }
+
+    await dispatch('validateAccountsCycle')
+    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
+  },
+  async validateAccountsCycle({ dispatch, commit, getters }) {
+    for(let account of getters.accounts) {
+      // ignore 2FA accounts
+      if (account.tfaToken) {
+        continue
+      }
+
+      const accountDataToRequestParams = adaptUserDataToRequestParams({ username: account.username, password: account.password, token: account.tokens.tfaToken })
+
+      try {
+        await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
+      } catch (error) {
+        if ([400, 401].includes(error.response.status)) {
+          commit('SET_IS_EXPIRED', { value: true, id: account.id })
+
+          await dispatch(
+            'notification/addNotification',
+            { type: NotificationTypes.WARN, i18n: 'token_has_expired' },
+            { root: true }
+          )
+        }
+      }
     }
   },
 }

@@ -24,7 +24,7 @@ export default {
     StatusBarBlock,
   },
   created() {
-    this.$store.dispatch('accounts/validateAccountsInfo', { root: true })
+    this.$store.dispatch('accounts/controlValidationTimestamp', { root: true })
   },
 }
 </script>

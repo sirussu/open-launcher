@@ -33,7 +33,7 @@ export const isTimezoneHasOffset = (stateTimezone: string, currentTimezone: stri
 }
 
 export const isDelayTimeIsGone = (stateTimestamp: number, currentTimestamp: number): boolean => {
-  if (stateTimestamp && currentTimestamp > stateTimestamp) {
+  if (currentTimestamp > stateTimestamp) {
     return true
   }
 
