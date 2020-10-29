@@ -145,8 +145,6 @@ const actions: IAccountsActions = {
       if (error.response && error.response.status === 401) {
         commit('SET_NEED_TFA', { needTfa: true, isReLogin, username, password })
       } else {
-        console.error(`sendAuthRequest`, error)
-
         await dispatch(
           'notification/addNotification',
           { type: NotificationTypes.ERROR, i18n: 'send_auth_request' },
@@ -174,8 +172,6 @@ const actions: IAccountsActions = {
         { type: NotificationTypes.ERROR, i18n: 'send_auth_request' },
         { root: true }
       )
-
-      console.error(`loadAccountInfo`, error)
     }
   },
   setValidationTimestamp({ commit }) {
@@ -184,8 +180,6 @@ const actions: IAccountsActions = {
     commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
   },
   validationTimezoneCheck({ commit, state }) {
-    console.log(`start timezone checking`)
-
     const date = getDate()
     const timezone = getTimezone()
     const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timezone)
@@ -197,8 +191,7 @@ const actions: IAccountsActions = {
       commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
     }
   },
-  async beforeValidateAccountsCheck({ dispatch, commit, state }) {
-    console.log(`start before validation checking`)
+  async beforeValidateAccountsCheck({ dispatch, state }) {
     const timestampObject = getTimestamp()
 
     const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
@@ -206,32 +199,28 @@ const actions: IAccountsActions = {
     if(!hasDelayTimeIsGone) {
       return
     }
-    console.log(`start checking cycle and set timestamp`)
 
-    await dispatch('validateAccountsCycle')
+    const dispatchArray = state.accounts.data.allIds.map(id => dispatch('validateAccount', id))
+
+    await Promise.all(dispatchArray)
     await dispatch('setValidationTimestamp')
   },
-  async validateAccountsCycle({ dispatch, commit, getters }) {
-    for(let account of getters.accounts) {
-      // ignore 2FA accounts
-      if (account.tfaToken) {
-        continue
-      }
+  async validateAccount({ dispatch, commit, state }, accountId) {
+    const account = state.accounts.data.byId[accountId]
 
-      const accountDataToRequestParams = adaptUserDataToRequestParams({ username: account.username, password: account.password, token: account.tokens.tfaToken })
+    const accountDataToRequestParams = adaptUserDataToRequestParams({ username: account.username, password: account.password, token: account.tfaToken })
 
-      try {
-        await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
-      } catch (error) {
-        if ([400, 401].includes(error.response.status)) {
-          commit('SET_IS_EXPIRED', { value: true, id: account.id })
+    try {
+      await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
+    } catch (error) {
+      if ([400, 401].includes(error.response.status)) {
+        commit('SET_IS_EXPIRED', { value: true, id: account.id })
 
-          await dispatch(
-            'notification/addNotification',
-            { type: NotificationTypes.WARN, i18n: 'token_has_expired' },
-            { root: true }
-          )
-        }
+        await dispatch(
+          'notification/addNotification',
+          { type: NotificationTypes.WARN, i18n: 'token_has_expired' },
+          { root: true }
+        )
       }
     }
   },

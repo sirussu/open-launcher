@@ -62,5 +62,7 @@
     "accountAccess": null
   },
   "id": 1,
-  "username": "asddsa"
+  "username": "asddsa",
+  "password": "asddsaasddsa",
+  "tokenIsExpired": false
 }

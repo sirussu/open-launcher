@@ -72,7 +72,7 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
   setValidationTimestamp: (ctx: ActionCtx) => void
   validationTimezoneCheck: (ctx: ActionCtx) => void
   beforeValidateAccountsCheck: (ctx: ActionCtx) => Promise<void>
-  validateAccountsCycle: (ctx: ActionCtx) => Promise<void>
+  validateAccount: (ctx: ActionCtx, payload: number) => Promise<void>
 }
 
 export interface IAccountsGetters extends GetterTree<IAccountsState, IRootState>{

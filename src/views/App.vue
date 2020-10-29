@@ -24,7 +24,6 @@ export default {
     StatusBarBlock,
   },
   async created() {
-    console.log(`start checking`)
     await this.$store.dispatch('accounts/validationTimezoneCheck', {
       root: true,
     })

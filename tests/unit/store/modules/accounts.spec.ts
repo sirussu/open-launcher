@@ -48,38 +48,35 @@ describe('accounts module', () => {
     expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
   })
 
-  test('validate account information', async () => {
-    nock(baseURL).post('/oauth/token').reply(400)
-
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
-    expect(store.getters['accounts/accounts']).toHaveLength(1)
-
-    await store.dispatch('accounts/controlValidationTimestamp')
-    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
-  })
-
-  test('controlValidationTimestamp with offset', async () => {
-    nock(baseURL).post('/oauth/token').reply(200)
-    advanceTo(new Date(2020, 9, 28, 19, 0, 0))
-// TODO: advanceBy = offset
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
-    expect(store.getters['accounts/accounts']).toHaveLength(1)
-
-    await store.dispatch('accounts/controlValidationTimestamp')
-    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
-
-
-  })
-
-  /*test('re-login with tfa', async () => {
+  test('validation without offset', async () => {
     nock(baseURL).post('/oauth/token').reply(401)
-    nock(baseURL).post('/oauth/token').reply(200, tokensStub)
-    nock(baseURL).get('/api/user').reply(200, accountInfoStub)
+    advanceTo(new Date(2020, 9, 0, 0, 0, 0))
 
-    await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa', token: undefined, isReLogin: true })
-    expect(store.state.accounts.accounts.data.allIds).toHaveLength(0)
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/setValidationTimestamp')
 
-    await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa', token: '123123', isReLogin: true })
-    expect(store.state.accounts.accounts.data.allIds).toHaveLength(1)
-  })*/
+    advanceBy(25 * 60 * 60 * 1000) // next day
+
+    await store.dispatch('accounts/beforeValidateAccountsCheck')
+    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
+  })
+
+  test('validation with offset', async () => {
+    advanceTo(new Date(2020, 9, 0, 0, 0, 0))
+
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/setValidationTimestamp')
+
+    store.state.accounts.additional.lastValidationTimestamp.timezone = 'Europe/Moscow'
+    const offset = -new Date().getTimezoneOffset() * 60 * 1000
+    advanceBy(offset)
+
+    const timestamp = store.state.accounts.additional.lastValidationTimestamp.timestamp
+    const timestampWithDelay = store.state.accounts.additional.lastValidationTimestamp.timestampWithDelayTime
+
+    await store.dispatch('accounts/validationTimezoneCheck')
+    expect(store.state.accounts.additional.lastValidationTimestamp.timezone).toBe('Asia/Yekaterinburg')
+    expect(store.state.accounts.additional.lastValidationTimestamp.timestamp).toBe(timestamp + offset)
+    expect(store.state.accounts.additional.lastValidationTimestamp.timestampWithDelayTime).toBe(timestampWithDelay + offset)
+  })
 })

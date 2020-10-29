@@ -9,9 +9,6 @@ export default {
 
 export const AccountsModalView = () => ({
   components: { AccountsModal },
-  props: {
-
-  },
   template: '<accounts-modal />',
 })
 

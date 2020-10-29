@@ -14,16 +14,16 @@ export const getTimestamp = (): IValidationTimestamp => {
   }
 }
 
-export const getShiftedTimestamp = (storeTimestamp: IValidationTimestamp, timezone: string, shift: number): IValidationTimestamp => {
+export const getShiftedTimestamp = (stateTimestamp: IValidationTimestamp, timezone: string, shift: number): IValidationTimestamp => {
   return {
-    timestampWithDelayTime: storeTimestamp.timestampWithDelayTime + shift,
-    timestamp: storeTimestamp.timestamp + shift,
+    timestampWithDelayTime: stateTimestamp.timestampWithDelayTime + shift,
+    timestamp: stateTimestamp.timestamp + shift,
     timezone,
   }
 }
 
 export const getTimestampOffset = (date: Date) => {
-  return date.getTimezoneOffset() * 60 * 1000 // in milliseconds
+  return -date.getTimezoneOffset() * 60 * 1000 // in milliseconds
 }
 
 export const isTimezoneHasOffset = (stateTimezone: string, currentTimezone: string): boolean => {
