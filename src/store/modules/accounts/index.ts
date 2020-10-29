@@ -178,12 +178,17 @@ const actions: IAccountsActions = {
       console.error(`loadAccountInfo`, error)
     }
   },
-  async controlValidationTimestamp({ dispatch, commit, state }) {
+  setValidationTimestamp({ commit }) {
+    const timestampObject = getTimestamp()
+
+    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
+  },
+  validationTimezoneCheck({ commit, state }) {
+    console.log(`start timezone checking`)
+
     const date = getDate()
     const timezone = getTimezone()
-    const timestampObject = getTimestamp(date, timezone)
-
-    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timestampObject.timezone)
+    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timezone)
 
     if (hasTimezoneOffset) {
       const offset = getTimestampOffset(date)
@@ -191,19 +196,20 @@ const actions: IAccountsActions = {
 
       commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
     }
-
-    await dispatch('beforeValidateAccountsCheck', timestampObject)
   },
-  async beforeValidateAccountsCheck({ dispatch, commit, state }, timestampObject) {
+  async beforeValidateAccountsCheck({ dispatch, commit, state }) {
+    console.log(`start before validation checking`)
+    const timestampObject = getTimestamp()
+
     const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
 
     if(!hasDelayTimeIsGone) {
-      console.log(`checked failed`)
       return
     }
+    console.log(`start checking cycle and set timestamp`)
 
     await dispatch('validateAccountsCycle')
-    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
+    await dispatch('setValidationTimestamp')
   },
   async validateAccountsCycle({ dispatch, commit, getters }) {
     for(let account of getters.accounts) {

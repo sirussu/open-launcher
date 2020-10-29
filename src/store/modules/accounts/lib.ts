@@ -1,7 +1,9 @@
 import { IValidationTimestamp } from '@/store/modules/accounts/types'
 import { DELAY_TIME_MS } from '@/config'
 
-export const getTimestamp = (date: Date, timezone: string): IValidationTimestamp => {
+export const getTimestamp = (): IValidationTimestamp => {
+  const date = getDate()
+  const timezone = getTimezone()
   const timestamp = date.getTime()
   const timestampWithDelayTime = timestamp + DELAY_TIME_MS
 

@@ -59,6 +59,11 @@ describe('Status bar component', () => {
   const wrapper = mount(StatusBar, {
     localVue,
     i18n,
+    computed: {
+      mappedRealms() {
+        return []
+      },
+    },
   })
 
   test.each(cases)('correct plural ru locale', async (currentCase) => {

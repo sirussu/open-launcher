@@ -23,8 +23,14 @@ export default {
     Navigation,
     StatusBarBlock,
   },
-  created() {
-    this.$store.dispatch('accounts/controlValidationTimestamp', { root: true })
+  async created() {
+    console.log(`start checking`)
+    await this.$store.dispatch('accounts/validationTimezoneCheck', {
+      root: true,
+    })
+    await this.$store.dispatch('accounts/beforeValidateAccountsCheck', {
+      root: true,
+    })
   },
 }
 </script>

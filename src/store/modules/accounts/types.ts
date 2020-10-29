@@ -69,8 +69,9 @@ export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>
   switchOffTfa: (ctx: ActionCtx) => void
   loadAccountInfo: (ctx: ActionCtx, payload: IAdaptedResponse) => Promise<void>
   sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string, isReLogin: boolean}) => Promise<void>
-  controlValidationTimestamp: (ctx: ActionCtx) => Promise<void>
-  beforeValidateAccountsCheck: (ctx: ActionCtx, payload: IValidationTimestamp) => Promise<void>
+  setValidationTimestamp: (ctx: ActionCtx) => void
+  validationTimezoneCheck: (ctx: ActionCtx) => void
+  beforeValidateAccountsCheck: (ctx: ActionCtx) => Promise<void>
   validateAccountsCycle: (ctx: ActionCtx) => Promise<void>
 }
 

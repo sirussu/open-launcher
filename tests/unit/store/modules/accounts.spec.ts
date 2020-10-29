@@ -2,6 +2,7 @@ import { createLocalVue } from '@vue/test-utils'
 import Vuex, { Store } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import nock from 'nock'
+import { advanceBy, advanceTo, clear } from 'jest-date-mock'
 
 import { accountsModule } from '@/store/modules/accounts'
 import { notificationModule } from '@/store/modules/notification'
@@ -29,6 +30,7 @@ describe('accounts module', () => {
     })
 
     nock.cleanAll()
+    clear()
   })
 
   test('correct account from request & setting as default', async () => {
@@ -54,6 +56,19 @@ describe('accounts module', () => {
 
     await store.dispatch('accounts/controlValidationTimestamp')
     expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
+  })
+
+  test('controlValidationTimestamp with offset', async () => {
+    nock(baseURL).post('/oauth/token').reply(200)
+    advanceTo(new Date(2020, 9, 28, 19, 0, 0))
+// TODO: advanceBy = offset
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    expect(store.getters['accounts/accounts']).toHaveLength(1)
+
+    await store.dispatch('accounts/controlValidationTimestamp')
+    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
+
+
   })
 
   /*test('re-login with tfa', async () => {
