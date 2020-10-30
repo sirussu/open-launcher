@@ -5,7 +5,9 @@
     <v-main>
       <notifications />
       <v-container fluid>
-        <router-view />
+        <transition name="slide">
+          <router-view />
+        </transition>
       </v-container>
     </v-main>
   </v-app>
@@ -23,3 +25,17 @@ export default {
   },
 }
 </script>
+
+<style>
+.slide-enter-active {
+  transition: all 0.3s ease;
+}
+.slideleave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-enter,
+.slide-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+</style>
