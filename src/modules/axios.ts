@@ -60,7 +60,7 @@ const responseLogger = (response: AxiosResponse) => {
 
   console.group(
     `%cResponse: [${method?.toUpperCase()}] ${url}`,
-    'color: yellow; font-size:13px;'
+    'font-size:13px;'
   )
 
   if (headers) {
@@ -83,7 +83,7 @@ const requestLogger = (config: AxiosRequestConfig) => {
 
   console.group(
     `%cRequest: [${method?.toUpperCase()}] ${url}`,
-    'color: green; font-size:13px;'
+    'font-size:13px;'
   )
 
   if (headers) {
@@ -91,7 +91,12 @@ const requestLogger = (config: AxiosRequestConfig) => {
     console.dir(headers)
   }
 
-  data && console.log(`Data: ${data}`)
+  if (typeof data === 'object') {
+    console.log(`Response:`)
+    console.dir(data)
+  } else {
+    console.log(`Response: ${data}`)
+  }
 
   console.groupEnd()
 
@@ -118,7 +123,7 @@ const errorLogger = (error: AxiosError) => {
 
   console.groupEnd()
 
-  return error
+  return Promise.reject(error)
 }
 
 axios.interceptors.response.use(responseLogger, errorLogger)
