@@ -1,5 +1,4 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-
 // @ts-ignore
 import VueI18n from 'vue-i18n'
 

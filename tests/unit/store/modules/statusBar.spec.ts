@@ -19,15 +19,17 @@ describe('status bar module', () => {
 
     store = new Vuex.Store({
       modules: {
-        status: cloneDeep(statusBarModule)
-      }
+        status: cloneDeep(statusBarModule),
+      },
     })
 
     nock.cleanAll()
   })
 
   test('get realms, save them in store', async () => {
-    nock('https://api.sirus.su/api').get('/server/status').reply(200, realmsRawStub)
+    nock('https://api.sirus.su/api')
+      .get('/server/status')
+      .reply(200, realmsRawStub)
 
     await store.dispatch('status/getRealms')
 

@@ -1,4 +1,5 @@
 import { required, minLength } from 'vuelidate/lib/validators'
+
 import { ITfaValidator, IAccountFieldsValidator } from '@/utils/validate/types'
 
 export const validateAccountFields: IAccountFieldsValidator = {
