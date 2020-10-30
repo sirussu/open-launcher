@@ -69,13 +69,14 @@ describe('accounts module', () => {
 
     store.state.accounts.additional.lastValidationTimestamp.timezone = 'Europe/Moscow'
     const offset = -new Date().getTimezoneOffset() * 60 * 1000
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     advanceBy(offset)
 
     const timestamp = store.state.accounts.additional.lastValidationTimestamp.timestamp
     const timestampWithDelay = store.state.accounts.additional.lastValidationTimestamp.timestampWithDelayTime
 
     await store.dispatch('accounts/validationTimezoneCheck')
-    expect(store.state.accounts.additional.lastValidationTimestamp.timezone).toBe('Asia/Yekaterinburg')
+    expect(store.state.accounts.additional.lastValidationTimestamp.timezone).toBe(timezone)
     expect(store.state.accounts.additional.lastValidationTimestamp.timestamp).toBe(timestamp + offset)
     expect(store.state.accounts.additional.lastValidationTimestamp.timestampWithDelayTime).toBe(timestampWithDelay + offset)
   })
