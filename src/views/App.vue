@@ -24,10 +24,7 @@ export default {
     StatusBarBlock,
   },
   async created() {
-    await this.$store.dispatch('accounts/validationTimezoneCheck', {
-      root: true,
-    })
-    await this.$store.dispatch('accounts/beforeValidateAccountsCheck', {
+    await this.$store.dispatch('accounts/validateAccounts', {
       root: true,
     })
   },

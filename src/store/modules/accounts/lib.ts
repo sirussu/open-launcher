@@ -1,11 +1,11 @@
 import { IValidationTimestamp } from '@/store/modules/accounts/types'
-import { DELAY_TIME_MS } from '@/constants'
+import { VERIFY_ACCOUNTS_TIMEOUT } from '@/constants'
 
 export const getTimestamp = (): IValidationTimestamp => {
-  const date = getDate()
-  const timezone = getTimezone()
+  const date = new Date()
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const timestamp = date.getTime()
-  const timestampWithDelayTime = timestamp + DELAY_TIME_MS
+  const timestampWithDelayTime = timestamp + VERIFY_ACCOUNTS_TIMEOUT
 
   return {
     timestampWithDelayTime,
@@ -27,21 +27,9 @@ export const getTimestampOffset = (date: Date) => {
 }
 
 export const isTimezoneHasOffset = (stateTimezone: string, currentTimezone: string): boolean => {
-  if (stateTimezone && currentTimezone !== stateTimezone) {
-    return true
-  }
-
-  return false
+  return !!(stateTimezone && currentTimezone !== stateTimezone);
 }
 
 export const isDelayTimeIsGone = (stateTimestamp: number, currentTimestamp: number): boolean => {
-  if (currentTimestamp > stateTimestamp) {
-    return true
-  }
-
-  return false
+  return currentTimestamp > stateTimestamp;
 }
-
-export const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone
-
-export const getDate = () => new Date()

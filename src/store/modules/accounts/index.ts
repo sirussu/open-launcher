@@ -13,8 +13,6 @@ import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
 import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from './adapters'
 import {
-  getDate,
-  getTimezone,
   getShiftedTimestamp,
   getTimestamp,
   getTimestampOffset,
@@ -174,24 +172,9 @@ const actions: IAccountsActions = {
       )
     }
   },
-  setValidationTimestamp({ commit }) {
-    const timestampObject = getTimestamp()
+  async validateAccounts({ dispatch, state }) {
+    await dispatch('validateTimezone')
 
-    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
-  },
-  validationTimezoneCheck({ commit, state }) {
-    const date = getDate()
-    const timezone = getTimezone()
-    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timezone)
-
-    if (hasTimezoneOffset) {
-      const offset = getTimestampOffset(date)
-      const shiftedTimestampObject = getShiftedTimestamp(state.additional.lastValidationTimestamp, timezone, offset)
-
-      commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
-    }
-  },
-  async beforeValidateAccountsCheck({ dispatch, state }) {
     const timestampObject = getTimestamp()
 
     const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
@@ -204,6 +187,23 @@ const actions: IAccountsActions = {
 
     await Promise.all(dispatchArray)
     await dispatch('setValidationTimestamp')
+  },
+  setValidationTimestamp({ commit }) {
+    const timestampObject = getTimestamp()
+
+    commit('SET_VALIDATE_ACCOUNTS_TIME', timestampObject)
+  },
+  validateTimezone({ commit, state }) {
+    const date = new Date()
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timezone)
+
+    if (hasTimezoneOffset) {
+      const offset = getTimestampOffset(date)
+      const shiftedTimestampObject = getShiftedTimestamp(state.additional.lastValidationTimestamp, timezone, offset)
+
+      commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
+    }
   },
   async validateAccount({ dispatch, commit, state }, accountId) {
     const account = state.accounts.data.byId[accountId]
