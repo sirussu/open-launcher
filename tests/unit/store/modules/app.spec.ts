@@ -2,9 +2,14 @@ import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import nock from 'nock'
+import { mocked } from 'ts-jest/utils'
 
 import { appModule } from '@/store/modules/app'
 import LauncherFile from '@/entities/LauncherFile'
+import eventService from '@/services/EventService'
+import LauncherEvent from '@/events/LauncherEvent'
+
+jest.mock('@/services/EventService')
 
 describe('File list receive', () => {
   let store
@@ -73,6 +78,8 @@ describe('File list receive', () => {
 
   let incompleteFiles: [LauncherFile, LauncherFile] | [] = []
 
+  const MockedEventService = mocked(eventService, true)
+
   beforeEach(() => {
     localVue = createLocalVue()
     localVue.use(Vuex)
@@ -85,6 +92,8 @@ describe('File list receive', () => {
     incompleteFiles = [INCOMPLETE_FILE, INCOMPLETE_FILE_2]
 
     store = new Vuex.Store({ modules: { app: cloneDeep(appModule) } })
+
+    MockedEventService.emit.mockClear()
 
     nock.cleanAll()
   })
@@ -131,5 +140,66 @@ describe('File list receive', () => {
     }
 
     expect(store.state.app.files).toStrictEqual(RESPONSE.patches)
+  })
+
+  it('event should not be emitted if file list the same', async () => {
+    expect.assertions(1)
+    store.commit('SET_FILES', RESPONSE.patches)
+
+    nock('https://api.sirus.su/')
+      .get('/api/client/patches')
+      .reply(200, { data: RESPONSE })
+
+    await store.dispatch('loadFiles')
+    expect(MockedEventService.emit).not.toBeCalled()
+  })
+
+  it('event should be emitted if list of files was empty', async () => {
+    expect.assertions(1)
+
+    nock('https://api.sirus.su/')
+      .get('/api/client/patches')
+      .reply(200, { data: RESPONSE })
+
+    await store.dispatch('loadFiles')
+    expect(MockedEventService.emit).toBeCalledWith(
+      LauncherEvent.FILE_LIST_UPDATED,
+      RESPONSE.patches
+    )
+  })
+
+  it('event should be emitted if list of files has different size', async () => {
+    store.commit('SET_FILES', RESPONSE.patches)
+    expect.assertions(1)
+
+    const patches = [RESPONSE.patches[0], RESPONSE.patches[1]]
+
+    nock('https://api.sirus.su/')
+      .get('/api/client/patches')
+      .reply(200, { data: { patches, delete: RESPONSE.delete } })
+
+    await store.dispatch('loadFiles')
+    expect(MockedEventService.emit).toBeCalledWith(
+      LauncherEvent.FILE_LIST_UPDATED,
+      patches
+    )
+  })
+
+  it('event should be emitted if one of fields changed', async () => {
+    store.commit('SET_FILES', RESPONSE.patches)
+    expect.assertions(1)
+
+    const patches = [...RESPONSE.patches]
+    patches[0] = { ...patches[0], md5: '393ABCBA77B8E369DD83XXXXXXXXX' }
+
+    nock('https://api.sirus.su/')
+      .get('/api/client/patches')
+      .reply(200, { data: { patches, delete: RESPONSE.delete } })
+
+    await store.dispatch('loadFiles')
+    expect(MockedEventService.emit).toBeCalledWith(
+      LauncherEvent.FILE_LIST_UPDATED,
+      patches
+    )
   })
 })
