@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "jest --clearCache && vue-cli-service test:unit ./tests/unit",
+    "test:unit": "vue-cli-service test:unit ./tests/unit",
     "test:e2e": "vue-cli-service test:e2e --mode e2e",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
@@ -26,9 +26,11 @@
     "@vuelidate/core": "^2.0.0-alpha.4",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "electron-util": "^0.14.2",
     "humps": "^2.0.1",
     "is-array-buffer": "^1.0.1",
     "lodash": "^4.17.20",
+    "nanoid": "^3.1.16",
     "roboto-fontface": "*",
     "vue": "^2.6.12",
     "vue-i18n": "^8.22.1",
@@ -37,7 +39,8 @@
     "vuetify": "^2.3.14",
     "vuex": "^3.5.1",
     "vuex-composition-helpers": "^1.0.21",
-    "vuex-persist": "^3.1.0"
+    "vuex-persist": "^3.1.0",
+    "workbox-webpack-plugin": "^5.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -46,6 +49,7 @@
     "@cypress/code-coverage": "^3.8.2",
     "@cypress/webpack-preprocessor": "^5.4.8",
     "@intlify/vue-i18n-loader": "^2.0.0-beta.1",
+    "@mdi/js": "^5.8.55",
     "@storybook/addon-actions": "^6.0.26",
     "@storybook/addon-essentials": "^6.0.26",
     "@storybook/addon-knobs": "^6.0.26",

@@ -1,8 +1,12 @@
-import { Module, MutationTree } from 'vuex'
+import { MutationTree } from 'vuex'
+
 import { IRootState } from '@/store/types'
-import { normalizeData } from '@/utils/normalizeData'
-import { denormalizeData } from '@/utils/denormalizeData'
-import { IRealm, IStatusActions, IStatusGetters, IStatusState } from '@/store/modules/statusBar/types'
+import {
+  IRealm,
+  IStatusActions,
+  IStatusGetters,
+  IStatusState,
+} from '@/store/modules/statusBar/types'
 import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
 import { getSummaryOnline } from '@/store/modules/statusBar/lib'
@@ -15,8 +19,8 @@ const state: IStatusState = {
 }
 
 const getters: IStatusGetters = {
-  realms: state => state.realms,
-  summaryOnline: state => state.summaryOnline,
+  realms: (state) => state.realms,
+  summaryOnline: (state) => state.summaryOnline,
 }
 
 const mutations: MutationTree<IStatusState> = {
@@ -53,4 +57,9 @@ const actions: IStatusActions = {
   },
 }
 
-export const statusBarModule = modulesFactory<IStatusState, IRootState>({ state, mutations, actions, getters })
+export const statusBarModule = modulesFactory<IStatusState, IRootState>({
+  state,
+  mutations,
+  actions,
+  getters,
+})

@@ -21,8 +21,8 @@ describe('accounts module', () => {
 
     store = new Vuex.Store({
       modules: {
-        accounts: cloneDeep(accountsModule)
-      }
+        accounts: cloneDeep(accountsModule),
+      },
     })
 
     nock.cleanAll()
@@ -32,7 +32,10 @@ describe('accounts module', () => {
     nock(baseURL).post('/oauth/token').reply(200, tokensStub)
     nock(baseURL).get('/api/user').reply(200, accountInfoStub)
 
-    await store.dispatch('accounts/sendAuthRequest', { username: 'asddsa', password: 'asddsaasddsa' })
+    await store.dispatch('accounts/sendAuthRequest', {
+      username: 'asddsa',
+      password: 'asddsaasddsa',
+    })
 
     expect(Object.keys(store.getters)).toContain('accounts/accounts')
     expect(Object.keys(store.getters)).toContain('accounts/defaultAccount')

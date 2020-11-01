@@ -40,5 +40,8 @@
     "minimize": "Minimize",
     "close": "Close",
     "online": "0 players | {n} player | {n} players"
+  },
+  "notification": {
+    "feeds_loading_error": "Cannot load news"
   }
 }

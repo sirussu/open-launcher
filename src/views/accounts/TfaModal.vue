@@ -2,7 +2,7 @@
   <v-dialog
     max-width="300px"
     persistent
-    v-model="hasTfa"
+    v-model="tfaModalToggler"
     @keydown.enter="tfaWasEntered"
   >
     <v-card>
@@ -69,6 +69,14 @@ export default defineComponent({
     }
   },
   computed: {
+    tfaModalToggler: {
+      get() {
+        return this.hasTfa
+      },
+      set(val) {
+        this.$emit('tfa-modal-closed', !val)
+      },
+    },
     tfaError() {
       if (!(this.validate.tfaToken.$dirty && this.hasTfa)) {
         return
@@ -81,6 +89,8 @@ export default defineComponent({
       if (this.validate.tfaToken.required.$invalid) {
         return this.$t('accounts.modal.tfaError.required')
       }
+
+      return null
     },
   },
   methods: {

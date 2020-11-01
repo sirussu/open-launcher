@@ -26,7 +26,7 @@ export default defineComponent<IFeedCardProps>({
   },
   computed: {
     image() {
-      return `http://api.sirus.su${this.feed.coverUrl}`
+      return `https://api.sirus.su${this.feed.coverUrl}`
     },
     forumLink() {
       return `https://forum.sirus.su/threads/${this.feed.forumTopicId}`
