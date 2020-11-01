@@ -85,7 +85,7 @@ export default class Files {
       })
 
       fileStream.on('end', () => {
-        resolve(hash.digest('hex'))
+        resolve(hash.digest('hex').toLocaleLowerCase())
       })
 
       fileStream.on('error', error => {

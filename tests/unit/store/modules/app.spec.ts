@@ -84,9 +84,9 @@ describe('File list receive', () => {
     localVue = createLocalVue()
     localVue.use(Vuex)
 
-    const INCOMPLETE_FILE = new LauncherFile()
+    const INCOMPLETE_FILE = LauncherFile.fromObject(RESPONSE.patches[0])
     INCOMPLETE_FILE.isDownloading = true
-    const INCOMPLETE_FILE_2 = new LauncherFile()
+    const INCOMPLETE_FILE_2 = LauncherFile.fromObject(RESPONSE.patches[1])
     INCOMPLETE_FILE_2.isIncomplete = true
 
     incompleteFiles = [INCOMPLETE_FILE, INCOMPLETE_FILE_2]

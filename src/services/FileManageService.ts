@@ -1,25 +1,26 @@
 import Files from '@/services/Files'
+import { IValidatableFile } from '@/entities/LauncherFile'
 
-abstract class CanBeValidated {
-  path: string
-  size: number
-  hash: string
+export class FileManageService {
+  private _clientPath: string | null = null
 
-  protected constructor(path: string, size: number, hash: string) {
-    this.path = path
-    this.size = size
-    this.hash = hash
+  set clientPath(value: string | null) {
+    this._clientPath = value
   }
-}
 
-export default class FileManageService {
-  async isValidFile(file: CanBeValidated) {
-    if (!(await Files.isCorrectFile(file.path, file.size, null))) {
+  get clientPath(): string | null {
+    return this._clientPath
+  }
+
+  async isValidFile(file: IValidatableFile) {
+    if (!(await Files.isCorrectFile(file.filePath, file.size, null))) {
       return false
     }
 
-    if ((await Files.getFileHash(file.path)) !== file.hash) {
-      return false
-    }
+    return (
+      (await Files.getFileHash(file.filePath)) === file.hash.toLocaleLowerCase()
+    )
   }
 }
+
+export default new FileManageService()

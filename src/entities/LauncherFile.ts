@@ -1,15 +1,53 @@
-export default class LauncherFile {
-  fileAttributes = {}
+import nodePath from 'path'
+
+export interface IValidatableFile {
+  filePath: string
+  size: number
+  hash: string
+}
+
+export interface IDownloadableFile {
+  host: string
+  path: string
+  filename: string
+}
+
+export default class LauncherFile
+  implements IValidatableFile, IDownloadableFile {
+  host: string
+  path: string
+  size: number
+  hash: string
+  filename: string
+  filePath: string
+
+  constructor(
+    filename: string,
+    path: string,
+    host: string,
+    size: number,
+    hash: string
+  ) {
+    this.host = host
+    this.path = path
+    this.size = size
+    this.hash = hash
+    this.filename = filename
+    this.filePath = nodePath.normalize(this.path + this.filename)
+  }
+
   downloadAttributes = {
     isDownloading: false,
     isIncomplete: false,
+    isValid: false,
+    isValidating: false,
   }
 
   get isDownloading() {
     return this.downloadAttributes.isDownloading
   }
 
-  set isDownloading(val) {
+  set isDownloading(val: boolean) {
     this.downloadAttributes.isDownloading = val
   }
 
@@ -17,20 +55,27 @@ export default class LauncherFile {
     return this.downloadAttributes.isIncomplete
   }
 
-  set isIncomplete(val) {
+  set isIncomplete(val: boolean) {
     this.downloadAttributes.isIncomplete = val
   }
 
-  static fromObject(obj) {
-    const launcherFile = new LauncherFile()
-    launcherFile.fileAttributes = Object.assign(
-      launcherFile.fileAttributes,
-      obj.fileAttributes
-    )
-    launcherFile.downloadAttributes = Object.assign(
-      launcherFile.downloadAttributes,
-      obj.downloadAttributes
-    )
-    return launcherFile
+  set isValid(val: boolean) {
+    this.downloadAttributes.isValid = val
+  }
+
+  get isValid() {
+    return this.downloadAttributes.isValid
+  }
+
+  set isValidating(val: boolean) {
+    this.downloadAttributes.isValid = val
+  }
+
+  get isValidating() {
+    return this.downloadAttributes.isValid
+  }
+
+  static fromObject({ filename, md5, host, size, path }) {
+    return new LauncherFile(filename, path, host, size, md5)
   }
 }
