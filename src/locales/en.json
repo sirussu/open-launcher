@@ -14,6 +14,7 @@
   "accounts": {
     "add_account": "Add account",
     "remove_account": "Remove account",
+    "re_login": "Re-login",
     "modal": {
       "title": "Add account",
       "enter_login": "Enter login",
@@ -42,6 +43,9 @@
     "online": "0 players | {n} player | {n} players"
   },
   "notification": {
-    "feeds_loading_error": "Cannot load news"
+    "feeds_loading_error": "Cannot load news",
+    "send_auth_request": "Cannot send authorization request",
+    "token_has_expired": "Account password has been changed or auth token has expired, re-login please",
+    "account_duplicate": "Account already exist in account list"
   }
 }

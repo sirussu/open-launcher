@@ -23,6 +23,11 @@ export default {
     Navigation,
     StatusBarBlock,
   },
+  async created() {
+    await this.$store.dispatch('accounts/validateAccounts', {
+      root: true,
+    })
+  },
 }
 </script>
 

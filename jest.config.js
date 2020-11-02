@@ -1,5 +1,5 @@
 module.exports = {
-  setupFiles: ['jest-localstorage-mock'],
+  setupFiles: ['jest-localstorage-mock', 'jest-date-mock'],
   collectCoverageFrom: ['src/**/*.{t|j}s'],
   collectCoverage: true,
   setupFilesAfterEnv: ['./jest.setup.js'],
