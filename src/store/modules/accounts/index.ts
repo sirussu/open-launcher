@@ -86,20 +86,21 @@ const mutations: MutationTree<IAccountsState> = {
 
 const actions: IAccountsActions = {
   async addAccount({ dispatch, state, commit }, account) {
-    if (state.accounts.data.allIds.length === 0) {
-      commit('SET_DEFAULT_ID', account.id)
-      commit('ADD_ACCOUNT', account)
-    }
-
-    if (!state.accounts.data.allIds.includes(account.id)) {
-      commit('ADD_ACCOUNT', account)
-    } else {
+    if (state.accounts.data.allIds.includes(account.id)) {
       await dispatch(
         'notification/addNotification',
         { type: NotificationTypes.WARN, i18n: 'account_duplicate' },
         { root: true }
       )
+
+      return
     }
+
+    if (state.accounts.data.allIds.length === 0) {
+      commit('SET_DEFAULT_ID', account.id)
+    }
+
+    commit('ADD_ACCOUNT', account)
 
     if (state.accounts.data.byId[account.id].tokenIsExpired) {
       commit('SET_IS_EXPIRED', { value: false, id: account.id })
