@@ -3,6 +3,14 @@ import { IRootState } from '@/store/types'
 import { NormalizedAdditional, NormalizedSchema } from '@/types/normalze'
 import { RequestStatus } from '@/types/network'
 
+export interface IAuthResponse {
+  tokenType: string
+  accessToken: string
+  refreshToken: string
+  expiresIn: number
+  tokenIsExpired: boolean
+}
+
 export interface IAccount {
   id: number
   username: string
@@ -15,14 +23,6 @@ export interface IAccount {
 export interface INormalizedAccount {
   id: number
   byId: IAccount
-}
-
-export interface IAuthResponse {
-  tokenType: string
-  accessToken: string
-  refreshToken: string
-  expiresIn: number
-  tokenIsExpired: boolean
 }
 
 export interface IAdaptedResponse extends IAuthResponse{
