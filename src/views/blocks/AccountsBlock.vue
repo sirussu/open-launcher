@@ -53,7 +53,13 @@
           </v-btn>
         </v-col>
       </v-row>
-      <accounts-modal @auth-requested="sendRequest" />
+      <accounts-modal
+        :show-modal="showModal"
+        :show-progress-bar="showProgressBar"
+        @auth-requested="sendRequest"
+        @open-accounts-modal="modalToggle"
+        @close-accounts-modal="modalToggle"
+      />
       <tfa-modal
         :has-tfa="needTfa"
         :show-progress-bar="showProgressBar"
@@ -113,6 +119,8 @@ export default defineComponent({
       'getStatus',
     ])
 
+    const showModal = false
+
     return {
       accounts,
       defaultAccount,
@@ -122,21 +130,31 @@ export default defineComponent({
       sendAuthRequest,
       getStatus,
       switchOffTfa,
+      showModal,
     }
   },
   computed: {
-    showProgressBar() {
+    showProgressBar(): boolean {
       return this.getStatus === 'PENDING'
     },
   },
   methods: {
-    async sendRequest({ username, password, token }) {
+    async sendRequest({
+      username,
+      password,
+      token,
+    }: {
+      username: string
+      password: string
+      token?: string
+    }) {
       await this.sendAuthRequest({
         username,
         password,
         token,
         isReLogin: false,
       })
+      await this.modalToggle(false)
     },
     async tfaWasEntered(tfaToken: string) {
       if (this.needTfa.isReLogin) {
@@ -174,8 +192,11 @@ export default defineComponent({
     closeTfaForm() {
       this.switchOffTfa()
     },
-    activeClass(account) {
+    activeClass(account: IAccount): boolean {
       return this.defaultAccount.id === account.id && !account.tokenIsExpired
+    },
+    modalToggle(toggle: boolean) {
+      this.showModal = toggle
     },
   },
 })

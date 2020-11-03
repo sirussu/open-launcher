@@ -92,10 +92,10 @@ export default defineComponent({
         return this.hasTfa.needTfa
       },
       set(val) {
-        if (!val) {
-          this.$emit('clear-tfa-form')
-        } else {
+        if (val) {
           this.$emit('tfa-was-entered', this.tfaToken)
+        } else {
+          this.$emit('clear-tfa-form')
         }
       },
     },
