@@ -56,6 +56,7 @@
       <accounts-modal @auth-requested="sendRequest" />
       <tfa-modal
         :has-tfa="needTfa"
+        :show-progress-bar="showProgressBar"
         @tfa-was-entered="tfaWasEntered"
         @clear-tfa-form="closeTfaForm"
       />
@@ -122,6 +123,11 @@ export default defineComponent({
       getStatus,
       switchOffTfa,
     }
+  },
+  computed: {
+    showProgressBar() {
+      return this.getStatus === 'PENDING'
+    },
   },
   methods: {
     async sendRequest({ username, password, token }) {

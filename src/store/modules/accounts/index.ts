@@ -109,6 +109,12 @@ const mutations: MutationTree<IAccountsState> = {
 
 const actions: IAccountsActions = {
   async addAccount({ dispatch, state, commit }, account) {
+    if (state.accounts.data.byId[account.id] && state.accounts.data.byId[account.id].tokenIsExpired) {
+      commit('SET_IS_EXPIRED', { value: false, id: account.id })
+
+      return
+    }
+
     if (state.accounts.data.allIds.includes(account.id)) {
       await dispatch(
         'notification/addNotification',
@@ -124,10 +130,6 @@ const actions: IAccountsActions = {
     }
 
     commit('ADD_ACCOUNT', account)
-
-    if (state.accounts.data.byId[account.id].tokenIsExpired) {
-      commit('SET_IS_EXPIRED', { value: false, id: account.id })
-    }
   },
   removeAccount({ state, commit }, accountId) {
     if (state.accounts.data.defaultId === accountId) {
@@ -268,6 +270,9 @@ const actions: IAccountsActions = {
   },
   async validateAccount({ dispatch, commit, state }, accountId) {
     const account = state.accounts.data.byId[accountId]
+    if (account.tfaToken) {
+      return
+    }
 
     const accountDataToRequestParams = adaptUserDataToRequestParams({
       username: account.username,
