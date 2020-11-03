@@ -2,9 +2,13 @@
   <v-dialog
     max-width="300px"
     persistent
-    v-model="tfaModalToggler"
+    v-model="tfaModalToggle"
     @keydown.enter="tfaWasEntered"
   >
+    <v-progress-linear
+      :active="showProgressBar"
+      :indeterminate="showProgressBar"
+    />
     <v-card>
       <v-card-title>
         <span class="headline">{{ $t('accounts.modal.enter_tfa_code') }}</span>
@@ -16,6 +20,7 @@
               <v-text-field
                 v-model.lazy="validate.tfaToken.$model"
                 :error-messages="tfaError"
+                :disabled="showProgressBar"
                 autofocus
                 clearable
                 required
@@ -30,12 +35,16 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click.stop="tfaWasEntered" :disabled="validate.$invalid">
+        <v-btn
+          text
+          @click.stop="tfaWasEntered"
+          :disabled="validate.$invalid || showProgressBar"
+        >
           <template #default>
             {{ $t('accounts.add_account') }}
           </template>
         </v-btn>
-        <v-btn text @click.stop="resetForm">
+        <v-btn text @click.stop="resetForm" :disabled="showProgressBar">
           <template #default>
             {{ $t('accounts.modal.close_modal') }}
           </template>
@@ -45,7 +54,7 @@
   </v-dialog>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api'
 import useVuelidate from '@vuelidate/core'
 
@@ -53,28 +62,41 @@ import { validateTfa } from '@/utils/validate'
 
 export default defineComponent({
   name: 'TfaModal',
-  props: {
-    hasTfa: {
-      type: Object,
-      required: true,
-    },
-  },
   setup() {
     const tfaToken = ref('')
-    const validate = useVuelidate(validateTfa, { tfaToken }, 'tfaToken')
+    const validate = useVuelidate(
+      validateTfa,
+      { tfaToken },
+      { $autoDirty: true }
+    )
 
     return {
       tfaToken,
       validate,
     }
   },
+  props: {
+    hasTfa: {
+      type: Object,
+      required: true,
+    },
+    showProgressBar: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
   computed: {
-    tfaModalToggler: {
+    tfaModalToggle: {
       get() {
         return this.hasTfa.needTfa
       },
       set(val) {
-        this.$emit('tfa-modal-closed', !val)
+        if (!val) {
+          this.$emit('clear-tfa-form')
+        } else {
+          this.$emit('tfa-was-entered', this.tfaToken)
+        }
       },
     },
     tfaError() {
@@ -95,14 +117,14 @@ export default defineComponent({
   },
   methods: {
     tfaWasEntered() {
-      this.$emit('tfa-was-entered', this.tfaToken)
+      this.tfaModalToggle = true
 
       this.tfaToken = ''
       this.validate.tfaToken.$reset()
     },
     resetForm() {
       this.tfaToken = ''
-      this.$emit('clear-tfa-form')
+      this.tfaModalToggle = false
       this.validate.tfaToken.$reset()
     },
   },
