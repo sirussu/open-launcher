@@ -4,6 +4,7 @@ import { feedsModule as feeds } from './feeds'
 import { accountsModule as accounts } from './accounts'
 import { statusBarModule as status } from './statusBar'
 import { notificationModule as notification } from './notification'
+import { welcomeModule as welcome } from './welcome'
 
 export const modules = {
   app,
@@ -12,4 +13,5 @@ export const modules = {
   status,
   accounts,
   notification,
+  welcome,
 }

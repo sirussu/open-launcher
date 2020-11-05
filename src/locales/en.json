@@ -47,5 +47,19 @@
     "send_auth_request": "Cannot send authorization request",
     "token_has_expired": "Account password has been changed or auth token has expired, re-login please",
     "account_duplicate": "Account already exist in account list"
+  },
+  "steps": {
+    "select_folder": {
+      "select_existed": "Select folder",
+      "download": "Download game"
+    },
+    "login": {
+      "username": "Enter login",
+      "password": "Enter password",
+      "tfa_code": "Enter 2FA code"
+    },
+    "next-step": "Next",
+    "prev-step": "Back",
+    "skip": "Skip"
   }
 }
