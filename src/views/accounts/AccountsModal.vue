@@ -20,30 +20,11 @@
 
     <v-dialog
       max-width="600px"
-      v-model="showModalComp"
+      v-model="modalToggle"
       @click:outside="resetForm"
       @keydown.enter="sendRequest"
     >
-      <v-progress-linear
-        :active="showProgressBar"
-        :indeterminate="showProgressBar"
-      />
-      <!--<template #activator="{ on }">
-        <v-row v-on="on" v-ripple dense class="account-modal__activator">
-          <v-col cols="auto" order="1">
-            <v-spacer />
-          </v-col>
-          <v-col cols="1" order="2">
-            <v-icon>mdi-plus</v-icon>
-          </v-col>
-          <v-col cols="3" order="3">
-            {{ $t('accounts.add_account') }}
-          </v-col>
-          <v-col order="4">
-            <v-spacer />
-          </v-col>
-        </v-row>
-      </template>-->
+      <v-progress-linear :active="progressBar" :indeterminate="progressBar" />
       <v-card>
         <v-card-title>
           <span class="headline">{{ $t('accounts.modal.title') }}</span>
@@ -55,7 +36,7 @@
                 <v-text-field
                   v-model.lazy="validate.authForm.login.$model"
                   :error-messages="loginError"
-                  :disabled="showProgressBar"
+                  :disabled="progressBar"
                   autofocus
                   clearable
                   required
@@ -70,7 +51,7 @@
                   type="password"
                   v-model.lazy="validate.authForm.pass.$model"
                   :error-messages="passwordError"
-                  :disabled="showProgressBar"
+                  :disabled="progressBar"
                   clearable
                   required
                 >
@@ -88,13 +69,13 @@
           <v-btn
             text
             @click="sendRequest"
-            :disabled="validate.authForm.$invalid || showProgressBar"
+            :disabled="validate.authForm.$invalid || progressBar"
           >
             <template #default>
               {{ $t('accounts.add_account') }}
             </template>
           </v-btn>
-          <v-btn text @click="resetForm" :disabled="showProgressBar">
+          <v-btn text @click="resetForm" :disabled="progressBar">
             <template #default>
               {{ $t('accounts.modal.close_modal') }}
             </template>
@@ -113,7 +94,6 @@ import useVuelidate from '@vuelidate/core'
 import { validateAccountFields } from '@/utils/validate'
 
 export default defineComponent({
-  name: 'AccountsModal',
   setup() {
     const authForm = reactive({
       login: '',
@@ -133,21 +113,19 @@ export default defineComponent({
     }
   },
   props: {
-    showModal: {
+    modal: {
       type: Boolean,
       required: true,
-      default: false,
     },
-    showProgressBar: {
+    progressBar: {
       type: Boolean,
       required: true,
-      default: false,
     },
   },
   computed: {
     loginError() {
       // @ts-ignore
-      if (!(this.validate.authForm.login.$dirty && this.showModal)) {
+      if (!(this.validate.authForm.login.$dirty && this.modal)) {
         return
       }
 
@@ -165,7 +143,7 @@ export default defineComponent({
     },
     passwordError() {
       // @ts-ignore
-      if (!(this.validate.authForm.pass.$dirty && this.showModal)) {
+      if (!(this.validate.authForm.pass.$dirty && this.modal)) {
         return
       }
 
@@ -181,9 +159,9 @@ export default defineComponent({
 
       return null
     },
-    showModalComp: {
+    modalToggle: {
       get() {
-        return this.showModal
+        return this.modal
       },
       set(val) {
         if (val) {
@@ -196,10 +174,10 @@ export default defineComponent({
   },
   methods: {
     openModal() {
-      this.showModalComp = true
+      this.modalToggle = true
     },
     resetForm() {
-      this.showModalComp = false
+      this.modalToggle = false
       this.authForm.login = ''
       this.authForm.pass = ''
       this.validate.authForm.$reset()

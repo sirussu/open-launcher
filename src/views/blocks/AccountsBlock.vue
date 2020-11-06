@@ -4,7 +4,7 @@
       <v-row
         v-for="account in accounts"
         :key="account.id"
-        :class="{ 'row-active': activeClass(account) }"
+        :class="{ 'row-active': setActiveClass(account) }"
         dense
         v-ripple
         justify="space-around"
@@ -54,15 +54,15 @@
         </v-col>
       </v-row>
       <accounts-modal
-        :show-modal="showModal"
-        :show-progress-bar="showProgressBar"
+        :modal="modal"
+        :progress-bar="progressBar"
         @auth-requested="sendRequest"
-        @open-accounts-modal="modalToggle"
-        @close-accounts-modal="modalToggle"
+        @open-accounts-modal="switchModalToggle"
+        @close-accounts-modal="switchModalToggle"
       />
       <tfa-modal
-        :has-tfa="needTfa"
-        :show-progress-bar="showProgressBar"
+        :tfa="needTfa"
+        :progress-bar="progressBar"
         @tfa-was-entered="tfaWasEntered"
         @clear-tfa-form="closeTfaForm"
       />
@@ -80,6 +80,7 @@ import {
   IAccountsGetters,
   IAccountsState,
 } from '@/store/modules/accounts/types'
+import { RequestStatus } from '@/types/network'
 
 import AccountsModal from '../accounts/AccountsModal.vue'
 import TfaModal from '../accounts/TfaModal.vue'
@@ -99,12 +100,12 @@ export default defineComponent({
       setDefaultAccount,
       removeAccount,
       sendAuthRequest,
-      switchOffTfa,
+      closeTfaModal,
     } = useAccountsActions([
       'setDefaultAccount',
       'removeAccount',
       'sendAuthRequest',
-      'switchOffTfa',
+      'closeTfaModal',
     ])
 
     const {
@@ -119,7 +120,7 @@ export default defineComponent({
       'getStatus',
     ])
 
-    const showModal = false
+    const modal = false
 
     return {
       accounts,
@@ -129,13 +130,13 @@ export default defineComponent({
       removeAccount,
       sendAuthRequest,
       getStatus,
-      switchOffTfa,
-      showModal,
+      closeTfaModal,
+      modal,
     }
   },
   computed: {
-    showProgressBar(): boolean {
-      return this.getStatus === 'PENDING'
+    progressBar(): boolean {
+      return this.getStatus === RequestStatus.PENDING
     },
   },
   methods: {
@@ -154,7 +155,8 @@ export default defineComponent({
         token,
         isReLogin: false,
       })
-      await this.modalToggle(false)
+
+      this.switchModalToggle(false)
     },
     async tfaWasEntered(tfaToken: string) {
       if (this.needTfa.isReLogin) {
@@ -190,13 +192,13 @@ export default defineComponent({
       }
     },
     closeTfaForm() {
-      this.switchOffTfa()
+      this.closeTfaModal()
     },
-    activeClass(account: IAccount): boolean {
+    setActiveClass(account: IAccount): boolean {
       return this.defaultAccount.id === account.id && !account.tokenIsExpired
     },
-    modalToggle(toggle: boolean) {
-      this.showModal = toggle
+    switchModalToggle(toggle: boolean) {
+      this.modal = toggle
     },
   },
 })

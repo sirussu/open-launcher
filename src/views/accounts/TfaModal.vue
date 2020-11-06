@@ -5,10 +5,7 @@
     v-model="tfaModalToggle"
     @keydown.enter="tfaWasEntered"
   >
-    <v-progress-linear
-      :active="showProgressBar"
-      :indeterminate="showProgressBar"
-    />
+    <v-progress-linear :active="progressBar" :indeterminate="progressBar" />
     <v-card>
       <v-card-title>
         <span class="headline">{{ $t('accounts.modal.enter_tfa_code') }}</span>
@@ -20,7 +17,7 @@
               <v-text-field
                 v-model.lazy="validate.tfaToken.$model"
                 :error-messages="tfaError"
-                :disabled="showProgressBar"
+                :disabled="progressBar"
                 autofocus
                 clearable
                 required
@@ -38,13 +35,13 @@
         <v-btn
           text
           @click.stop="tfaWasEntered"
-          :disabled="validate.$invalid || showProgressBar"
+          :disabled="validate.$invalid || progressBar"
         >
           <template #default>
             {{ $t('accounts.add_account') }}
           </template>
         </v-btn>
-        <v-btn text @click.stop="resetForm" :disabled="showProgressBar">
+        <v-btn text @click.stop="resetForm" :disabled="progressBar">
           <template #default>
             {{ $t('accounts.modal.close_modal') }}
           </template>
@@ -61,7 +58,6 @@ import useVuelidate from '@vuelidate/core'
 import { validateTfa } from '@/utils/validate'
 
 export default defineComponent({
-  name: 'TfaModal',
   setup() {
     const tfaToken = ref('')
     const validate = useVuelidate(
@@ -76,20 +72,19 @@ export default defineComponent({
     }
   },
   props: {
-    hasTfa: {
+    tfa: {
       type: Object,
       required: true,
     },
-    showProgressBar: {
+    progressBar: {
       type: Boolean,
       required: true,
-      default: false,
     },
   },
   computed: {
     tfaModalToggle: {
       get() {
-        return this.hasTfa.needTfa
+        return this.tfa.needTfa
       },
       set(val) {
         if (val) {
@@ -100,7 +95,7 @@ export default defineComponent({
       },
     },
     tfaError() {
-      if (!(this.validate.tfaToken.$dirty && this.hasTfa.needTfa)) {
+      if (!(this.validate.tfaToken.$dirty && this.tfa.needTfa)) {
         return
       }
 

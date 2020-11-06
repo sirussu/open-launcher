@@ -68,7 +68,7 @@ export interface IAccountsActions
   addAccount: (ctx: ActionCtx, payload: INormalizedAccount) => Promise<void>
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
-  switchOffTfa: (ctx: ActionCtx) => void
+  closeTfaModal: (ctx: ActionCtx) => void
   loadAccountInfo: (ctx: ActionCtx, payload: IAdaptedResponse) => Promise<void>
   sendAuthRequest: (
     ctx: ActionCtx,
