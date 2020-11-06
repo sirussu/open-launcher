@@ -11,7 +11,9 @@ import { IAccountsState } from '@/store/modules/accounts/types'
 import tokensStub from './stubs/tokens.json'
 import accountInfoStub from './stubs/accountInfo.json'
 import accountStub from './stubs/defaultAccount.json'
+import accountWithTfaStub from './stubs/defaultAccountWithTfa.json'
 import normalizedAccountStub from './stubs/normalizedAccount.json'
+import normalizedAccountWithTfaStub from './stubs/normalizedAccountWithTfa.json'
 
 describe('accounts module', () => {
   let store: Store<{ accounts: IAccountsState }>
@@ -46,6 +48,18 @@ describe('accounts module', () => {
     expect(Object.keys(store.getters)).toContain('accounts/defaultAccount')
     expect(store.getters['accounts/accounts']).toHaveLength(1)
     expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+  })
+
+  test('renew account if it exist in accounts list', async () => {
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+
+    store.commit('accounts/SET_IS_EXPIRED', { value: true, id: normalizedAccountStub.id })
+    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
+
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    expect(store.getters['accounts/accounts']).toHaveLength(1)
+    expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+    expect(store.state.accounts.accounts.data.byId[accountStub.id].tokenIsExpired).toBe(false)
   })
 
   test('validation without offset', async () => {
@@ -93,5 +107,24 @@ describe('accounts module', () => {
       store.state.accounts.additional.lastValidationTimestamp
         .timestampWithDelayTime
     ).toBe(timestampWithDelay + offset)
+  })
+
+  test('skip accounts with 2FA', async () => {
+    nock(baseURL).post('/oauth/token').reply(401)
+    advanceTo(new Date(2020, 9, 0, 0, 0, 0))
+
+    await store.dispatch('accounts/addAccount', normalizedAccountWithTfaStub)
+    expect(store.getters['accounts/accounts'][0]).toMatchObject(accountWithTfaStub)
+
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    expect(store.getters['accounts/accounts'][1]).toMatchObject(accountStub)
+    expect(store.getters['accounts/accounts']).toHaveLength(2)
+
+    await store.dispatch('accounts/setValidationTimestamp')
+    advanceBy(25 * 60 * 60 * 1000) // next day
+
+    await store.dispatch('accounts/validateAccounts')
+    expect(store.state.accounts.accounts.data.byId[accountStub.id].tokenIsExpired).toBe(true)
+    expect(store.state.accounts.accounts.data.byId[accountWithTfaStub.id].tokenIsExpired).toBe(false)
   })
 })
