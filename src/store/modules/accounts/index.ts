@@ -150,7 +150,7 @@ const actions: IAccountsActions = {
       `${account.tokens.tokenType} ${account.tokens.accessToken}`
     )
   },
-  switchOffTfa({ commit }) {
+  closeTfaModal({ commit }) {
     commit('SET_NEED_TFA', false)
   },
   async sendAuthRequest(
