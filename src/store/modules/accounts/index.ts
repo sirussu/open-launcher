@@ -109,13 +109,16 @@ const mutations: MutationTree<IAccountsState> = {
 
 const actions: IAccountsActions = {
   async addAccount({ dispatch, state, commit }, account) {
-    if (state.accounts.data.byId[account.id] && state.accounts.data.byId[account.id].tokenIsExpired) {
+    const existAccount = state.accounts.data.byId[account.id]
+    const isFirstAccount = state.accounts.data.allIds.length === 0
+
+    if (existAccount && existAccount.tokenIsExpired) {
       commit('SET_IS_EXPIRED', { value: false, id: account.id })
 
       return
     }
 
-    if (state.accounts.data.allIds.includes(account.id)) {
+    if (existAccount) {
       await dispatch(
         'notification/addNotification',
         { type: NotificationTypes.WARN, i18n: 'account_duplicate' },
@@ -125,23 +128,26 @@ const actions: IAccountsActions = {
       return
     }
 
-    if (state.accounts.data.allIds.length === 0) {
+    if (isFirstAccount) {
       commit('SET_DEFAULT_ID', account.id)
     }
 
     commit('ADD_ACCOUNT', account)
   },
   removeAccount({ state, commit }, accountId) {
-    if (state.accounts.data.defaultId === accountId) {
+    const isNoMoreAccounts = state.accounts.data.allIds.length === 0
+    const isAccountDefault = state.accounts.data.defaultId === accountId
+
+    commit('REMOVE_ACCOUNT', accountId)
+
+    if (isAccountDefault) {
       commit('SET_DEFAULT_ID', state.accounts.data.allIds[0])
     }
 
-    if (state.accounts.data.allIds.length === 0) {
+    if (isNoMoreAccounts) {
       commit('SET_DEFAULT_ID', 0)
       localStorage.removeItem('tokens')
     }
-
-    commit('REMOVE_ACCOUNT', accountId)
   },
   setDefaultAccount({ commit }, account) {
     commit('SET_DEFAULT_ID', account.id)
@@ -151,7 +157,12 @@ const actions: IAccountsActions = {
     )
   },
   closeTfaModal({ commit }) {
-    commit('SET_NEED_TFA', false)
+    commit('SET_NEED_TFA', {
+      needTfa: false,
+      isReLogin: false,
+      username: '',
+      password: '',
+    })
   },
   async sendAuthRequest(
     { dispatch, commit },
