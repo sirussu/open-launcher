@@ -4,14 +4,22 @@ import { RequestStatus } from '@/types/network'
 import {
   IAccountsActions,
   IAccountsGetters,
-  IAccountsState, IAuthResponse,
-  INormalizedAccount, IValidationTimestamp
+  IAccountsState,
+  IAuthResponse,
+  INormalizedAccount,
+  IValidationTimestamp,
 } from '@/store/modules/accounts/types'
 import { axios } from '@/modules/axios'
 import { denormalizeData } from '@/utils/denormalizeData'
 import { modulesFactory } from '@/utils/modulesFactory'
 import { IRootState } from '@/store/types'
-import { adaptUserDataToRequestParams, adaptExtendedAccount, adaptResponse } from './adapters'
+import { NotificationTypes } from '@/types/notification'
+
+import {
+  adaptUserDataToRequestParams,
+  adaptExtendedAccount,
+  adaptResponse,
+} from './adapters'
 import {
   getShiftedTimestamp,
   getTimestamp,
@@ -19,7 +27,6 @@ import {
   isDelayTimeIsGone,
   isTimezoneHasOffset,
 } from './lib'
-import { NotificationTypes } from '@/types/notification'
 
 const state: IAccountsState = {
   accounts: {
@@ -41,15 +48,16 @@ const state: IAccountsState = {
       timestamp: 0,
       timezone: '',
       timestampWithDelayTime: 0,
-    }
+    },
   },
 }
 
 const getters: IAccountsGetters = {
-  accounts: state => denormalizeData(state.accounts.data),
-  defaultAccount: state => state.accounts.data.byId[state.accounts.data.defaultId],
-  needTfa: state => state.additional.needTfa,
-  getStatus: state => state.additional.status
+  accounts: (state) => denormalizeData(state.accounts.data),
+  defaultAccount: (state) =>
+    state.accounts.data.byId[state.accounts.data.defaultId],
+  needTfa: (state) => state.additional.needTfa,
+  getStatus: (state) => state.additional.status,
 }
 
 const mutations: MutationTree<IAccountsState> = {
@@ -58,7 +66,9 @@ const mutations: MutationTree<IAccountsState> = {
     state.accounts.data.byId[account.id] = account.byId
   },
   REMOVE_ACCOUNT(state, id: number) {
-    state.accounts.data.allIds = state.accounts.data.allIds.filter(accountId => accountId !== id)
+    state.accounts.data.allIds = state.accounts.data.allIds.filter(
+      (accountId) => accountId !== id
+    )
 
     delete state.accounts.data.byId[id]
   },
@@ -68,7 +78,20 @@ const mutations: MutationTree<IAccountsState> = {
   SET_STATUS(state, status: RequestStatus) {
     state.additional.status = status
   },
-  SET_NEED_TFA(state, { needTfa, isReLogin, username, password }: { needTfa: boolean, isReLogin: boolean, username: string, password: string }) {
+  SET_NEED_TFA(
+    state,
+    {
+      needTfa,
+      isReLogin,
+      username,
+      password,
+    }: {
+      needTfa: boolean
+      isReLogin: boolean
+      username: string
+      password: string
+    }
+  ) {
     state.additional.needTfa = {
       needTfa,
       isReLogin,
@@ -79,7 +102,7 @@ const mutations: MutationTree<IAccountsState> = {
   SET_VALIDATE_ACCOUNTS_TIME(state, timestamp: IValidationTimestamp) {
     state.additional.lastValidationTimestamp = timestamp
   },
-  SET_IS_EXPIRED(state, { value, id }: { value: boolean, id: number }) {
+  SET_IS_EXPIRED(state, { value, id }: { value: boolean; id: number }) {
     state.accounts.data.byId[id].tokenIsExpired = value
   },
 }
@@ -120,22 +143,42 @@ const actions: IAccountsActions = {
   },
   setDefaultAccount({ commit }, account) {
     commit('SET_DEFAULT_ID', account.id)
-    localStorage.setItem('tokens', `${account.tokens.tokenType} ${account.tokens.accessToken}`)
+    localStorage.setItem(
+      'tokens',
+      `${account.tokens.tokenType} ${account.tokens.accessToken}`
+    )
   },
   switchOffTfa({ commit }) {
     commit('SET_NEED_TFA', false)
   },
-  async sendAuthRequest({ dispatch, commit }, { username, password, token, isReLogin }) {
+  async sendAuthRequest(
+    { dispatch, commit },
+    { username, password, token, isReLogin }
+  ) {
     commit('SET_STATUS', RequestStatus.PENDING)
 
-    const userDataToRequestParams = adaptUserDataToRequestParams({ username, password, token })
+    const userDataToRequestParams = adaptUserDataToRequestParams({
+      username,
+      password,
+      token,
+    })
 
     try {
-      const authResponse: IAuthResponse = await axios.post('https://api.sirus.su/oauth/token', userDataToRequestParams)
+      const authResponse: IAuthResponse = await axios.post(
+        'https://api.sirus.su/oauth/token',
+        userDataToRequestParams
+      )
 
-      localStorage.setItem('tokens', `${authResponse.tokenType} ${authResponse.accessToken}`)
+      localStorage.setItem(
+        'tokens',
+        `${authResponse.tokenType} ${authResponse.accessToken}`
+      )
 
-      const adaptedResponse = adaptResponse(authResponse, { username, password, token })
+      const adaptedResponse = adaptResponse(authResponse, {
+        username,
+        password,
+        token,
+      })
 
       await dispatch('loadAccountInfo', adaptedResponse)
     } catch (error) {
@@ -162,7 +205,12 @@ const actions: IAccountsActions = {
 
       commit('SET_STATUS', RequestStatus.LOADED)
 
-      commit('SET_NEED_TFA', { needTfa: false, isReLogin: false, username: '', password: '' })
+      commit('SET_NEED_TFA', {
+        needTfa: false,
+        isReLogin: false,
+        username: '',
+        password: '',
+      })
     } catch (error) {
       commit('SET_STATUS', RequestStatus.FAILED)
 
@@ -178,13 +226,18 @@ const actions: IAccountsActions = {
 
     const timestampObject = getTimestamp()
 
-    const hasDelayTimeIsGone = isDelayTimeIsGone(state.additional.lastValidationTimestamp.timestampWithDelayTime, timestampObject.timestamp)
+    const hasDelayTimeIsGone = isDelayTimeIsGone(
+      state.additional.lastValidationTimestamp.timestampWithDelayTime,
+      timestampObject.timestamp
+    )
 
-    if(!hasDelayTimeIsGone) {
+    if (!hasDelayTimeIsGone) {
       return
     }
 
-    const dispatchArray = state.accounts.data.allIds.map(id => dispatch('validateAccount', id))
+    const dispatchArray = state.accounts.data.allIds.map((id) =>
+      dispatch('validateAccount', id)
+    )
 
     await Promise.all(dispatchArray)
     await dispatch('setValidationTimestamp')
@@ -197,11 +250,18 @@ const actions: IAccountsActions = {
   validateTimezone({ commit, state }) {
     const date = new Date()
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const hasTimezoneOffset = isTimezoneHasOffset(state.additional.lastValidationTimestamp.timezone, timezone)
+    const hasTimezoneOffset = isTimezoneHasOffset(
+      state.additional.lastValidationTimestamp.timezone,
+      timezone
+    )
 
     if (hasTimezoneOffset) {
       const offset = getTimestampOffset(date)
-      const shiftedTimestampObject = getShiftedTimestamp(state.additional.lastValidationTimestamp, timezone, offset)
+      const shiftedTimestampObject = getShiftedTimestamp(
+        state.additional.lastValidationTimestamp,
+        timezone,
+        offset
+      )
 
       commit('SET_VALIDATE_ACCOUNTS_TIME', shiftedTimestampObject)
     }
@@ -209,10 +269,17 @@ const actions: IAccountsActions = {
   async validateAccount({ dispatch, commit, state }, accountId) {
     const account = state.accounts.data.byId[accountId]
 
-    const accountDataToRequestParams = adaptUserDataToRequestParams({ username: account.username, password: account.password, token: account.tfaToken })
+    const accountDataToRequestParams = adaptUserDataToRequestParams({
+      username: account.username,
+      password: account.password,
+      token: account.tfaToken,
+    })
 
     try {
-      await axios.post('https://api.sirus.su/oauth/token', accountDataToRequestParams)
+      await axios.post(
+        'https://api.sirus.su/oauth/token',
+        accountDataToRequestParams
+      )
     } catch (error) {
       if ([400, 401].includes(error.response.status)) {
         commit('SET_IS_EXPIRED', { value: true, id: account.id })
@@ -227,4 +294,9 @@ const actions: IAccountsActions = {
   },
 }
 
-export const accountsModule = modulesFactory<IAccountsState, IRootState>({ state, mutations, actions, getters })
+export const accountsModule = modulesFactory<IAccountsState, IRootState>({
+  state,
+  mutations,
+  actions,
+  getters,
+})

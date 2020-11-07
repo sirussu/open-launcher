@@ -1,4 +1,5 @@
 import { ActionContext, ActionTree, GetterTree } from 'vuex'
+
 import { IRootState } from '@/store/types'
 import { NormalizedAdditional, NormalizedSchema } from '@/types/normalze'
 import { RequestStatus } from '@/types/network'
@@ -25,7 +26,7 @@ export interface INormalizedAccount {
   byId: IAccount
 }
 
-export interface IAdaptedResponse extends IAuthResponse{
+export interface IAdaptedResponse extends IAuthResponse {
   username: string
   password: string
   tfaToken?: string
@@ -37,7 +38,7 @@ export interface IValidationTimestamp {
   timezone: string
 }
 
-export interface IAccountsAdditional extends NormalizedAdditional{
+export interface IAccountsAdditional extends NormalizedAdditional {
   needTfa: {
     needTfa: boolean
     isReLogin: boolean
@@ -62,23 +63,35 @@ export interface IAccountsState {
 
 type ActionCtx = ActionContext<IAccountsState, IRootState>
 
-export interface IAccountsActions extends ActionTree<IAccountsState, IRootState>{
+export interface IAccountsActions
+  extends ActionTree<IAccountsState, IRootState> {
   addAccount: (ctx: ActionCtx, payload: INormalizedAccount) => Promise<void>
   removeAccount: (ctx: ActionCtx, payload: number) => void
   setDefaultAccount: (ctx: ActionCtx, payload: IAccount) => void
   switchOffTfa: (ctx: ActionCtx) => void
   loadAccountInfo: (ctx: ActionCtx, payload: IAdaptedResponse) => Promise<void>
-  sendAuthRequest: (ctx: ActionCtx, payload: {username: string, password: string, token?: string, isReLogin: boolean}) => Promise<void>
+  sendAuthRequest: (
+    ctx: ActionCtx,
+    payload: {
+      username: string
+      password: string
+      token?: string
+      isReLogin?: boolean
+    }
+  ) => Promise<void>
   validateAccounts: (ctx: ActionCtx) => Promise<void>
   setValidationTimestamp: (ctx: ActionCtx) => void
   validateTimezone: (ctx: ActionCtx) => void
   validateAccount: (ctx: ActionCtx, payload: number) => Promise<void>
 }
 
-export interface IAccountsGetters extends GetterTree<IAccountsState, IRootState>{
+export interface IAccountsGetters
+  extends GetterTree<IAccountsState, IRootState> {
   accounts: (state: IAccountsState) => Array<IAccount>
   defaultAccount: (state: IAccountsState) => IAccount
-  needTfa: (state: IAccountsState) => {
+  needTfa: (
+    state: IAccountsState
+  ) => {
     needTfa: boolean
     isReLogin: boolean
     username: string

@@ -60,9 +60,7 @@ export default defineComponent({
 .slide-enter-active {
   transition: all 0.3s ease;
 }
-.slide-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
+
 .slide-enter,
 .slide-leave-to {
   transform: translateY(10px);

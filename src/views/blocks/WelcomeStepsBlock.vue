@@ -77,6 +77,7 @@ export default defineComponent({
   },
   methods: {
     skipWelcomeScreen() {
+      // @ts-ignore
       this.setIsCompleted(true)
     },
   },
