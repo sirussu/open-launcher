@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-
 import VueI18n from 'vue-i18n'
+
 // @ts-ignore
 import StatusBar from '@/views/statusBar/StatusBar.vue'
 import en from '@/locales/en.json'

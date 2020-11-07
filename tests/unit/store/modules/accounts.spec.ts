@@ -58,7 +58,10 @@ describe('accounts module', () => {
     advanceBy(25 * 60 * 60 * 1000) // next day
 
     await store.dispatch('accounts/validateAccounts')
-    expect(store.state.accounts.accounts.data.byId[normalizedAccountStub.id].tokenIsExpired).toBe(true)
+    expect(
+      store.state.accounts.accounts.data.byId[normalizedAccountStub.id]
+        .tokenIsExpired
+    ).toBe(true)
   })
 
   test('validation with offset', async () => {
@@ -67,17 +70,28 @@ describe('accounts module', () => {
     await store.dispatch('accounts/addAccount', normalizedAccountStub)
     await store.dispatch('accounts/setValidationTimestamp')
 
-    store.state.accounts.additional.lastValidationTimestamp.timezone = 'Some timezone'
+    store.state.accounts.additional.lastValidationTimestamp.timezone =
+      'Some timezone'
     const offset = -new Date().getTimezoneOffset() * 60 * 1000
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     advanceBy(offset)
 
-    const timestamp = store.state.accounts.additional.lastValidationTimestamp.timestamp
-    const timestampWithDelay = store.state.accounts.additional.lastValidationTimestamp.timestampWithDelayTime
+    const timestamp =
+      store.state.accounts.additional.lastValidationTimestamp.timestamp
+    const timestampWithDelay =
+      store.state.accounts.additional.lastValidationTimestamp
+        .timestampWithDelayTime
 
     await store.dispatch('accounts/validateAccounts')
-    expect(store.state.accounts.additional.lastValidationTimestamp.timezone).toBe(timezone)
-    expect(store.state.accounts.additional.lastValidationTimestamp.timestamp).toBe(timestamp + offset)
-    expect(store.state.accounts.additional.lastValidationTimestamp.timestampWithDelayTime).toBe(timestampWithDelay + offset)
+    expect(
+      store.state.accounts.additional.lastValidationTimestamp.timezone
+    ).toBe(timezone)
+    expect(
+      store.state.accounts.additional.lastValidationTimestamp.timestamp
+    ).toBe(timestamp + offset)
+    expect(
+      store.state.accounts.additional.lastValidationTimestamp
+        .timestampWithDelayTime
+    ).toBe(timestampWithDelay + offset)
   })
 })

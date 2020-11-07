@@ -30,6 +30,7 @@ module.exports = {
   plugins: ['eslint-plugin-import', 'lodash'],
 
   rules: {
+    'prettier/prettier': ERROR,
     'no-console': process.env.NODE_ENV === 'production' ? WARN : OFF,
     'no-debugger': process.env.NODE_ENV === 'production' ? WARN : OFF,
     'lodash/import-scope': [ERROR, 'method'],

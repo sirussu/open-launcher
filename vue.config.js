@@ -3,7 +3,13 @@ const { GenerateSW } = require('workbox-webpack-plugin')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 module.exports = {
-  lintOnSave: false,
+  lintOnSave: isDevelopment,
+  devServer: {
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
+  },
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,

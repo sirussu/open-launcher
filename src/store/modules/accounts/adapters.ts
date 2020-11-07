@@ -20,7 +20,14 @@ export const adaptUserDataToRequestParams = ({
   }
 }
 
-export const adaptResponse = (authResponse: IAuthResponse, { username, password, token }: { username: string, password: string, token?: string}): IAdaptedResponse => {
+export const adaptResponse = (
+  authResponse: IAuthResponse,
+  {
+    username,
+    password,
+    token,
+  }: { username: string; password: string; token?: string }
+): IAdaptedResponse => {
   return {
     username: username,
     password: password,
@@ -33,7 +40,10 @@ export const adaptResponse = (authResponse: IAuthResponse, { username, password,
   }
 }
 
-export const adaptExtendedAccount = (accountInfo: { id: number }, authResponse: IAdaptedResponse) => {
+export const adaptExtendedAccount = (
+  accountInfo: { id: number },
+  authResponse: IAdaptedResponse
+) => {
   return {
     id: accountInfo.id,
     byId: {

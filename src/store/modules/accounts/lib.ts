@@ -14,7 +14,11 @@ export const getTimestamp = (): IValidationTimestamp => {
   }
 }
 
-export const getShiftedTimestamp = (stateTimestamp: IValidationTimestamp, timezone: string, shift: number): IValidationTimestamp => {
+export const getShiftedTimestamp = (
+  stateTimestamp: IValidationTimestamp,
+  timezone: string,
+  shift: number
+): IValidationTimestamp => {
   return {
     timestampWithDelayTime: stateTimestamp.timestampWithDelayTime + shift,
     timestamp: stateTimestamp.timestamp + shift,
@@ -26,10 +30,16 @@ export const getTimestampOffset = (date: Date) => {
   return -date.getTimezoneOffset() * 60 * 1000 // in milliseconds
 }
 
-export const isTimezoneHasOffset = (stateTimezone: string, currentTimezone: string): boolean => {
-  return !!(stateTimezone && currentTimezone !== stateTimezone);
+export const isTimezoneHasOffset = (
+  stateTimezone: string,
+  currentTimezone: string
+): boolean => {
+  return !!(stateTimezone && currentTimezone !== stateTimezone)
 }
 
-export const isDelayTimeIsGone = (stateTimestamp: number, currentTimestamp: number): boolean => {
-  return currentTimestamp > stateTimestamp;
+export const isDelayTimeIsGone = (
+  stateTimestamp: number,
+  currentTimestamp: number
+): boolean => {
+  return currentTimestamp > stateTimestamp
 }
