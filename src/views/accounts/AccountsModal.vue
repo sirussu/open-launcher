@@ -19,7 +19,7 @@
     </v-col>
 
     <v-dialog
-      max-width="600px"
+      max-width="450px"
       v-model="modalToggle"
       @click:outside="resetForm"
       @keydown.enter="sendRequest"
@@ -30,9 +30,9 @@
           <span class="headline">{{ $t('accounts.modal.title') }}</span>
         </v-card-title>
         <v-card-text>
-          <v-container>
+          <v-container pt-0 pb-0>
             <v-row>
-              <v-col cols="12">
+              <v-col cols="12" class="pb-0">
                 <v-text-field
                   v-model.lazy="validate.authForm.login.$model"
                   :error-messages="loginError"
@@ -46,7 +46,7 @@
                   </template>
                 </v-text-field>
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" class="pt-0 pb-0">
                 <v-text-field
                   type="password"
                   v-model.lazy="validate.authForm.pass.$model"
