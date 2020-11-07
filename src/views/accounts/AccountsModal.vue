@@ -183,6 +183,13 @@ export default defineComponent({
       this.validate.authForm.$reset()
     },
     sendRequest() {
+      const fieldsAreFill =
+        this.authForm.login === '' && this.authForm.pass === ''
+
+      if (fieldsAreFill) {
+        return
+      }
+
       if (this.validate.authForm.$invalid) {
         return
       }
