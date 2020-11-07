@@ -50,6 +50,19 @@ describe('accounts module', () => {
     expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
   })
 
+  test('correct remove account if it set as default', async () => {
+    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/addAccount', normalizedAccountWithTfaStub)
+    expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+    expect(store.getters['accounts/accounts']).toHaveLength(2)
+
+    await store.dispatch('accounts/removeAccount', accountStub.id)
+    expect(store.getters['accounts/accounts']).toHaveLength(1)
+    expect(store.getters['accounts/defaultAccount']).toMatchObject(
+      accountWithTfaStub
+    )
+  })
+
   test('renew account if it exist in accounts list', async () => {
     await store.dispatch('accounts/addAccount', normalizedAccountStub)
 
@@ -118,19 +131,20 @@ describe('accounts module', () => {
   })
 
   test('skip accounts with 2FA', async () => {
+    normalizedAccountStub.byId.tokenIsExpired = false // TODO: don't know why this set as 'true'. In stub this field setted as 'false'!
     nock(baseURL).post('/oauth/token').reply(401)
     advanceTo(new Date(2020, 9, 0, 0, 0, 0))
-
-    await store.dispatch('accounts/addAccount', normalizedAccountWithTfaStub)
-    expect(store.getters['accounts/accounts'][0]).toMatchObject(
-      accountWithTfaStub
-    )
+    await store.dispatch('accounts/setValidationTimestamp')
 
     await store.dispatch('accounts/addAccount', normalizedAccountStub)
-    expect(store.getters['accounts/accounts'][1]).toMatchObject(accountStub)
+    expect(store.getters['accounts/accounts'][0]).toMatchObject(accountStub)
+
+    await store.dispatch('accounts/addAccount', normalizedAccountWithTfaStub)
+    expect(store.getters['accounts/accounts'][1]).toMatchObject(
+      accountWithTfaStub
+    )
     expect(store.getters['accounts/accounts']).toHaveLength(2)
 
-    await store.dispatch('accounts/setValidationTimestamp')
     advanceBy(25 * 60 * 60 * 1000) // next day
 
     await store.dispatch('accounts/validateAccounts')
