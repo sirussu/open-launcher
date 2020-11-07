@@ -138,6 +138,11 @@ export default defineComponent({
     progressBar(): boolean {
       return this.getStatus === RequestStatus.PENDING
     },
+    possibleToCloseModal(): boolean {
+      return (
+        this.getStatus !== RequestStatus.FAILED || this.needTfa.needTfa === true
+      )
+    },
   },
   methods: {
     async sendRequest({
@@ -156,7 +161,9 @@ export default defineComponent({
         isReLogin: false,
       })
 
-      this.switchModalToggle(false)
+      if (this.possibleToCloseModal) {
+        this.switchModalToggle(false)
+      }
     },
     async tfaWasEntered(tfaToken: string) {
       if (this.needTfa.isReLogin) {
