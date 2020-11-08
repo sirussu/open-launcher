@@ -77,6 +77,7 @@
 </template>
 
 <script lang="ts">
+// TODO: Fix typescript for validators here
 import { defineComponent, reactive, ref } from '@vue/composition-api'
 import useVuelidate from '@vuelidate/core'
 
@@ -91,6 +92,7 @@ export default defineComponent({
     })
     const showModal = ref(false)
     const validate = useVuelidate(
+      // @ts-ignore
       validateAccountFields,
       { authForm },
       { $autoDirty: true }
@@ -104,14 +106,17 @@ export default defineComponent({
   },
   computed: {
     loginError() {
+      // @ts-ignore
       if (!(this.validate.authForm.login.$dirty && this.showModal)) {
         return
       }
 
+      // @ts-ignore
       if (this.validate.authForm.login.minLength.$invalid) {
         return this.$t('accounts.modal.authError.loginMinLength')
       }
 
+      // @ts-ignore
       if (this.validate.authForm.login.required.$invalid) {
         return this.$t('accounts.modal.authError.loginRequired')
       }
@@ -119,14 +124,17 @@ export default defineComponent({
       return null
     },
     passwordError() {
+      // @ts-ignore
       if (!(this.validate.authForm.pass.$dirty && this.showModal)) {
         return
       }
 
+      // @ts-ignore
       if (this.validate.authForm.pass.minLength.$invalid) {
         return this.$t('accounts.modal.authError.passMinLength')
       }
 
+      // @ts-ignore
       if (this.validate.authForm.pass.required.$invalid) {
         return this.$t('accounts.modal.authError.passRequired')
       }

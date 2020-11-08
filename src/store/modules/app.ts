@@ -1,6 +1,7 @@
-import { MutationTree, ActionTree, GetterTree, Module } from 'vuex'
+import { MutationTree, ActionTree, GetterTree } from 'vuex'
 
 import { axios } from '@/modules/axios'
+import { modulesFactory } from '@/utils/modulesFactory'
 
 import { IRootState } from '../types'
 
@@ -8,10 +9,16 @@ enum DownloadErrors {
   ALREADY_IN_PROGRESS = 'ALREADY_IN_PROGRESS',
 }
 
+interface IFile {
+  // TODO: make normal type
+  isDownloading: boolean
+  isIncomplete: boolean
+}
+
 export interface IAppState {
-  files?: Array<{ isDownloading: boolean }> // TODO: make normal type
-  filesToRemove: Array<{ isDownloading: boolean }>
-  launcherFiles: Array<{ isDownloading: boolean }>
+  files?: Array<IFile>
+  filesToRemove: Array<IFile>
+  launcherFiles: Array<IFile>
   availableLocales: Array<{ key: 'ru' | 'en'; lang: string }>
   errors: DownloadErrors | null
 }
@@ -68,9 +75,9 @@ const actions: ActionTree<IAppState, IRootState> = {
 
 const getters: GetterTree<IAppState, IRootState> = {}
 
-export const appModule: Module<IAppState, IRootState> = {
+export const appModule = modulesFactory<IAppState, IRootState>({
   state,
   mutations,
   actions,
   getters,
-}
+})

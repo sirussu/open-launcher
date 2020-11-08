@@ -10,10 +10,8 @@ export class DirectorySelected extends LauncherListener {
   ) {
     if (directory) {
       // it can be null if windows closed but directory not selected
-      const correct = await store.dispatch('setClientDirectory', directory)
-      if (correct) {
-        return
-      }
+      await store.dispatch('setClientDirectory', directory)
+      // TODO: check is directory setted in the store
     }
 
     eventService.emit(LauncherEvent.WRONG_GAME_DIRECTORY_SELECTED, {

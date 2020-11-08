@@ -92,10 +92,10 @@ const requestLogger = (config: AxiosRequestConfig) => {
   }
 
   if (typeof data === 'object') {
-    console.log(`Response:`)
+    console.log(`Data:`)
     console.dir(data)
-  } else {
-    console.log(`Response: ${data}`)
+  } else if (data) {
+    console.log(`Data: ${data}`)
   }
 
   console.groupEnd()
@@ -126,10 +126,13 @@ const errorLogger = (error: AxiosError) => {
   return Promise.reject(error)
 }
 
-axios.interceptors.response.use(responseLogger, errorLogger)
+if (process.env.NODE_ENV === 'development') {
+  axios.interceptors.response.use(responseLogger, errorLogger)
+  axios.interceptors.request.use(requestLogger, errorLogger)
+}
+
 axios.interceptors.response.use(camelizeKeysInterceptor)
 
-axios.interceptors.request.use(requestLogger, errorLogger)
 axios.interceptors.request.use(revertCamelCaseIntoSnakeCaseInterceptor)
 axios.interceptors.request.use(addAuthHeadersInterceptor)
 

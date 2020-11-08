@@ -1,6 +1,7 @@
-import { MutationTree, ActionTree, Module } from 'vuex'
+import { MutationTree, ActionTree } from 'vuex'
 
-import Files from '@/services/Files'
+import { isCorrectClientDirectory } from '@/utils/files'
+import { modulesFactory } from '@/utils/modulesFactory'
 
 import { IRootState } from '../types'
 
@@ -35,17 +36,14 @@ const mutations: MutationTree<ISettingsState> = {
 
 const actions: ActionTree<ISettingsState, IRootState> = {
   async setClientDirectory({ commit }, directory: string) {
-    if (await Files.isCorrectClientDirectory(directory)) {
+    if (await isCorrectClientDirectory(directory)) {
       commit('SET_CLIENT_DIRECTORY', directory)
-      return true
     }
-
-    return false
   },
 }
 
-export const settingsModule: Module<ISettingsState, IRootState> = {
+export const settingsModule = modulesFactory<ISettingsState, IRootState>({
   state,
   mutations,
   actions,
-}
+})

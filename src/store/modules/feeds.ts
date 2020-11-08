@@ -1,15 +1,10 @@
-import {
-  MutationTree,
-  ActionTree,
-  GetterTree,
-  Module,
-  ActionContext,
-} from 'vuex'
+import { MutationTree, ActionTree, GetterTree, ActionContext } from 'vuex'
 
 import { RequestStatus } from '@/types/network'
 import { axios } from '@/modules/axios'
 import { normalizeData } from '@/utils/normalizeData'
 import { denormalizeData } from '@/utils/denormalizeData'
+import { modulesFactory } from '@/utils/modulesFactory'
 import { NormalizedSchema, NormalizedAdditional } from '@/types/normalze'
 import { NotificationTypes } from '@/types/notification'
 
@@ -93,10 +88,9 @@ const getters: IFeedsGetters = {
   feeds: (state) => denormalizeData(state.feeds.data),
 }
 
-export const feedsModule: Module<IFeedState, IRootState> = {
-  namespaced: true,
+export const feedsModule = modulesFactory<IFeedState, IRootState>({
   state,
   mutations,
   actions,
   getters,
-}
+})
