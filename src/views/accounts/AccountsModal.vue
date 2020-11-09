@@ -1,6 +1,6 @@
 <template>
   <v-row
-    @click.stop="openModal"
+    @click.stop="showModal"
     v-ripple
     dense
     class="account-modal__activator"
@@ -20,11 +20,14 @@
 
     <v-dialog
       max-width="450px"
-      v-model="modalToggle"
+      v-model="isModalShown"
       @click:outside="resetForm"
       @keydown.enter="sendRequest"
     >
-      <v-progress-linear :active="progressBar" :indeterminate="progressBar" />
+      <v-progress-linear
+        :active="canShowProgressBar"
+        :indeterminate="canShowProgressBar"
+      />
       <v-card>
         <v-card-title>
           <span class="headline">{{ $t('accounts.modal.title') }}</span>
@@ -36,7 +39,7 @@
                 <v-text-field
                   v-model.lazy="validate.authForm.login.$model"
                   :error-messages="loginError"
-                  :disabled="progressBar"
+                  :disabled="canShowProgressBar"
                   autofocus
                   clearable
                   required
@@ -51,7 +54,7 @@
                   type="password"
                   v-model.lazy="validate.authForm.pass.$model"
                   :error-messages="passwordError"
-                  :disabled="progressBar"
+                  :disabled="canShowProgressBar"
                   clearable
                   required
                 >
@@ -69,13 +72,13 @@
           <v-btn
             text
             @click="sendRequest"
-            :disabled="validate.authForm.$invalid || progressBar"
+            :disabled="validate.authForm.$invalid || canShowProgressBar"
           >
             <template #default>
               {{ $t('accounts.add_account') }}
             </template>
           </v-btn>
-          <v-btn text @click="resetForm" :disabled="progressBar">
+          <v-btn text @click="resetForm" :disabled="canShowProgressBar">
             <template #default>
               {{ $t('accounts.modal.close_modal') }}
             </template>
@@ -94,8 +97,8 @@ import useVuelidate from '@vuelidate/core'
 import { validateAccountFields } from '@/utils/validate'
 
 interface IAccountsModalProps {
-  modal: boolean
-  progressBar: boolean
+  canShowModal: boolean
+  canShowProgressBar: boolean
 }
 
 export default defineComponent<IAccountsModalProps>({
@@ -118,11 +121,11 @@ export default defineComponent<IAccountsModalProps>({
     }
   },
   props: {
-    modal: {
+    canShowModal: {
       type: Boolean,
       required: true,
     },
-    progressBar: {
+    canShowProgressBar: {
       type: Boolean,
       required: true,
     },
@@ -130,7 +133,7 @@ export default defineComponent<IAccountsModalProps>({
   computed: {
     loginError() {
       // @ts-ignore
-      if (!(this.validate.authForm.login.$dirty && this.modal)) {
+      if (!(this.validate.authForm.login.$dirty && this.canShowModal)) {
         return
       }
 
@@ -148,7 +151,7 @@ export default defineComponent<IAccountsModalProps>({
     },
     passwordError() {
       // @ts-ignore
-      if (!(this.validate.authForm.pass.$dirty && this.modal)) {
+      if (!(this.validate.authForm.pass.$dirty && this.canShowModal)) {
         return
       }
 
@@ -164,9 +167,9 @@ export default defineComponent<IAccountsModalProps>({
 
       return null
     },
-    modalToggle: {
+    isModalShown: {
       get() {
-        return this.modal
+        return this.canShowModal
       },
       set(val) {
         if (val) {
@@ -178,20 +181,23 @@ export default defineComponent<IAccountsModalProps>({
     },
   },
   methods: {
-    openModal() {
-      this.modalToggle = true
+    showModal() {
+      this.isModalShown = true
+    },
+    hideModal() {
+      this.isModalShown = false
     },
     resetForm() {
-      this.modalToggle = false
+      this.hideModal()
       this.authForm.login = ''
       this.authForm.pass = ''
       this.validate.authForm.$reset()
     },
     sendRequest() {
-      const fieldsAreFill =
+      const hasFieldsFilled =
         this.authForm.login === '' && this.authForm.pass === ''
 
-      if (fieldsAreFill) {
+      if (hasFieldsFilled) {
         return
       }
 

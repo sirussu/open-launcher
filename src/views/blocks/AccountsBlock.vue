@@ -54,16 +54,16 @@
         </v-col>
       </v-row>
       <accounts-modal
-        :modal="modal"
-        :progress-bar="progressBar"
+        :can-show-modal="canShowModal"
+        :can-show-progress-bar="canShowProgressBar"
         @auth-requested="sendRequest"
-        @open-accounts-modal="switchModalToggle"
-        @close-accounts-modal="switchModalToggle"
+        @open-accounts-modal="showModal"
+        @close-accounts-modal="hideModal"
       />
       <tfa-modal
         :tfa="needTfa"
-        :progress-bar="progressBar"
-        @tfa-was-entered="tfaWasEntered"
+        :can-show-progress-bar="canShowProgressBar"
+        @tfa-was-entered="sendRequestWithTfa"
         @clear-tfa-form="closeTfaForm"
       />
     </v-container>
@@ -120,7 +120,7 @@ export default defineComponent({
       'getStatus',
     ])
 
-    const modal = false
+    const canShowModal = false
 
     return {
       accounts,
@@ -131,14 +131,14 @@ export default defineComponent({
       sendAuthRequest,
       getStatus,
       closeTfaModal,
-      modal,
+      canShowModal,
     }
   },
   computed: {
-    progressBar(): boolean {
+    canShowProgressBar(): boolean {
       return this.getStatus === RequestStatus.PENDING
     },
-    possibleToCloseModal(): boolean {
+    canCloseModal(): boolean {
       return (
         this.getStatus !== RequestStatus.FAILED || this.needTfa.needTfa === true
       )
@@ -161,11 +161,11 @@ export default defineComponent({
         isReLogin: false,
       })
 
-      if (this.possibleToCloseModal) {
-        this.switchModalToggle(false)
+      if (this.canCloseModal) {
+        this.hideModal()
       }
     },
-    async tfaWasEntered(tfaToken: string) {
+    async sendRequestWithTfa(tfaToken: string) {
       if (this.needTfa.isReLogin) {
         await this.reLogin(tfaToken)
 
@@ -205,7 +205,13 @@ export default defineComponent({
       return this.defaultAccount.id === account.id && !account.tokenIsExpired
     },
     switchModalToggle(toggle: boolean) {
-      this.modal = toggle
+      this.canShowModal = toggle
+    },
+    showModal() {
+      this.switchModalToggle(true)
+    },
+    hideModal() {
+      this.switchModalToggle(false)
     },
   },
 })
