@@ -52,15 +52,23 @@
 </template>
 
 <script lang="ts">
+// TODO: Fix typescript for validators here
 import { defineComponent, ref } from '@vue/composition-api'
 import useVuelidate from '@vuelidate/core'
 
+import { INeedTfa } from '@/store/modules/accounts/types'
 import { validateTfa } from '@/utils/validate'
 
-export default defineComponent({
+interface ITfaModalProps {
+  tfa: INeedTfa
+  progressBar: boolean
+}
+
+export default defineComponent<ITfaModalProps>({
   setup() {
     const tfaToken = ref('')
     const validate = useVuelidate(
+      // @ts-ignore
       validateTfa,
       { tfaToken },
       { $autoDirty: true }
@@ -84,25 +92,31 @@ export default defineComponent({
   computed: {
     tfaModalToggle: {
       get() {
+        // @ts-ignore
         return this.tfa.needTfa
       },
       set(val) {
         if (val) {
+          // @ts-ignore
           this.$emit('tfa-was-entered', this.tfaToken)
         } else {
+          // @ts-ignore
           this.$emit('clear-tfa-form')
         }
       },
     },
     tfaError() {
+      // @ts-ignore
       if (!(this.validate.tfaToken.$dirty && this.tfa.needTfa)) {
         return
       }
 
+      // @ts-ignore
       if (this.validate.tfaToken.minLength.$invalid) {
         return this.$t('accounts.modal.tfaError.minLength')
       }
 
+      // @ts-ignore
       if (this.validate.tfaToken.required.$invalid) {
         return this.$t('accounts.modal.tfaError.required')
       }
@@ -115,11 +129,13 @@ export default defineComponent({
       this.tfaModalToggle = true
 
       this.tfaToken = ''
+      // @ts-ignore
       this.validate.tfaToken.$reset()
     },
     resetForm() {
       this.tfaToken = ''
       this.tfaModalToggle = false
+      // @ts-ignore
       this.validate.tfaToken.$reset()
     },
   },

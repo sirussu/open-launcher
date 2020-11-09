@@ -93,7 +93,12 @@ import useVuelidate from '@vuelidate/core'
 
 import { validateAccountFields } from '@/utils/validate'
 
-export default defineComponent({
+interface IAccountsModalProps {
+  modal: boolean
+  progressBar: boolean
+}
+
+export default defineComponent<IAccountsModalProps>({
   setup() {
     const authForm = reactive({
       login: '',
