@@ -38,13 +38,15 @@ export interface IValidationTimestamp {
   timezone: string
 }
 
+export interface INeedTfa {
+  needTfa: boolean
+  isReLogin: boolean
+  username: string
+  password: string
+}
+
 export interface IAccountsAdditional extends NormalizedAdditional {
-  needTfa: {
-    needTfa: boolean
-    isReLogin: boolean
-    username: string
-    password: string
-  }
+  needTfa: INeedTfa
   lastValidationTimestamp: IValidationTimestamp
 }
 
