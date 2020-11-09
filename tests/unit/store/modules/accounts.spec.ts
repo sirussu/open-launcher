@@ -18,11 +18,20 @@ import normalizedAccountWithTfaStub from './stubs/normalizedAccountWithTfa.json'
 describe('accounts module', () => {
   let store: Store<{ accounts: IAccountsState }>
   let localVue
+  let stubs
   const baseURL = 'https://api.sirus.su'
 
   beforeEach(() => {
     localVue = createLocalVue()
     localVue.use(Vuex)
+    stubs = {
+      tokensStub: cloneDeep(tokensStub),
+      accountInfoStub: cloneDeep(accountInfoStub),
+      accountStub: cloneDeep(accountStub),
+      accountWithTfaStub: cloneDeep(accountWithTfaStub),
+      normalizedAccountStub: cloneDeep(normalizedAccountStub),
+      normalizedAccountWithTfaStub: cloneDeep(normalizedAccountWithTfaStub),
+    }
 
     store = new Vuex.Store({
       modules: {
@@ -36,8 +45,8 @@ describe('accounts module', () => {
   })
 
   test('correct account from request & setting as default', async () => {
-    nock(baseURL).post('/oauth/token').reply(200, tokensStub)
-    nock(baseURL).get('/api/user').reply(200, accountInfoStub)
+    nock(baseURL).post('/oauth/token').reply(200, stubs.tokensStub)
+    nock(baseURL).get('/api/user').reply(200, stubs.accountInfoStub)
 
     await store.dispatch('accounts/sendAuthRequest', {
       username: 'asddsa',
@@ -47,39 +56,39 @@ describe('accounts module', () => {
     expect(Object.keys(store.getters)).toContain('accounts/accounts')
     expect(Object.keys(store.getters)).toContain('accounts/defaultAccount')
     expect(store.getters['accounts/accounts']).toHaveLength(1)
-    expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+    expect(store.getters['accounts/defaultAccount']).toMatchObject(stubs.accountStub)
   })
 
   test('correct remove account if it set as default', async () => {
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
-    await store.dispatch('accounts/addAccount', normalizedAccountWithTfaStub)
-    expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountWithTfaStub)
+    expect(store.getters['accounts/defaultAccount']).toMatchObject(stubs.accountStub)
     expect(store.getters['accounts/accounts']).toHaveLength(2)
 
-    await store.dispatch('accounts/removeAccount', accountStub.id)
+    await store.dispatch('accounts/removeAccount', stubs.accountStub.id)
     expect(store.getters['accounts/accounts']).toHaveLength(1)
     expect(store.getters['accounts/defaultAccount']).toMatchObject(
-      accountWithTfaStub
+      stubs.accountWithTfaStub
     )
   })
 
   test('renew account if it exist in accounts list', async () => {
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountStub)
 
     store.commit('accounts/SET_IS_EXPIRED', {
       value: true,
-      id: normalizedAccountStub.id,
+      id: stubs.normalizedAccountStub.id,
     })
     expect(
-      store.state.accounts.accounts.data.byId[normalizedAccountStub.id]
+      store.state.accounts.accounts.data.byId[stubs.normalizedAccountStub.id]
         .tokenIsExpired
     ).toBe(true)
 
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountStub)
     expect(store.getters['accounts/accounts']).toHaveLength(1)
-    expect(store.getters['accounts/defaultAccount']).toMatchObject(accountStub)
+    expect(store.getters['accounts/defaultAccount']).toMatchObject(stubs.accountStub)
     expect(
-      store.state.accounts.accounts.data.byId[accountStub.id].tokenIsExpired
+      store.state.accounts.accounts.data.byId[stubs.accountStub.id].tokenIsExpired
     ).toBe(false)
   })
 
@@ -87,14 +96,14 @@ describe('accounts module', () => {
     nock(baseURL).post('/oauth/token').reply(401)
     advanceTo(new Date(2020, 9, 0, 0, 0, 0))
 
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountStub)
     await store.dispatch('accounts/setValidationTimestamp')
 
     advanceBy(25 * 60 * 60 * 1000) // next day
 
     await store.dispatch('accounts/validateAccounts')
     expect(
-      store.state.accounts.accounts.data.byId[normalizedAccountStub.id]
+      store.state.accounts.accounts.data.byId[stubs.normalizedAccountStub.id]
         .tokenIsExpired
     ).toBe(true)
   })
@@ -102,7 +111,7 @@ describe('accounts module', () => {
   test('validation with offset', async () => {
     advanceTo(new Date(2020, 9, 0, 0, 0, 0))
 
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountStub)
     await store.dispatch('accounts/setValidationTimestamp')
 
     store.state.accounts.additional.lastValidationTimestamp.timezone =
@@ -131,17 +140,16 @@ describe('accounts module', () => {
   })
 
   test('skip accounts with 2FA', async () => {
-    normalizedAccountStub.byId.tokenIsExpired = false // TODO: don't know why this set as 'true'. In stub this field setted as 'false'!
     nock(baseURL).post('/oauth/token').reply(401)
     advanceTo(new Date(2020, 9, 0, 0, 0, 0))
     await store.dispatch('accounts/setValidationTimestamp')
 
-    await store.dispatch('accounts/addAccount', normalizedAccountStub)
-    expect(store.getters['accounts/accounts'][0]).toMatchObject(accountStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountStub)
+    expect(store.getters['accounts/accounts'][0]).toMatchObject(stubs.accountStub)
 
-    await store.dispatch('accounts/addAccount', normalizedAccountWithTfaStub)
+    await store.dispatch('accounts/addAccount', stubs.normalizedAccountWithTfaStub)
     expect(store.getters['accounts/accounts'][1]).toMatchObject(
-      accountWithTfaStub
+      stubs.accountWithTfaStub
     )
     expect(store.getters['accounts/accounts']).toHaveLength(2)
 
@@ -149,10 +157,10 @@ describe('accounts module', () => {
 
     await store.dispatch('accounts/validateAccounts')
     expect(
-      store.state.accounts.accounts.data.byId[accountStub.id].tokenIsExpired
+      store.state.accounts.accounts.data.byId[stubs.accountStub.id].tokenIsExpired
     ).toBe(true)
     expect(
-      store.state.accounts.accounts.data.byId[accountWithTfaStub.id]
+      store.state.accounts.accounts.data.byId[stubs.accountWithTfaStub.id]
         .tokenIsExpired
     ).toBe(false)
   })
