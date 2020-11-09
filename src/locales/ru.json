@@ -8,7 +8,7 @@
     "choose_lang": "Выберите язык",
     "choose_client_directory": "Выберите папку с игрой",
     "errors": {
-      "wrong_client_directory": "Пожалуйста выберите папку с клиентом"
+      "wrong_client_directory": "Пожалуйста, выберите папку с клиентом"
     }
   },
   "accounts": {

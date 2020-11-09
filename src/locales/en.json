@@ -8,7 +8,7 @@
     "choose_lang": "Choose language",
     "choose_client_directory": "Select game client directory",
     "errors": {
-      "wrong_client_directory": "Please select correct directory"
+      "wrong_client_directory": "Please, select correct directory"
     }
   },
   "accounts": {
