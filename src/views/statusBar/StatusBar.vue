@@ -16,7 +16,7 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 import { mdiCircle } from '@mdi/js'
 
@@ -42,6 +42,7 @@ export default defineComponent({
       return `0.0.0` // TODO: need fix this.$interop.getAppVersion()
     },
     mappedRealms() {
+      // @ts-ignore
       return this.realms.map((realm) => {
         return {
           id: realm.id,

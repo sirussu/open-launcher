@@ -14,12 +14,12 @@ export const vuexPersist = new VuexPersist<IRootState>({
       const state = JSON.parse(data)
 
       if (state.app) {
-        state.app.launcherFiles = state?.app.launcherFiles.map(
+        state.app.launcherFiles = state.app.launcherFiles.map(
           LauncherFile.fromObject
         )
       }
 
-      if (state.settings.locale) {
+      if (state.settings?.locale) {
         i18nModule.locale = state.settings.locale
       }
 

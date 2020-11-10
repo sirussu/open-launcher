@@ -5,14 +5,13 @@ import Vuetify from 'vuetify'
 import cloneDeep from 'lodash/cloneDeep'
 import { mount, createLocalVue } from '@vue/test-utils'
 
-// @ts-ignore
 import Settings from '@/views/pages/Settings.vue'
 import { modules } from '@/store/modules'
 import { i18n } from '@/modules/i18n'
 
 Vue.use(Vuetify)
 
-describe('Settings', () => {
+describe('Settings.vue', () => {
   let store
   let localVue
 

@@ -4,6 +4,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { appModule } from '@/store/modules/app'
 import { vuexPersist } from '@/store/persistance'
+import { settingsModule } from '@/store/modules/settings'
 
 describe('File list receive', () => {
   let store
@@ -48,6 +49,7 @@ describe('File list receive', () => {
     store = new Vuex.Store({
       modules: {
         app: cloneDeep(appModule),
+        settings: cloneDeep(settingsModule),
       },
       plugins: [vuexPersist.plugin],
     })

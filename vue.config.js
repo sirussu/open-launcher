@@ -24,7 +24,7 @@ module.exports = {
       enableInSFC: false,
     },
   },
-  transpileDependencies: ['vuetify'],
+  transpileDependencies: ['vuetify', 'vuex-composition-helpers'],
   configureWebpack: {
     devtool: 'source-map',
     plugins: [

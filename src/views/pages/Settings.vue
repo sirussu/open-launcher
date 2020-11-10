@@ -2,7 +2,7 @@
   <settings-block />
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 
 import SettingsBlock from '@/views/blocks/SettingsBlock.vue'

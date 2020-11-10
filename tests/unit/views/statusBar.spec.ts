@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, mount } from '@vue/test-utils'
 
-// @ts-ignore
 import StatusBar from '@/views/statusBar/StatusBar.vue'
 import { i18n } from '@/modules/i18n'
 

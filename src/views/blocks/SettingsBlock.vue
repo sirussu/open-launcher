@@ -10,7 +10,7 @@
         :value="locale"
         :items="availableLocales"
         :label="$t('settings.choose_lang')"
-        @change="setLocale"
+        @change="handleChangeLocale"
         outlined
       ></v-select>
       <v-text-field
@@ -86,6 +86,9 @@ export default defineComponent({
     }
   },
   methods: {
+    handleChangeLocale(locale) {
+      this.setLocale(locale)
+    },
     async choose() {
       this.errors.clientDirectory = null
 

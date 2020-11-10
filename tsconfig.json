@@ -1,19 +1,24 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
-    "target": "es5",
+    "target": "es2019",
     "lib": [
       "esnext",
-      "esnext.asynciterable",
-      "dom"
+      "dom",
+      "dom.iterable",
+      "scripthost"
     ],
     "sourceMap": true,
     "esModuleInterop": true,
     "allowJs": true,
     "strict": true,
     "noEmit": true,
+    "importHelpers": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "noEmitOnError": true,
     "noErrorTruncation": true,
@@ -23,11 +28,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
-      ],
+        "src/*"
+      ]
     },
     "typeRoots": [
-      "./types",
       "node_modules/@types",
       "node_modules/vuetify/types"
     ]
@@ -43,6 +47,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "node_modules/vuex-composition-helpers"
   ]
 }
