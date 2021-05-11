@@ -30,7 +30,7 @@
     "electron-util": "^0.14.2",
     "humps": "^2.0.1",
     "is-array-buffer": "^1.0.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "nanoid": "^3.1.16",
     "roboto-fontface": "*",
     "vue": "^2.6.12",
